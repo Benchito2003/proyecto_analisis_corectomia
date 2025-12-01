@@ -1,0 +1,92 @@
+% --- CLASE SOBERANA: IEEEtran ---
+% 'journal' = Formato de revista (doble columna, denso).
+% 'compsoc' = Optimizado para computación/ingeniería.
+\documentclass[journal, compsoc, 12pt]{IEEEtran}
+
+% --- ARSENAL DE IDIOMA Y FUENTE ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel} % 'es-tabla' usa "Tabla" en lugar de "Cuadro"
+\usepackage{libertinus} % Tu fuente de autoridad
+\usepackage[T1]{fontenc}
+\usepackage{microtype}  % Micro-ajustes tipográficos esenciales para doble columna
+
+% --- ARSENAL DE CITACIÓN(Vancouver/Numérico) ---
+% IEEE usa citas numéricas [1], ideal para esto.
+\usepackage[backend=biber, style=ieee, sorting=none]{biblatex}
+\addbibresource{referencias.bib}
+
+% --- UTILIDADES ---
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath} % Para tus ecuaciones de señales
+\usepackage{booktabs} % Para tablas profesionales
+\usepackage[colorlinks=true, linkcolor=black, citecolor=black, urlcolor=blue]{hyperref}
+
+% --- METADATOS DEL PAPER ---
+\title{Análisis de Señales para la Detección de Patologías en Voz: Proyecto Cordectomía}
+
+% En IEEE, los autores se ponen en un bloque especial
+\author{Alfonso~Gamboa~Rubén% <- Este % evita espacios extra
+\thanks{Manuscrito entregado el \today. Trabajo realizado para la materia de Análisis de Señales, Universidad Veracruzana.}}
+
+% ==========================================================
+%                  INICIO DEL PAPER
+% ==========================================================
+\begin{document}
+
+% Crea el título que abarca ambas columnas
+\maketitle
+
+% --- RESUMEN (Abstract) ---
+% En formato IEEE, el resumen va en negrita y al inicio.
+\begin{abstract}
+\textbf{Resumen}---Aquí presentas la síntesis de tu victoria. El objetivo de este proyecto es analizar señales de voz para identificar patrones asociados a la cordectomía. Se implementaron filtros digitales (FIR/IIR) y se analizaron las frecuencias fundamentales... 
+\end{abstract}
+
+% --- PALABRAS CLAVE ---
+\begin{IEEEkeywords}
+Procesamiento de Señales, Cordectomía, Filtros Digitales, Ingeniería Biomédica, MATLAB/Python.
+\end{IEEEkeywords}
+
+% --- EL CUERPO DEL TEXTO (Automáticamente en dos columnas) ---
+
+\section{Introducción}
+\IEEEPARstart{E}{l} análisis de la voz es una herramienta no invasiva fundamental... (Nota: `\IEEEPARstart` crea esa letra capital grande y elegante al inicio).
+
+%Como se observa en el estudio de Betances et al. \cite{Betances2020}, el uso de sensores... (Aquí citas tu PDF de ejemplo).
+
+\section{Metodología}
+Para este análisis se utilizó una base de datos de...
+
+\subsection{Adquisición de Datos}
+Las señales fueron capturadas a una frecuencia de muestreo de...
+
+\subsection{Pre-procesamiento}
+Se aplicó un filtro pasa-banda de...
+
+% Ejemplo de Ecuación (crucial para señales)
+\begin{equation}
+    H(z) = \sum_{k=0}^{M} b_k z^{-k}
+    \label{eq:filtro}
+\end{equation}
+
+\section{Resultados}
+La Figura \ref{fig:espectro} muestra el espectrograma comparativo...
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{tu_imagen.png} % \linewidth se ajusta a la columna
+    \caption{Comparación espectral. a) Voz sana. b) Voz con patología.}
+    \label{fig:espectro}
+\end{figure}
+
+\section{Discusión}
+Los resultados sugieren que...
+
+\section{Conclusión}
+El sistema propuesto demuestra...
+
+% --- REFERENCIAS ---
+\printbibliography
+
+\end{document}

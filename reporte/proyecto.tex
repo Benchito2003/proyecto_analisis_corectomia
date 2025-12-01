@@ -1,0 +1,185 @@
+\documentclass[12pt]{article}
+%Español
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+
+% Evitar Estirar los textos de forma fea:
+\usepackage{microtype}
+
+%imágenes
+\usepackage{graphicx}
+\usepackage{float}
+
+% Para diagramas de flujo
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning}
+
+
+% Para escribir codigo de programacion
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolor}{rgb}{0.95,0.95,0.92}
+
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolor},
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=2
+}
+
+\begin{document}
+
+
+\begin{titlepage}
+	\centering
+  
+	{\includegraphics[width=0.2\textwidth]{logo}\par}
+
+	\vspace{0.1cm}
+	{\bfseries\LARGE Universidad Veracruzana \par}
+	\vspace{1cm}
+	{\scshape\Large FACULTAD DE INSTRUMENTACI\'oN ELECTR\'oNICA XALAPA \par}
+	\vspace{0.5cm}
+	{\scshape\Large An\'alisis de señales y sistemas	 \par}
+	\vspace{0.5cm}
+	{\scshape\Huge Diseño de un Sistema de Procesamiento de Señales para la Mejora de la Voz en Pacientes Post-Cordectom\'ia \par}
+	\vspace{0.5cm}
+	%{\itshape\Large Reporte parcial \par}
+	\vfill
+	{\Large Profesora: Silvia Hern\'andez Oliva\par}
+	\vspace{0.5cm}
+	{\Large \textbf{Integrantes del equipo}: \par}
+	{\Large Alfonso Gamboa Rub\'en \\ Juncal Rojas Leobardo \\ Flores Montero Edsel Yetlanezi \\ G\'omez L\'opez Rafael\par}
+	\vfill
+\end{titlepage}
+
+\section{Keywords}
+Procesamiento Digital de Señales, Cordectom\'ia, Filtros Digitales, Formantes Vocales, Python.
+
+\section{Introducci\'on}
+La cordectom\'ia es un proceso quir\'urgico que implica la extirpaci\'on parcial o total de las cuerdas vocales como se aprecia en la figura \ref{fig:cordectomia}; esto por cuestiones m\'edicas, como la extirpación de tumores. \cite{remacle2000endoscopic}
+
+La voz es una herramienta fundamental de la persona. Define la identidad y permite a las personas interactuar con su entorno, por lo tanto, este proyecto propone no solo abordar un desaf\'io t\'ecnico sino ofrecer una soluci\'on qu\'e pueda tener un impacto ben\'efico psicol\'ogico, social, laboral, etc. Por lo tanto, el desarrollo de este proyecto aborda la mejor\'ia del paciente desde varios \'angulos aparte del cl\'inico; atacando la ra\'iz del problema: la comunicaci\'on, por lo que el trabajo busca responder: \textit{¿Se puede mejorar el volumen, timbre y tono de voz en pacientes post-cordectom\'ia con ayuda del an\'alisis de señales y sistemas?}
+
+\begin{figure}[H] % El [H] intenta forzar la posici\'on aqu\'i
+	\centering % Centra la imagen en la pagina
+	\includegraphics[width=0.8\textwidth]{imagenes/cordectomia.png}
+	\caption{Ilustraci\'on de una cordectom\'ia. Tomado de \cite{DAgostino2024Laryngeal}.}
+	\label{fig:cordectomia} % Una etiqueta para referenciarla en el texto si lo necesitas
+\end{figure}
+
+La rehabilitaci\'on vocal tras procedimientos como la cordectom\'ia es un desaf\'io cl\'inico complejo, abordado a trav\'es de diversas t\'ecnicas quir\'urgicas como la cordotom\'ia transversa o la aritenoidectom\'ia medial \cite{DAgostino2024Laryngeal, laitman2024transverse}. Sin embargo, como señalan varios estudios, estas intervenciones quir\'urgicas a menudo conllevan compromisos significativos. Procedimientos como la cordotom\'ia tradicional pueden provocar cicatrizaci\'on y un deterioro de la voz, mientras que otros tratamientos que buscan ampliar la v\'ia a\'erea afectada a menudo conllevan disfon\'ia y riesgo de aspiraci\'on \cite{bosley2005medial, li2013comparison}. Esto revela una brecha cr\'itica en el tratamiento actual: la necesidad de soluciones de apoyo no invasivas que puedan mejorar la calidad y la inteligibilidad de la voz sin los riesgos inherentes de una intervenci\'on quir\'urgica adicional. Es precisamente en esta brecha donde nuestro proyecto, \textit{un sistema de procesamiento de señales en tiempo real}, propone una soluci\'on innovadora, buscando restaurar caracter\'isticas vocales a trav\'es de medios digitales.
+
+Este proyecto ofrece la oportunidad de poner escalar la soluci\'on a ser incorporada a un dispositivo port\'atil, haciendo esta tecnolog\'ia como una soluci\'on para el uso diario. Mediante el diseño de un sistema de filtrado y amplificaci\'on que nos permita poder captar las señales de baja intensidad.
+
+Desde el campo de la ingenier\'ia biom\'edica, y espec\'ificamente desde el estudio del an\'alisis de señales y sistemas, este proyecto se apoya en conceptos fundamentales en la disciplina como; el filtrado digital, transformadas de Fourier, an\'alisis espectral, procesamiento en tiempo real y diseño de sistemas entre otros.
+
+Se busca el desarrollar un sistema que nos permite poder analizar y filtrar una señal de una voz de pacientes post-cordectom\'ia recibiendo una señal, donde primeramente se filtrar\'a y despu\'es se amplificar\'a para poder escucharla con un buen volumen y que sea entendible.
+
+
+
+\subsection*{Objetivos}
+
+\paragraph{Objetivo General:}
+Lo que se busca es el desarrollar un sistema que nos permite poder analizar y filtrar una señal de una voz de pacientes con post-cordectomia. Recibimos nuestra señal, donde primeramente se filtrará y después la amplificaremos para poder escucharla con un buen volumen y que sea entendible
+
+
+\paragraph{Objetivos Espec\'ificos:}
+\begin{itemize}
+	\item Implementar t\'ecnicas de filtrado digital para reducir el ruido y analizar los componentes arm\'onicos de la señal de voz.
+	\item Comparar de manera subjetiva, a criterio del paciente, la mejor\'ia de la voz.
+	\item Validar el desempeño del sistema mediante pruebas simuladas.
+\end{itemize}
+
+\section{Metodolog\'ia definida}
+
+  La presente corresponde al diseño de un sistema enfocado en el desarrollo de una herramienta computacional para el análisis acústico de la voz en pacientes pre-cordectomía. La metodología se organiza en dos fases principales: (1) la definición de criterios de elegibilidad y análisis para la elección de las herramientas, y (2) el desarrollo del algoritmo de procesamiento y análisis de la señal.
+
+  \subsection{Fase 1. Pre-etapa y Establecimiento de la Muestra.}
+
+    \subsubsection{Fase 1.0 Inclusión y elecicón de herramientas computacionales.}
+
+    Esta fase se centra en definir el sujeto de estudio y la métrica objetivo para la rehabilitación.
+
+    Los criterios mínimos incluirán, entre otros: tipo de cordectomía realizada, tiempo post-operatorio, ausencia de patologías laríngeas adicionales y capacidad mínima de producción de sonido (capacidad de producir sonido por al menos 3 segundos).
+
+    Se ha elegido \textbf{Python} (versión 3.13.7) como lenguaje de programación principal para este algoritmo. Esta elección se sustenta en su robusto ecosistema de código abierto, su amplia adopción en la comunidad científica, el procesamiento de señales, y su flexibilidad para la integración de futuras herramientas de machine learning.
+
+    Para la manipulación numérica fundamental, el manejo de arreglos (arrays) de datos y las operaciones matemáticas, se empleará la biblioteca \textbf{NumPy}NumPy \cite{harris2020array}. Esta biblioteca es la base del cómputo científico en Python y es esencial para la implementación de algoritmos de procesamiento de señales. Librosa, Pydub y Matplot son otras librerías secundarías que serán utilizadas, las cuales permiten la manipulación de audio en diferentes formatos, y Matplot, para la creación de gráficos.  
+
+    \subsubsection{Fase 1.1 Definición de la ``voz Objetivo''.}
+
+    Todo el manejo de las grabaciones de voz (datos pre y post-cordectomía) se adherirá estrictamente a los protocolos de confidencialidad y anonimización de datos del paciente, asegurando el cumplimiento de las normativas de privacidad de información médica sensible. Así mismo, se le entregará al paciente un formato de consentimiento informado al inicio del proceso dónde se informará claramente el procedimiento, como serán manejados sus datos y cualquier otro detalle o pregunta qué el paciente pueda tener. 
+
+    \subsubsection{Fase 1.2 Consideraciones Éticas.}
+
+    Todo el manejo de las grabaciones de voz (datos pre y post-cordectomía) se adherirá estrictamente a los protocolos de confidencialidad y anonimización de datos del paciente, asegurando el cumplimiento de las normativas de privacidad de información médica sensible. Así mismo, se le entregará al paciente un formato de consentimiento informado al inicio del proceso dónde se informará claramente el procedimiento, como serán manejados sus datos y cualquier otro detalle o pregunta qué el paciente pueda tener. 
+
+
+  \subsection{Fase 2. Desarrollo del Algortimo de Procesamiento de Señal.}
+
+    Esta fase destaca el desarrollo del algoritmo propuesto para el análisis de las grabaciones de voz de los pacientes (tanto pre como post-cordectomía).
+
+  \subsubsection{Fase 2.0 Adquisición y Carga de Datos.}
+
+  El algoritmo iniciará con la importación de los archivos de audio en formato MP3. Los archivos convertidos en un arreglo numérico (vector de amplitud en función del tiempo), que representa la señal de audio cruda, utilizando librerías de manipulación de audio (Librosa y Pydub).
+
+  \subsubsection{Fase 2.1 Pre-procesamiento: Cancelación de Ruido.}
+
+  La señal de audio importada será sometida a una etapa de preprocesamiento para aumentar la calidad de los datos. Se implementará un filtro digital de cancelación de ruido con el objetivo de atenuar el ruido ambiental capturado durante la grabación y aislar la señal foniátrica de interés \cite{boll1979suppression}.
+
+  \subsubsection{Fase 2.2 Análisis Espetral: Transformada Rápida de Fourier (FFT).}
+
+  Una vez que la señal esté limpia, el núcleo del algoritmo aplicará una Transformada Rápida de Fourier (FFT). Esta transformación matemática, esta incluida en la librería de NumPy, convertirá la señal foniátrica desde el dominio del tiempo al dominio de la frecuencia.
+
+  El análisis en el dominio de la frecuencia es crucial, ya que permite la identificación y cuantificación de los componentes acústicos clave de la voz, como la frecuencia fundamental (F0), la intensidad de los armónicos y la posición de los formantes, los cuales suelen verse alterados tras una cordectomía \cite{little2007exploiting} siendo importante su análisis tanto pre como post-cordectomía.
+
+  \subsubsection{Fase 2.3. Vistrualización de Resultados.}
+
+  Los datos espectrales resultantes del análisis de la FFT serán procesados para su interpretación clínica. El algoritmo generará dos salidas principales:
+
+\begin{enumerate}
+  \item Gráfica (Visualización):** Se generará un gráfico de espectro de potencia (Amplitud vs. Frecuencia) lo cual permitirá visualizar la estructura armónica de la voz producida.
+  \item Tabla (Cuantificación):** Los datos clave (ej. picos de frecuencia, amplitudes de armónicos, F0) serán exportados (.csv y .txt). Estos datos, permitirán una alternativa para la visualización de los datos en forma de una tabla organizada que permitirá un análisis numérico y el seguimiento del progreso del paciente en comparación con la ``voz objetivo''. Así mismo, permitirá el manejo de datos para futuros proyectos con o sin relación a este. 
+\end{enumerate}
+
+
+\begin{figure}[H] % El [H] intenta forzar la posicion
+	\centering % Centra la imagen en la pagina
+	\includegraphics[width=0.8\textwidth]{imagenes/tfourier1.jpg}
+	\caption{Imágen del primer sujeto}
+	\label{fig:fourier1} % Una etiqueta para referenciarla en el texto si lo necesitas
+\end{figure}
+
+
+
+\begin{figure}[H] % El [H] intenta forzar la posicion
+	\centering % Centra la imagen en la pagina
+	\includegraphics[width=0.8\textwidth]{imagenes/tfourier2.jpg}
+  \caption{Imágen del segundo sujeto}
+	\label{fig:fourier2} % Una etiqueta para referenciarla en el texto si lo necesitas
+\end{figure}
+
+
+\bibliographystyle{ieeetr} % Puedes usar ieeetr, apalik", etc.
+\bibliography{referencias} % sin extensi\'on .bib
+
+
+\end{document}
