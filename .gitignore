@@ -1,2 +1,4 @@
 venv/
 .env
+lib/plantilla-funciones.py
+lib/plantilla-clases.py
