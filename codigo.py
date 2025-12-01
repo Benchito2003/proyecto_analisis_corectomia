@@ -10,7 +10,7 @@ from pydub import AudioSegment
 from matplotlib.backends.backend_pdf import PdfPages
 
 # --- CONFIGURACIÓN DE RUTAS ---
-BASE_PATH = "/home/yetmontero/Documents/Análisis de la voz/GFA"
+BASE_PATH = "/home/elchino/Escritorio/proyecto-analisis"
 PATH_INFO = os.path.join(BASE_PATH, "Información")
 PATH_DATOS = os.path.join(BASE_PATH, "Datos")
 
