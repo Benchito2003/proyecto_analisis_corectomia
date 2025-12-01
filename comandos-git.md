@@ -1,4 +1,4 @@
-# Git
+# Comando para  Git y Github
 
 ## Cambiar nombre y correo
 
