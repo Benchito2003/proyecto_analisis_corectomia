@@ -10,4 +10,5 @@ import winsound
 # Librerías del programa
 from lib.ogg_to_wav import normalizar
 
-# Pasos 1. Normalizar los audios
+# Paso 1. Normalizar los audios
+# Paso 2. primer filtro de audio
