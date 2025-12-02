@@ -8,7 +8,6 @@ import scipy.io.wavfile as waves
 import winsound
 
 # Librerías del programa
-from lib.ogg_to_wav import 
+from lib.ogg_to_wav import normalizar
 
 # Pasos 1. Normalizar los audios
-
