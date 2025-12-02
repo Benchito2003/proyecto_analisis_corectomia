@@ -7,7 +7,7 @@ ruta = "../audios/ogg/"
 nombres_nuevos = "audio_ruidoso"
 
 # audio = AudioSegment.from_file("./assets/audios/antes_cordectomia.ogg")
-archivos = glob.glob(ruta + "*ogg")
+archivos = glob.glob(ruta + "*.ogg")
 
 
 def normalizar():
@@ -18,7 +18,7 @@ def normalizar():
     for i in archivos:
         audio = AudioSegment.from_file(i)
         audio.export(
-            "audios/wav/" + nombres_nuevos + f"{contador + 1}.wav", format="wav"
+            "../audios/wav/" + nombres_nuevos + f"{contador + 1}.wav", format="wav"
         )
         contador += 1
 
