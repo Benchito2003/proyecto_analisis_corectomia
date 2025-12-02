@@ -1,212 +1,405 @@
 import os
+import re
 import numpy as np
 import matplotlib.pyplot as plt
 import librosa
 import librosa.display
 import soundfile as sf
-import noisereduce as nr
 import pandas as pd
-from pydub import AudioSegment
+import subprocess
+import noisereduce as nr  # NECESARIO: pip install noisereduce
+from scipy import signal
 from matplotlib.backends.backend_pdf import PdfPages
 
-# --- CONFIGURACIÓN DE RUTAS ---
-BASE_PATH = "/home/elchino/Escritorio/proyecto-analisis"
-PATH_INFO = os.path.join(BASE_PATH, "Información")
-PATH_DATOS = os.path.join(BASE_PATH, "Datos")
-
-# Crear carpetas si no existen
-os.makedirs(PATH_INFO, exist_ok=True)
-os.makedirs(PATH_DATOS, exist_ok=True)
+# ==========================================
+# 1. CONFIGURACIÓN
+# ==========================================
+ROOT_PATH = "/home/elchino/Escritorio/proyecto-analisis"
 
 
-def cargar_y_convertir(ruta_archivo, sr=44100):
-    """Carga audio usando librosa. Si falla, intenta con pydub (para formatos raros)."""
+def configurar_rutas(codigo_paciente):
+    base_paciente = os.path.join(ROOT_PATH, codigo_paciente)
+    rutas = {
+        "base": base_paciente,
+        "wav": os.path.join(base_paciente, "Rex", "WAV"),
+        "mp3": os.path.join(base_paciente, "Rex", "MP3"),
+        "gra": os.path.join(base_paciente, "Rex", "GRA"),
+        "txt": os.path.join(base_paciente, "Datum", "TXT"),
+        "csv": os.path.join(base_paciente, "Datum", "CSV"),
+        "pre_source": os.path.join(base_paciente, "OGFiles", "AAPre"),
+        "post_source": os.path.join(base_paciente, "OGFiles", "BBPost"),
+    }
+    for key, path in rutas.items():
+        if key not in ["pre_source", "post_source"]:
+            os.makedirs(path, exist_ok=True)
+    return rutas
+
+
+# ==========================================
+# 2. INTELIGENCIA DE METADATOS (Nomenclatura)
+# ==========================================
+
+
+def extraer_metadatos(nombre_archivo):
+    """
+    Analiza nombres como: GFA_MA3.opus o GFA_FAA16.opus
+    Retorna:
+    - Paciente: GFA
+    - Genero: M, F o N
+    - Categoria: Pre (A) o Post (B)
+    - NivelRuido: 1 (Bajo, una letra) o 2 (Alto, dos letras AA/BB)
+    - SufijoCompleto: MA3
+    """
+    base = os.path.splitext(nombre_archivo)[0]
+    partes = base.split("_")
+
+    if len(partes) < 2:
+        return None  # Formato incorrecto
+
+    paciente = partes[0]
+    sufijo_raw = partes[1]  # Ej: MA3, FAA16
+
+    # Regex para desglosar el sufijo:
+    # Grupo 1: Genero (M, F, N)
+    # Grupo 2: Tipo y Ruido (A, AA, B, BB...)
+    # Grupo 3: Numero (3, 16...)
+    patron = re.match(r"([MFN])([AB]+)(\d+)", sufijo_raw.upper())
+
+    if not patron:
+        return None
+
+    genero = patron.group(1)
+    letras_tipo = patron.group(2)  # Ej: A, AA, B, BBB
+    numero = patron.group(3)
+
+    # Lógica de Categoría (Pre/Post)
+    if "A" in letras_tipo:
+        categoria = "Pre"
+    elif "B" in letras_tipo:
+        categoria = "Post"
+    else:
+        categoria = "Unknown"
+
+    # Lógica de Nivel de Ruido (Tamizaje empírico)
+    # Si tiene más de 1 letra (AA, BB), es "Alto Ruido"
+    nivel_ruido = "Alto" if len(letras_tipo) > 1 else "Bajo"
+
+    return {
+        "paciente": paciente,
+        "genero": genero,
+        "categoria": categoria,
+        "nivel_ruido": nivel_ruido,
+        "sufijo_completo": sufijo_raw,
+        "identificador_unico": f"{paciente}({sufijo_raw})",
+    }
+
+
+def generar_nombres_salida(meta1, meta2=None):
+    if meta2:
+        # DB-GFA(MA3-MB1)
+        id_str = f"{meta1['paciente']}({meta1['sufijo_completo']}-{meta2['sufijo_completo']})"
+    else:
+        # DB-GFA(MA3)
+        id_str = meta1["identificador_unico"]
+
+    return {
+        "grafica": f"GRA-{id_str}.pdf",
+        "tabla": f"DB-{id_str}",
+        "audio_prefijo": "ENH",
+    }
+
+
+# ==========================================
+# 3. PROCESAMIENTO DE SEÑAL AVANZADO
+# ==========================================
+
+
+def cargar_audio_ffmpeg(ruta_archivo, sr=44100):
+    """Carga segura anti-fallos para Arch Linux"""
+    if not os.path.exists(ruta_archivo):
+        return None, None
+    temp_wav = f"temp_{os.getpid()}_{np.random.randint(1000)}.wav"
     try:
-        # Librosa carga y remuestrea automáticamente
-        y, s_rate = librosa.load(ruta_archivo, sr=sr)
+        cmd = [
+            "ffmpeg",
+            "-y",
+            "-i",
+            ruta_archivo,
+            "-ar",
+            str(sr),
+            "-ac",
+            "1",
+            "-loglevel",
+            "quiet",
+            temp_wav,
+        ]
+        subprocess.run(cmd, check=True)
+        y, s_rate = sf.read(temp_wav)
+        if os.path.exists(temp_wav):
+            os.remove(temp_wav)
         return y, s_rate
     except Exception as e:
-        print(f"Librosa falló, intentando con Pydub... Error: {e}")
-        # Fallback para formatos que librosa a veces pelea (aunque con ffmpeg instalado debería ir bien)
-        audio = AudioSegment.from_file(ruta_archivo)
-        audio = audio.set_frame_rate(sr).set_channels(1)  # Convertir a mono
-        y = (
-            np.array(audio.get_array_of_samples(), dtype=np.float32) / 32768.0
-        )  # Normalizar
-        return y, sr
+        print(f"   [ERROR CRÍTICO AUDIO]: {e}")
+        if os.path.exists(temp_wav):
+            os.remove(temp_wav)
+        return None, None
 
 
-def exportar_audios(y, sr, nombre_base, carpeta):
-    """Exporta en WAV y MP3"""
-    nombre_salida = f"mejorado_{nombre_base}"
-    ruta_wav = os.path.join(carpeta, f"{nombre_salida}.wav")
-    ruta_mp3 = os.path.join(carpeta, f"{nombre_salida}.mp3")
+def limpieza_avanzada(y, sr, genero, nivel_ruido):
+    """
+    ALGORITMO DE FASE 1 MEJORADO:
+    1. Filtro Pasa-Banda según Género (Aísla la voz humana).
+    2. Reducción de Ruido Estacionario Adaptativa (Según nivel AA/A).
+    """
 
-    # Guardar WAV
+    # --- PASO 1: DEFINIR RANGOS DE FRECUENCIA POR GÉNERO ---
+    # Los hombres tienen fundamentales más graves, las mujeres/niños más agudas.
+    # Recortamos lo que está fuera para quitar "rumble" de carros y silbidos.
+    if genero == "M":
+        freq_min, freq_max = 70, 7000  # Rango amplio voz masculina
+    elif genero == "F":
+        freq_min, freq_max = 100, 8000  # Rango voz femenina
+    else:  # Neutro
+        freq_min, freq_max = 65, 8000  # Rango conservador
+
+    # Filtro Butterworth Pasa-Banda (Band-Pass)
+    sos = signal.butter(10, [freq_min, freq_max], "bp", fs=sr, output="sos")
+    y_bandpass = signal.sosfilt(sos, y)
+
+    # --- PASO 2: REDUCCIÓN DE RUIDO INTELIGENTE (NOISEREDUCE) ---
+    # Utilizamos Stationary Noise Reduction.
+    # Si el archivo es 'Alto' (AA), somos más agresivos.
+
+    if nivel_ruido == "Alto":
+        # Configuración agresiva para salvar audios sucios (AA)
+        prop_decrease = 0.90  # Eliminar el 90% del ruido detectado
+        n_std_thresh = 1.5  # Umbral más estricto
+        time_constant = 2.0  # Tiempo de suavizado
+    else:
+        # Configuración suave para audios limpios (A)
+        prop_decrease = 0.60  # Eliminar solo el 60% (preserva aire natural)
+        n_std_thresh = 2.0  # Umbral estándar
+        time_constant = 0.5
+
+    # Aplicamos reducción de ruido sobre la señal ya filtrada por banda
+    # Usamos n_jobs=1 para evitar conflictos en scripts simples
+    try:
+        y_clean = nr.reduce_noise(
+            y=y_bandpass,
+            sr=sr,
+            prop_decrease=prop_decrease,
+            stationary=True,  # Asume ruido constante (ventiladores, motores lejanos)
+            n_std_thresh_stationary=n_std_thresh,
+            time_constant_s=time_constant,
+        )
+    except Exception as e:
+        print(
+            f"   [ADVERTENCIA] Falló noisereduce, usando solo filtro banda. Error: {e}"
+        )
+        y_clean = y_bandpass
+
+    # --- PASO 3: NORMALIZACIÓN ---
+    # Importante para que todos los audios tengan el mismo "volumen" relativo en la DB
+    max_val = np.max(np.abs(y_clean))
+    if max_val > 0:
+        y_final = y_clean / max_val * 0.95
+    else:
+        y_final = y_clean
+
+    return y_final
+
+
+def exportar_audios(y, sr, nombre_original, rutas):
+    """Guarda ENH-{nombre}"""
+    nombre_salida = f"ENH-{os.path.splitext(nombre_original)[0]}"
+    ruta_wav = os.path.join(rutas["wav"], f"{nombre_salida}.wav")
+    ruta_mp3 = os.path.join(rutas["mp3"], f"{nombre_salida}.mp3")
     sf.write(ruta_wav, y, sr)
-
-    # Guardar MP3 (usando pydub porque soundfile no escribe mp3 directamente)
-    # Convertimos numpy array de vuelta a AudioSegment
-    audio_segment = AudioSegment(
-        (y * 32767).astype("int16").tobytes(), frame_rate=sr, sample_width=2, channels=1
-    )
-    audio_segment.export(ruta_mp3, format="mp3", bitrate="192k")
-    print(f"Audios guardados: {nombre_salida}")
+    cmd = f"ffmpeg -y -i '{ruta_wav}' -codec:a libmp3lame -qscale:a 2 '{ruta_mp3}' -loglevel quiet"
+    os.system(cmd)
 
 
-def obtener_espectro(y, sr, n_fft=2048):
-    """
-    Calcula la magnitud del espectro promedio.
-    Usamos STFT y promediamos en el tiempo para obtener una curva de frecuencia consistente
-    independientemente de la duración del audio.
-    """
-    # Short-Time Fourier Transform
+def obtener_espectro(y, sr, n_fft=4096):
     D = librosa.stft(y, n_fft=n_fft)
-    # Magnitud
     S_db = librosa.amplitude_to_db(np.abs(D), ref=np.max)
-    # Promedio en el eje del tiempo (axis 1) para obtener un perfil de frecuencia
-    promedio_frecuencias = np.mean(S_db, axis=1)
-    # Generar eje de frecuencias
-    freqs = librosa.fft_frequencies(sr=sr, n_fft=n_fft)
-
-    return freqs, promedio_frecuencias
+    return librosa.fft_frequencies(sr=sr, n_fft=n_fft), np.mean(S_db, axis=1)
 
 
-def procesar_paciente(ruta_audio1, ruta_audio2):
-    # Obtener nombres de archivo sin extensión
-    nombre1 = os.path.splitext(os.path.basename(ruta_audio1))[0]
-    nombre2 = os.path.splitext(os.path.basename(ruta_audio2))[0]
-    nombre_conjunto = f"{nombre1}_vs_{nombre2}"
+# ==========================================
+# 4. MOTOR PRINCIPAL
+# ==========================================
 
-    print(f"--- Procesando: {nombre1} (Pre) y {nombre2} (Post) ---")
 
-    # 1. Cargar Audios (Remuestrear a 44.1kHz para consistencia)
-    sr_comun = 44100
-    y1, sr1 = cargar_y_convertir(ruta_audio1, sr=sr_comun)
-    y2, sr2 = cargar_y_convertir(ruta_audio2, sr=sr_comun)
+def procesar_archivos(archivos_input, rutas):
+    datos = []
 
-    # 2. Reducción de Ruido y Mejora
-    # Usamos reducción de ruido estacionario. prop_decrease=0.8 es suave para no dañar la voz
-    print("Aplicando reducción de ruido...")
-    y1_clean = nr.reduce_noise(y=y1, sr=sr1, prop_decrease=0.85, stationary=True)
-    y2_clean = nr.reduce_noise(y=y2, sr=sr2, prop_decrease=0.85, stationary=True)
+    # --- FASE A: PROCESAMIENTO ---
+    for nombre in archivos_input:
+        meta = extraer_metadatos(nombre)
+        if not meta:
+            print(f"   [ERROR] Formato de nombre inválido: {nombre}")
+            return
 
-    # 3. Exportar Audios Mejorados
-    exportar_audios(y1_clean, sr1, nombre1, PATH_INFO)
-    exportar_audios(y2_clean, sr2, nombre2, PATH_INFO)
+        # Buscar archivo
+        rutas_posibles = [
+            os.path.join(rutas["pre_source"], nombre),
+            os.path.join(rutas["post_source"], nombre),
+            os.path.join(rutas["base"], nombre),
+        ]
+        ruta_final = next((r for r in rutas_posibles if os.path.exists(r)), None)
 
-    # 4. Calcular FFT (Espectros)
-    # Usamos n_fft fijo para que los bins de frecuencia sean idénticos
-    freqs, mag1_orig = obtener_espectro(y1, sr1)
-    _, mag1_clean = obtener_espectro(y1_clean, sr1)
+        if not ruta_final:
+            print(f"   [ERROR] No encontrado: {nombre}")
+            return
 
-    _, mag2_orig = obtener_espectro(y2, sr2)
-    _, mag2_clean = obtener_espectro(y2_clean, sr2)
+        print(f"   -> Procesando: {nombre}")
+        print(
+            f"      [Metadatos] Género: {meta['genero']} | Ruido: {meta['nivel_ruido']} | Tipo: {meta['categoria']}"
+        )
 
-    # Calcular diferencia (Post - Pre mejorados, o simplemente magnitud de diferencia)
-    # Asumimos que queremos ver cómo cambió el espectro
-    diferencia = mag2_clean - mag1_clean
+        # 1. Cargar
+        y, sr = cargar_audio_ffmpeg(ruta_final)
+        if y is None:
+            return
 
-    # 5. Generar PDF con Gráficas
-    ruta_pdf = os.path.join(PATH_INFO, f"grafica_{nombre_conjunto}.pdf")
+        # 2. LIMPIEZA AVANZADA (Aquí ocurre la magia)
+        y_clean = limpieza_avanzada(y, sr, meta["genero"], meta["nivel_ruido"])
 
+        # 3. Exportar Audio
+        exportar_audios(y_clean, sr, nombre, rutas)
+
+        # 4. Obtener Datos Espectrales
+        freqs, mag_orig = obtener_espectro(y, sr)
+
+        # CRUCIAL: Estos son los datos que irán a la DB.
+        # Estamos asegurando que la DB contenga la señal FILTRADA.
+        _, mag_clean = obtener_espectro(y_clean, sr)
+
+        datos.append(
+            {
+                "meta": meta,
+                "nombre": nombre,
+                "freqs": freqs,
+                "mag_orig": mag_orig,
+                "mag_clean": mag_clean,  # Esta es la señal limpia
+            }
+        )
+
+    # --- FASE B: RESULTADOS (Gráficas y Tablas) ---
+    if len(datos) == 2:
+        info = generar_nombres_salida(datos[0]["meta"], datos[1]["meta"])
+    else:
+        info = generar_nombres_salida(datos[0]["meta"])
+
+    # 1. Generar PDF
+    ruta_pdf = os.path.join(rutas["gra"], info["grafica"])
     with PdfPages(ruta_pdf) as pdf:
-        fig = plt.figure(figsize=(14, 18))
+        fig = plt.figure(figsize=(12, 16))
+        plt.rcParams.update({"font.size": 9})
 
-        # Diseño de la cuadrícula: 4 filas.
-        # Fila 0: Audio 1 Orig vs Mejorado
-        # Fila 1: Audio 2 Orig vs Mejorado
-        # Fila 2: Comparativa (3 columnas)
+        # Gráficas individuales
+        for i, d in enumerate(datos):
+            ax = plt.subplot2grid((3, 1), (i, 0))
+            ax.plot(
+                d["freqs"],
+                d["mag_orig"],
+                color="gray",
+                alpha=0.3,
+                label="Original (Sucio)",
+            )
+            color = "#1f77b4" if d["meta"]["categoria"] == "Pre" else "#2ca02c"
+            ax.plot(d["freqs"], d["mag_clean"], color=color, label="Filtrado (Limpio)")
+            ax.set_title(f"{d['nombre']} ({d['meta']['nivel_ruido']} Ruido)")
+            ax.set_ylabel("dB")
+            ax.set_xlim(0, 6000)
+            ax.legend()
+            ax.grid(True, alpha=0.3)
 
-        # --- Gráfica 1: Audio 1 (Pre) ---
-        ax1 = plt.subplot2grid((4, 3), (0, 0), colspan=3)
-        ax1.plot(freqs, mag1_orig, label="Original (Pre)", alpha=0.5, color="gray")
-        ax1.plot(freqs, mag1_clean, label="Mejorado (Pre)", color="blue")
-        ax1.set_title(f"Audio 1 (Pre-Cordectomía): {nombre1}")
-        ax1.set_ylabel("Amplitud (dB)")
-        ax1.set_xlabel("Frecuencia (Hz)")
-        ax1.legend()
-        ax1.grid(True, alpha=0.3)
+        # Comparativa
+        ax_fus = plt.subplot2grid((3, 1), (2, 0))
+        if len(datos) == 2:
+            d1, d2 = datos[0], datos[1]
+            # Diferencia usando SOLO las señales limpias
+            diferencia = d2["mag_clean"] - d1["mag_clean"]
 
-        # --- Gráfica 2: Audio 2 (Post) ---
-        ax2 = plt.subplot2grid((4, 3), (1, 0), colspan=3)
-        ax2.plot(freqs, mag2_orig, label="Original (Post)", alpha=0.5, color="gray")
-        ax2.plot(freqs, mag2_clean, label="Mejorado (Post)", color="green")
-        ax2.set_title(f"Audio 2 (Post-Cordectomía): {nombre2}")
-        ax2.set_ylabel("Amplitud (dB)")
-        ax2.set_xlabel("Frecuencia (Hz)")
-        ax2.legend()
-        ax2.grid(True, alpha=0.3)
+            ax_fus.plot(
+                d1["freqs"],
+                d1["mag_clean"],
+                color="#1f77b4",
+                label=f"{d1['meta']['categoria']} Limpio",
+                alpha=0.7,
+            )
+            ax_fus.plot(
+                d2["freqs"],
+                d2["mag_clean"],
+                color="#2ca02c",
+                label=f"{d2['meta']['categoria']} Limpio",
+                alpha=0.7,
+            )
+            ax_fus.plot(
+                d1["freqs"],
+                diferencia,
+                color="#d62728",
+                label="Diferencia (Target)",
+                linestyle="--",
+            )
 
-        # --- Fila Inferior: Comparativas ---
-        # Izquierda: Audio 1 Mejorado
-        ax3 = plt.subplot2grid((4, 3), (2, 0))
-        ax3.plot(freqs, mag1_clean, color="blue")
-        ax3.set_title("Pre-Op Mejorado")
-        ax3.set_xlabel("Hz")
-        ax3.grid(True, alpha=0.3)
+            df_data = {
+                "Frecuencia_Hz": d1["freqs"],
+                f"{d1['nombre']}_Clean_dB": d1[
+                    "mag_clean"
+                ],  # Explicitamente marcado Clean
+                f"{d2['nombre']}_Clean_dB": d2["mag_clean"],
+                "Diferencia_dB": diferencia,
+            }
+        else:
+            d1 = datos[0]
+            ax_fus.plot(d1["freqs"], d1["mag_clean"], color="#1f77b4")
+            df_data = {
+                "Frecuencia_Hz": d1["freqs"],
+                f"{d1['nombre']}_Clean_dB": d1["mag_clean"],
+            }
 
-        # Centro: Audio 2 Mejorado
-        ax4 = plt.subplot2grid((4, 3), (2, 1), sharey=ax3)
-        ax4.plot(freqs, mag2_clean, color="green")
-        ax4.set_title("Post-Op Mejorado")
-        ax4.set_xlabel("Hz")
-        ax4.grid(True, alpha=0.3)
-
-        # Derecha: Diferencia
-        ax5 = plt.subplot2grid((4, 3), (2, 2))
-        ax5.plot(freqs, diferencia, color="red")
-        ax5.set_title("Diferencia (Post - Pre)")
-        ax5.set_xlabel("Hz")
-        ax5.set_ylabel("Delta dB")
-        ax5.grid(True, alpha=0.3)
-        # Línea cero para referencia
-        ax5.axhline(0, color="black", linewidth=0.8, linestyle="--")
-
+        ax_fus.set_xlim(0, 6000)
+        ax_fus.legend()
+        ax_fus.grid(True, alpha=0.3)
         plt.tight_layout()
         pdf.savefig(fig)
         plt.close()
 
-    print(f"Gráficas guardadas en: {ruta_pdf}")
+    print(f"   -> Gráfica: {info['grafica']}")
 
-    # 6. Exportar Datos (CSV y TXT)
-    data = {
-        "Frecuencia_Hz": freqs,
-        f"{nombre1}_Mejorado_dB": mag1_clean,
-        f"{nombre2}_Mejorado_dB": mag2_clean,
-        "Diferencia_dB": diferencia,
-    }
-
-    df = pd.DataFrame(data)
-
-    ruta_csv = os.path.join(PATH_DATOS, f"tabla_{nombre_conjunto}.csv")
-    ruta_txt = os.path.join(PATH_DATOS, f"tabla_{nombre_conjunto}.txt")
-
+    # 2. Exportar Tablas (DB)
+    df = pd.DataFrame(df_data)
+    ruta_csv = os.path.join(rutas["csv"], f"{info['tabla']}.csv")
+    ruta_txt = os.path.join(rutas["txt"], f"{info['tabla']}.txt")
     df.to_csv(ruta_csv, index=False)
     df.to_csv(ruta_txt, sep="\t", index=False)
+    print(f"   -> DB Actualizada: {info['tabla']} (Datos Filtrados)")
 
-    print(f"Tablas de datos guardadas en: {PATH_DATOS}")
 
-
-# --- BLOQUE PRINCIPAL ---
+# ==========================================
+# 5. EJECUCIÓN
+# ==========================================
 if __name__ == "__main__":
-    # AQUÍ DEBES PONER LAS RUTAS DE TUS ARCHIVOS DE ENTRADA
-    # Ejemplo:
-    # audio_pre = "ruta/a/tu/archivo_pre.opus"
-    # audio_post = "ruta/a/tu/archivo_post.opus"
+    print("=== ANÁLISIS DE VOZ AVANZADO (GFA Phase 1.5) ===")
+    rutas = configurar_rutas("GFA")  # Default GFA
 
-    print("Por favor, introduce la ruta completa del primer archivo (Pre-Cordectomía):")
-    archivo1 = (
-        input().strip().replace("'", "")
-    )  # Limpia comillas si se arrastra el archivo
+    while True:
+        entrada = input(
+            "\nArchivos (ej: GFA_MA3.opus GFA_MB1.ogg) [q salir]: \n>> "
+        ).strip()
+        if entrada.lower() == "q":
+            break
+        if not entrada:
+            continue
 
-    print(
-        "Por favor, introduce la ruta completa del segundo archivo (Post-Cordectomía):"
-    )
-    archivo2 = input().strip().replace("'", "")
+        archivos = [
+            os.path.basename(f.replace("'", "").replace('"', ""))
+            for f in entrada.split()
+        ]
+        if len(archivos) > 2:
+            print("Máximo 2 archivos.")
+            continue
 
-    if os.path.exists(archivo1) and os.path.exists(archivo2):
-        procesar_paciente(archivo1, archivo2)
-        print("\n--- Proceso Finalizado con Éxito ---")
-    else:
-        print("Error: Uno o ambos archivos no fueron encontrados. Verifica las rutas.")
+        procesar_archivos(archivos, rutas)
