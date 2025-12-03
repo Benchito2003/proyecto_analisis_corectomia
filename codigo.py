@@ -11,4 +11,6 @@ import winsound
 from lib.ogg_to_wav import normalizar
 
 # Paso 1. Normalizar los audios
-# Paso 2. primer filtro de audio
+# Paso 2. Transformada de Fourierprimer filtro de audio
+# Paso 3.(Propuesta por experimentar, podría no funcionar) sacar transformada de fourier del audio cada cierto tiempo
+# Paso 3.1.  Dividir
