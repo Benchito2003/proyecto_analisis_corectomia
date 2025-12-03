@@ -1,9 +1,17 @@
 flowchart TD
-    %% Estilos
-    classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-    classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
-    classDef terminator fill:#ffebee,stroke:#c62828,stroke-width:2px;
-    classDef io fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    %% --- ESTILOS ONE DARK PRO ---
+    %% Definición de clases con colores Hex oficiales del tema
+    classDef base fill:#282c34,color:#abb2bf,stroke-width:2px;
+    
+    classDef process fill:#282c34,stroke:#61afef,color:#abb2bf,stroke-width:2px;
+    classDef decision fill:#282c34,stroke:#c678dd,color:#abb2bf,stroke-width:2px;
+    classDef terminator fill:#282c34,stroke:#e06c75,color:#abb2bf,stroke-width:2px;
+    classDef io fill:#282c34,stroke:#98c379,color:#abb2bf,stroke-width:2px;
+    
+    %% Estilo para las líneas (flechas) en gris claro
+    linkStyle default stroke:#abb2bf,stroke-width:2px;
+
+    %% --- ESTRUCTURA DEL DIAGRAMA ---
 
     Start([Inicio]) --> CheckDir{"¿Existe OUTPUT_DIR?"}
     
@@ -73,8 +81,13 @@ flowchart TD
     Export --> Success[Imprimir: Éxito]
     Success --> InputUser
 
-    %% Asignación de clases
+    %% --- ASIGNACIÓN DE CLASES ---
     class Start,End terminator;
     class CheckDir,IsQuit,CheckEmpty,Exists,TryLoad,Norm,CheckLoad decision;
     class MkDir,InitMsg,ConcatPath,ErrMsg1,LoadStart,ToMono,GetSamples,RetNone,RetData,DenoiseStart,STFT,CalcEnergy,FindNoise,Wiener,ApplyFilt,ISTFT,RetClean,PrepPaths,SaveStart,Clip,DeNorm,ToSeg,Export,Success process;
     class InputUser io;
+
+    %% Estilo manual para subgrafos (Fondo más oscuro)
+    style LoadAudio fill:#21252b,stroke:#abb2bf,stroke-width:1px,color:#abb2bf
+    style Denoise fill:#21252b,stroke:#abb2bf,stroke-width:1px,color:#abb2bf
+    style SaveAudio fill:#21252b,stroke:#abb2bf,stroke-width:1px,color:#abb2bf
