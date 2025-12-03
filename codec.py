@@ -1,168 +1,260 @@
-import numpy as np
-import scipy.signal
-from pydub import AudioSegment
 import os
-import sys
+import glob
+import numpy as np
+import matplotlib.pyplot as plt
+import librosa
+import librosa.display
+import pandas as pd
 
-# --- CONFIGURATION PATHS ---
-INPUT_DIR = "/home/yetmontero/Cordec/GFA/Rex/Clean"
-OUTPUT_DIR = "/home/yetmontero/Cordec/GFA/VoxAdj"
+# --- CONFIGURACIÓN DE RUTAS ---
+# Usamos ruta absoluta para evitar ambigüedades
+BASE_DIR = "/home/yetmontero/Cordec/GFA"
+
+# Definimos carpetas de salida específicas
+DIR_ESP = os.path.join(BASE_DIR, "Recursos/ESP")
+DIR_GRA = os.path.join(BASE_DIR, "Recursos/GRA")
+DIR_CSV = os.path.join(BASE_DIR, "Datum/CSV")
+DIR_TXT = os.path.join(BASE_DIR, "Datum/TXT")
+
+# Crear directorios de salida si no existen
+for d in [DIR_ESP, DIR_GRA, DIR_CSV, DIR_TXT]:
+    os.makedirs(d, exist_ok=True)
 
 
-def load_audio(filepath):
-    """Loads audio file and converts to numpy float array."""
+def buscar_archivo_recursivo(nombre_archivo):
+    """
+    Busca el archivo en TODA la carpeta BASE_DIR y sus subcarpetas.
+    Equivalente a hacer un 'find' o 'ls -R'.
+    """
+    print(f"   [?] Buscando '{nombre_archivo}' en todo GFA...")
+
+    # El patrón ** indica búsqueda recursiva
+    pattern = os.path.join(BASE_DIR, "**", nombre_archivo)
+
+    # recursive=True permite buscar en subdirectorios
+    files = glob.glob(pattern, recursive=True)
+
+    if files:
+        # Retornamos el primero encontrado y mostramos dónde estaba
+        print(f"      [OK] Encontrado: {files[0]}")
+        return files[0]
+    else:
+        print(f"      [X] No encontrado en ninguna subcarpeta de GFA.")
+        return None
+
+
+def procesar_fft(ruta_archivo):
+    """Carga audio y calcula la FFT (Magnitud en dB promedio)."""
     try:
-        audio = AudioSegment.from_file(filepath)
+        # Cargar audio (sr=None preserva el sampling rate original)
+        y, sr = librosa.load(ruta_archivo, sr=None)
+
+        # Calcular STFT
+        D = librosa.stft(y)
+        S_db = librosa.amplitude_to_db(np.abs(D), ref=np.max)
+
+        # Promediar en el tiempo
+        mag_promedio = np.mean(S_db, axis=1)
+        freqs = librosa.fft_frequencies(sr=sr)
+
+        return freqs, mag_promedio, S_db, sr, y
     except Exception as e:
-        print(f"Error loading file: {e}")
-        return None, None, None
-
-    # Convert to mono for processing
-    audio_mono = audio.set_channels(1)
-
-    # Get raw data and normalize
-    samples = np.array(audio_mono.get_array_of_samples())
-
-    if audio.sample_width == 2:
-        samples = samples.astype(np.float32) / 32768.0
-    elif audio.sample_width == 4:
-        samples = samples.astype(np.float32) / 2147483648.0
-    else:
-        # Fallback for 8-bit or other widths if necessary
-        samples = samples.astype(np.float32) / (2 ** (8 * audio.sample_width - 1))
-
-    return samples, audio.frame_rate, audio
+        print(f"      [ERROR] Fallo al procesar audio: {e}")
+        return None, None, None, None, None
 
 
-def save_audio(output_path, samples, original_audio):
-    """Converts numpy array back to audio file."""
-    # Clip to avoid distortion
-    samples = np.clip(samples, -1.0, 1.0)
+def exportar_datos_clean(nombre_base, freqs, mag):
+    """Exporta a CSV y TXT si es un archivo _clean."""
+    df = pd.DataFrame({"Frecuencia_Hz": freqs, "Magnitud_dB": mag})
 
-    # Convert back to correct integer format
-    if original_audio.sample_width == 2:
-        samples_int = (samples * 32767).astype(np.int16)
-    elif original_audio.sample_width == 4:
-        samples_int = (samples * 2147483647).astype(np.int32)
-    else:
-        samples_int = (
-            samples * (2 ** (8 * original_audio.sample_width - 1) - 1)
-        ).astype(np.int32)
+    nombre_salida = f"DB-{os.path.splitext(nombre_base)[0]}"
 
-    # Create pydub segment
-    processed_audio = AudioSegment(
-        samples_int.tobytes(),
-        frame_rate=original_audio.frame_rate,
-        sample_width=original_audio.sample_width,
-        channels=1,
+    # Exportar CSV
+    csv_path = os.path.join(DIR_CSV, f"{nombre_salida}.csv")
+    df.to_csv(csv_path, index=False)
+    print(f"   -> Datos exportados a CSV: {csv_path}")
+
+    # Exportar TXT
+    txt_path = os.path.join(DIR_TXT, f"{nombre_salida}.txt")
+    df.to_csv(txt_path, sep="\t", index=False)
+    print(f"   -> Datos exportados a TXT: {txt_path}")
+
+
+def generar_grafica_comparativa(lista_datos, nombres_archivos):
+    """Genera la gráfica de líneas superpuestas y diferencias."""
+    plt.figure(figsize=(14, 8))
+
+    # --- SUBPLOT 1: Superposición ---
+    ax1 = plt.subplot(2, 1, 1)
+    colores = ["#77aadd", "#88cc88", "#ee8866", "#eedd88", "#aaaaff"]
+
+    # Normalizar longitud de arrays para operaciones matemáticas
+    min_len = min([d["mag"].shape[0] for d in lista_datos])
+    freqs_comunes = lista_datos[0]["freqs"][:min_len]
+
+    # Graficar señales
+    for i, datos in enumerate(lista_datos):
+        mag_recortada = datos["mag"][:min_len]
+        ax1.plot(
+            freqs_comunes,
+            mag_recortada,
+            label=nombres_archivos[i],
+            color=colores[i % len(colores)],
+            linewidth=2,
+            alpha=0.9,
+        )
+
+    # Calcular diferencias (Target = primero en la lista)
+    mag_ref = lista_datos[0]["mag"][:min_len]
+
+    if len(lista_datos) == 2:
+        mag_sec = lista_datos[1]["mag"][:min_len]
+        diferencia = mag_ref - mag_sec
+        ax1.plot(
+            freqs_comunes,
+            diferencia,
+            label="Diferencia (Target)",
+            color="#cc3333",
+            linestyle="--",
+            linewidth=2,
+        )
+
+    ax1.set_title("Análisis Espectral Comparativo")
+    ax1.set_ylabel("Magnitud (dB)")
+    ax1.set_xlim(0, 6000)
+    ax1.grid(True, which="both", alpha=0.3)
+    ax1.legend()
+
+    # --- SUBPLOT 2: Diferencias Aisladas ---
+    ax2 = plt.subplot(2, 1, 2, sharex=ax1)
+
+    if len(lista_datos) > 1:
+        for i in range(1, len(lista_datos)):
+            mag_actual = lista_datos[i]["mag"][:min_len]
+            diff = mag_ref - mag_actual
+            label_diff = f"Diff: {nombres_archivos[0]} - {nombres_archivos[i]}"
+            ax2.plot(freqs_comunes, diff, label=label_diff, linewidth=1.5)
+
+        ax2.axhline(0, color="black", linewidth=0.8, linestyle="-")
+
+    ax2.set_xlabel("Frecuencia (Hz)")
+    ax2.set_ylabel("Diferencia (dB)")
+    ax2.grid(True, which="both", alpha=0.3)
+    ax2.legend()
+
+    # Nombre del archivo de salida
+    nombre_join = "-".join([os.path.splitext(n)[0] for n in nombres_archivos])
+    if len(nombre_join) > 60:
+        nombre_join = nombre_join[:60] + "..."
+
+    ruta_salida = os.path.join(DIR_GRA, f"Grafica({nombre_join}).png")
+    plt.tight_layout()
+    plt.savefig(ruta_salida, dpi=150)
+    plt.close()
+    print(f"   -> Gráfica guardada en: {ruta_salida}")
+
+
+def generar_pdf_espectrograma(datos1, datos2, nombre1, nombre2):
+    """Genera PDF con espectrogramas."""
+    plt.figure(figsize=(10, 12))
+
+    # Plot 1
+    plt.subplot(3, 1, 1)
+    librosa.display.specshow(
+        datos1["S_db"], sr=datos1["sr"], x_axis="time", y_axis="hz"
     )
+    plt.colorbar(format="%+2.0f dB")
+    plt.title(f"Espectrograma: {nombre1}")
+    plt.ylim(0, 8000)
 
-    print(f" -> Exporting to {os.path.basename(output_path)}...")
-    format_type = output_path.split(".")[-1]
-    processed_audio.export(output_path, format=format_type)
-
-
-def denoise_audio(audio_data, sample_rate):
-    """
-    Two-Pass Denoising:
-    1. Identify noise profile from low-energy segments (VAD).
-    2. Apply Statistical Wiener Filter.
-    """
-    print(" -> Processing: Analyzing noise profile & applying filter...")
-
-    # STFT configuration
-    nperseg = 2048
-    noverlap = 1536
-    freqs, times, Zxx = scipy.signal.stft(
-        audio_data, fs=sample_rate, nperseg=nperseg, noverlap=noverlap
+    # Plot 2
+    plt.subplot(3, 1, 2)
+    librosa.display.specshow(
+        datos2["S_db"], sr=datos2["sr"], x_axis="time", y_axis="hz"
     )
+    plt.colorbar(format="%+2.0f dB")
+    plt.title(f"Espectrograma: {nombre2}")
+    plt.ylim(0, 8000)
 
-    magnitude = np.abs(Zxx)
-    phase = np.angle(Zxx)
+    # Plot Diferencia
+    len_t = min(datos1["S_db"].shape[1], datos2["S_db"].shape[1])
+    len_f = min(datos1["S_db"].shape[0], datos2["S_db"].shape[0])
 
-    # --- PASS 1: STATISTICAL NOISE PROFILING ---
-    frame_energy = np.sum(magnitude**2, axis=0)
+    spec1 = datos1["S_db"][:len_f, :len_t]
+    spec2 = datos2["S_db"][:len_f, :len_t]
+    diff_spec = spec1 - spec2
 
-    # Assume bottom 10% is silence/noise
-    threshold = np.percentile(frame_energy, 10)
-    noise_indices = np.where(frame_energy < threshold)[0]
-
-    if len(noise_indices) == 0:
-        noise_profile = np.mean(magnitude, axis=1, keepdims=True)
-    else:
-        noise_frames = magnitude[:, noise_indices]
-        noise_profile = np.mean(noise_frames, axis=1, keepdims=True)
-
-    # --- PASS 2: WIENER FILTERING ---
-    psd_noise = noise_profile**2
-    psd_signal_noisy = magnitude**2
-
-    alpha = 2.0  # Aggression factor
-    estimated_clean_psd = np.maximum(psd_signal_noisy - (alpha * psd_noise), 0)
-    wiener_filter = estimated_clean_psd / (estimated_clean_psd + psd_noise + 1e-10)
-
-    clean_magnitude = magnitude * wiener_filter
-    Zxx_clean = clean_magnitude * np.exp(1j * phase)
-
-    _, clean_signal = scipy.signal.istft(
-        Zxx_clean, fs=sample_rate, nperseg=nperseg, noverlap=noverlap
+    plt.subplot(3, 1, 3)
+    librosa.display.specshow(
+        diff_spec, sr=datos1["sr"], x_axis="time", y_axis="hz", cmap="coolwarm"
     )
+    plt.colorbar(format="%+2.0f dB")
+    plt.title(f"Diferencial ({nombre1} - {nombre2})")
+    plt.ylim(0, 8000)
 
-    return clean_signal
+    n1_clean = os.path.splitext(nombre1)[0]
+    n2_clean = os.path.splitext(nombre2)[0]
+    ruta_pdf = os.path.join(DIR_ESP, f"Espectro({n1_clean}-{n2_clean}).pdf")
+
+    plt.tight_layout()
+    plt.savefig(ruta_pdf)
+    plt.close()
+    print(f"   -> PDF Espectral guardado en: {ruta_pdf}")
 
 
 def main():
-    # Ensure output directory exists
-    if not os.path.exists(OUTPUT_DIR):
-        print(f"Creating output directory: {OUTPUT_DIR}")
-        os.makedirs(OUTPUT_DIR, exist_ok=True)
-
-    print("--- Denoising Tool Initialized ---")
-    print(f"Input Directory: {INPUT_DIR}")
-    print(f"Output Directory: {OUTPUT_DIR}")
-    print("----------------------------------")
+    print("=== Herramienta de Análisis Cordec (Búsqueda Recursiva) ===")
+    print(f"Directorio Base: {BASE_DIR}")
 
     while True:
-        user_input = input(
-            "\nEnter filename (e.g., GFA_A1.wav) or 'q' to quit: "
-        ).strip()
-
-        if user_input.lower() in ["q", "quit", "exit"]:
-            print("Exiting program.")
+        entrada = input("\nIntroduce archivos (sep. por coma) o 'Q' para salir: ")
+        if entrada.strip().upper() == "Q":
             break
 
-        if not user_input:
+        nombres = [n.strip() for n in entrada.split(",")]
+        if len(nombres) < 2:
+            print("Error: Se requieren al menos dos archivos para comparar.")
             continue
 
-        # Construct full path
-        input_path = os.path.join(INPUT_DIR, user_input)
+        datos_procesados = []
+        archivos_validos = []
 
-        if not os.path.exists(input_path):
-            print(f"Error: File not found at {input_path}")
-            print(
-                "Please check the name and extension (e.g., did you forget .wav or .ogg?)"
-            )
-            continue
+        for nombre in nombres:
+            # USAR NUEVA FUNCIÓN DE BÚSQUEDA RECURSIVA
+            ruta = buscar_archivo_recursivo(nombre)
 
-        # Load
-        raw_data, rate, audio_obj = load_audio(input_path)
+            if ruta:
+                freqs, mag, S_db, sr, y = procesar_fft(ruta)
 
-        if raw_data is None:
-            continue  # Skip loop if load failed
+                if freqs is not None:
+                    datos_procesados.append(
+                        {
+                            "freqs": freqs,
+                            "mag": mag,
+                            "S_db": S_db,
+                            "sr": sr,
+                            "nombre": nombre,
+                        }
+                    )
+                    archivos_validos.append(nombre)
 
-        # Process
-        clean_data = denoise_audio(raw_data, rate)
+                    # Detectar _clean para exportar
+                    if "_clean" in nombre:
+                        exportar_datos_clean(nombre, freqs, mag)
+            else:
+                pass  # El mensaje de error ya se imprime en buscar_archivo
 
-        # Prepare output filenames
-        base_name = os.path.splitext(user_input)[0]
-        wav_out = os.path.join(OUTPUT_DIR, f"{base_name}_clean.wav")
-        mp3_out = os.path.join(OUTPUT_DIR, f"{base_name}_clean.mp3")
-
-        # Export
-        save_audio(wav_out, clean_data, audio_obj)
-        save_audio(mp3_out, clean_data, audio_obj)
-
-        print(f"Success! {user_input} processed.")
+        if len(datos_procesados) >= 2:
+            generar_grafica_comparativa(datos_procesados, archivos_validos)
+            if len(datos_procesados) == 2:
+                generar_pdf_espectrograma(
+                    datos_procesados[0],
+                    datos_procesados[1],
+                    archivos_validos[0],
+                    archivos_validos[1],
+                )
+        else:
+            print("No se encontraron suficientes archivos válidos.")
 
 
 if __name__ == "__main__":
