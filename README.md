@@ -6,3 +6,6 @@
 * Flores Montero Edsel Yetlanezi
 * Gómez López Rafael
 * Juncal Rojas Leobardo
+
+*Diagrama de flujo del programa actual:*
+![[diagrama-flujo.mmd]]
