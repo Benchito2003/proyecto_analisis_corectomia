@@ -21,7 +21,7 @@ for mod in modulos_eliminados:
 # ---------------------------------------
 
 # --- CONFIGURACIÓN DE RUTAS ---
-BASE_DIR = "/home/yetmontero/Cordec/GFA"
+BASE_DIR = "./audios/ogg/"
 
 DIR_ESP = os.path.join(BASE_DIR, "Recursos/ESP")
 DIR_GRA = os.path.join(BASE_DIR, "Recursos/GRA")
@@ -246,4 +246,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
