@@ -1,0 +1,80 @@
+flowchart TD
+    %% Estilos
+    classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
+    classDef terminator fill:#ffebee,stroke:#c62828,stroke-width:2px;
+    classDef io fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+
+    Start([Inicio]) --> CheckDir{"¿Existe OUTPUT_DIR?"}
+    
+    %% Configuración Inicial
+    CheckDir -- No --> MkDir[Crear Directorio]
+    MkDir --> InitMsg[Imprimir Info Inicial]
+    CheckDir -- Yes --> InitMsg
+    
+    %% Loop Principal
+    InitMsg --> InputUser[/"Entrada: Nombre del archivo o 'q'"/]
+    
+    InputUser --> IsQuit{"¿Entrada == 'q'?"}
+    IsQuit -- Sí --> End([Fin del Programa])
+    IsQuit -- No --> CheckEmpty{"¿Entrada vacía?"}
+    CheckEmpty -- Sí --> InputUser
+    
+    %% Validación de Archivo
+    CheckEmpty -- No --> ConcatPath[Construir ruta completa]
+    ConcatPath --> Exists{"¿Existe el archivo?"}
+    Exists -- No --> ErrMsg1[Imprimir Error: Archivo no encontrado]
+    ErrMsg1 --> InputUser
+    
+    %% Proceso de Carga (load_audio)
+    Exists -- Sí --> LoadStart(Llamar load_audio)
+    
+    subgraph LoadAudio ["Función: load_audio()"]
+        direction TB
+        LoadStart --> TryLoad{Intentar cargar con AudioSegment}
+        TryLoad -- Error --> RetNone[Retornar None]
+        TryLoad -- Éxito --> ToMono[Convertir a Mono canal]
+        ToMono --> GetSamples[Obtener array de muestras]
+        GetSamples --> Norm{"Normalizar según bits (16/32)"}
+        Norm --> RetData[Retornar: samples, rate, obj]
+    end
+    
+    RetNone --> CheckLoad{"¿Carga Exitosa?"}
+    RetData --> CheckLoad
+    
+    CheckLoad -- No --> InputUser
+    
+    %% Proceso de Denodise (denoise_audio)
+    CheckLoad -- Sí --> DenoiseStart(Llamar denoise_audio)
+    
+    subgraph Denoise ["Función: denoise_audio()"]
+        direction TB
+        DenoiseStart --> STFT[Calcular STFT]
+        STFT --> CalcEnergy[Calcular energía por frame]
+        CalcEnergy --> FindNoise[Perfil de Ruido: <br/>Promedio del 10% con menos energía]
+        FindNoise --> Wiener[Calcular Filtro de Wiener]
+        Wiener --> ApplyFilt[Aplicar filtro a la Magnitud]
+        ApplyFilt --> ISTFT[Calcular ISTFT Inversa]
+        ISTFT --> RetClean[Retornar Audio Limpio]
+    end
+    
+    %% Proceso de Guardado (save_audio)
+    RetClean --> PrepPaths[Preparar rutas .wav y .mp3]
+    PrepPaths --> SaveStart(Llamar save_audio x2)
+    
+    subgraph SaveAudio ["Función: save_audio()"]
+        direction TB
+        SaveStart --> Clip[Clip muestras entre -1.0 y 1.0]
+        Clip --> DeNorm[Convertir float a int <br/>según ancho de muestra original]
+        DeNorm --> ToSeg[Crear AudioSegment]
+        ToSeg --> Export[Exportar archivo a disco]
+    end
+    
+    Export --> Success[Imprimir: Éxito]
+    Success --> InputUser
+
+    %% Asignación de clases
+    class Start,End terminator;
+    class CheckDir,IsQuit,CheckEmpty,Exists,TryLoad,Norm,CheckLoad decision;
+    class MkDir,InitMsg,ConcatPath,ErrMsg1,LoadStart,ToMono,GetSamples,RetNone,RetData,DenoiseStart,STFT,CalcEnergy,FindNoise,Wiener,ApplyFilt,ISTFT,RetClean,PrepPaths,SaveStart,Clip,DeNorm,ToSeg,Export,Success process;
+    class InputUser io;
