@@ -80,31 +80,31 @@ flowchart TD
 ```mermaid
 flowchart TD
     %% --- ESTILOS ONE DARK PRO ---
-    classDef base fill:#282c34,color:#abb2bf,stroke-width:2px;
-    classDef process fill:#282c34,stroke:#61afef,color:#abb2bf,stroke-width:2px;
-    classDef decision fill:#282c34,stroke:#c678dd,color:#abb2bf,stroke-width:2px;
-    classDef terminator fill:#282c34,stroke:#e06c75,color:#abb2bf,stroke-width:2px;
-    classDef io fill:#282c34,stroke:#98c379,color:#abb2bf,stroke-width:2px;
-    linkStyle default stroke:#abb2bf,stroke-width:2px;
+    classDef base fill:#282c34,color:#abb2bf,stroke-width:2px
+    classDef process fill:#282c34,stroke:#61afef,color:#abb2bf,stroke-width:2px
+    classDef decision fill:#282c34,stroke:#c678dd,color:#abb2bf,stroke-width:2px
+    classDef terminator fill:#282c34,stroke:#e06c75,color:#abb2bf,stroke-width:2px
+    classDef io fill:#282c34,stroke:#98c379,color:#abb2bf,stroke-width:2px
+    linkStyle default stroke:#abb2bf,stroke-width:2px
 
-    Start([Inicio]) --> PatchPy313[Aplicar Parche Py3.13<br/>Mock modules: aifc, chunk...]
-    PatchPy313 --> InitPaths[Crear Directorios: <br/>ESP, GRA, CSV, TXT]
-    InitPaths --> InputFiles[/"Entrada: Lista de archivos (sep por coma)"/]
+    Start([Inicio]) --> PatchPy313["Aplicar Parche Py3.13<br/>Mock modules: aifc, chunk..."]
+    PatchPy313 --> InitPaths["Crear Directorios: <br/>ESP, GRA, CSV, TXT"]
+    InitPaths --> InputFiles[/"Entrada: Lista de archivos"/]
 
-    InputFiles --> IsQ{"¿Entrada == 'Q'?"}
+    InputFiles --> IsQ{"¿Entrada es Q?"}
     IsQ -- Sí --> End([Fin])
-    IsQ -- No --> LoopFiles[Iterar sobre lista de archivos]
+    IsQ -- No --> LoopFiles["Iterar sobre lista de archivos"]
 
     subgraph ProcessFile ["Procesamiento Individual"]
         direction TB
-        LoopFiles --> SearchRecursive[Buscar archivo recursivamente]
+        LoopFiles --> SearchRecursive["Buscar archivo recursivamente"]
         SearchRecursive --> Found{"¿Encontrado?"}
-        Found -- No --> Skip[Saltar]
-        Found -- Sí --> SafeConv[Convertir a WAV Seguro <br/>(subprocess ffmpeg)]
-        SafeConv --> LibrosaLoad[Cargar Librosa + FFT]
-        LibrosaLoad --> CalcDB[Calcular dB y Promedios]
-        CalcDB --> ExportData[Exportar CSV/TXT]
-        ExportData --> AddToList[Agregar a lista de datos]
+        Found -- No --> Skip["Saltar"]
+        Found -- Sí --> SafeConv["Convertir a WAV Seguro <br/>(subprocess ffmpeg)"]
+        SafeConv --> LibrosaLoad["Cargar Librosa + FFT"]
+        LibrosaLoad --> CalcDB["Calcular dB y Promedios"]
+        CalcDB --> ExportData["Exportar CSV/TXT"]
+        ExportData --> AddToList["Agregar a lista de datos"]
     end
 
     AddToList --> LoopFiles
@@ -112,25 +112,26 @@ flowchart TD
     
     LoopFiles -- "Todos procesados" --> CheckCount{"¿Archivos >= 2?"}
     
-    CheckCount -- No --> ErrMin[Error: Mínimo 2 archivos] --> InputFiles
-    CheckCount -- Sí --> GenPlots(Generar Visualizaciones)
+    CheckCount -- No --> ErrMin["Error: Mínimo 2 archivos"] 
+    ErrMin --> InputFiles
+    CheckCount -- Sí --> GenPlots("Generar Visualizaciones")
 
     subgraph Viz ["Visualización"]
         direction TB
-        GenPlots --> PlotComp[Gráfica Comparativa Matplotlib]
-        PlotComp --> PlotDiff[Calcular y Graficar Diferencial]
-        PlotDiff --> SavePNG[Guardar PNG]
-        SavePNG --> SpecShow[Generar Espectrogramas PDF]
-        SpecShow --> SavePDF[Guardar PDF]
+        GenPlots --> PlotComp["Gráfica Comparativa Matplotlib"]
+        PlotComp --> PlotDiff["Calcular y Graficar Diferencial"]
+        PlotDiff --> SavePNG["Guardar PNG"]
+        SavePNG --> SpecShow["Generar Espectrogramas PDF"]
+        SpecShow --> SavePDF["Guardar PDF"]
     end
 
     SavePDF --> InputFiles
 
     %% ASIGNACIÓN CLASES
-    class Start,End,ErrMin terminator;
-    class PatchPy313,InitPaths,LoopFiles,SearchRecursive,SafeConv,LibrosaLoad,CalcDB,ExportData,AddToList,GenPlots,PlotComp,PlotDiff,SavePNG,SpecShow,SavePDF,Skip process;
-    class IsQ,Found,CheckCount decision;
-    class InputFiles io;
+    class Start,End,ErrMin terminator
+    class PatchPy313,InitPaths,LoopFiles,SearchRecursive,SafeConv,LibrosaLoad,CalcDB,ExportData,AddToList,GenPlots,PlotComp,PlotDiff,SavePNG,SpecShow,SavePDF,Skip process
+    class IsQ,Found,CheckCount decision
+    class InputFiles io
 
     style ProcessFile fill:#21252b,stroke:#abb2bf,stroke-width:1px
     style Viz fill:#21252b,stroke:#abb2bf,stroke-width:1px
@@ -141,53 +142,57 @@ flowchart TD
 ```mermaid
 flowchart TD
     %% --- ESTILOS ONE DARK PRO ---
-    classDef base fill:#282c34,color:#abb2bf,stroke-width:2px;
-    classDef process fill:#282c34,stroke:#61afef,color:#abb2bf,stroke-width:2px;
-    classDef decision fill:#282c34,stroke:#c678dd,color:#abb2bf,stroke-width:2px;
-    classDef terminator fill:#282c34,stroke:#e06c75,color:#abb2bf,stroke-width:2px;
-    classDef io fill:#282c34,stroke:#98c379,color:#abb2bf,stroke-width:2px;
-    linkStyle default stroke:#abb2bf,stroke-width:2px;
+    classDef base fill:#282c34,color:#abb2bf,stroke-width:2px
+    classDef process fill:#282c34,stroke:#61afef,color:#abb2bf,stroke-width:2px
+    classDef decision fill:#282c34,stroke:#c678dd,color:#abb2bf,stroke-width:2px
+    classDef terminator fill:#282c34,stroke:#e06c75,color:#abb2bf,stroke-width:2px
+    classDef io fill:#282c34,stroke:#98c379,color:#abb2bf,stroke-width:2px
+    linkStyle default stroke:#abb2bf,stroke-width:2px
 
-    Start([Inicio]) --> CheckDeps{¿Existe Pydub?}
-    CheckDeps -- No --> ErrDep[Error Crítico] --> End([Fin])
-    CheckDeps -- Sí --> CalcMask(Calcular Máscara Transferencia)
+    Start([Inicio]) --> CheckDeps{"¿Existe Pydub?"}
+    CheckDeps -- No --> ErrDep["Error Crítico"] 
+    ErrDep --> End([Fin])
+    CheckDeps -- Sí --> CalcMask("Calcular Máscara Transferencia")
 
-    subgraph MaskGen ["Fase 1: Generación de Máscara (Pre vs Post)"]
+    subgraph MaskGen ["Fase 1: Generación de Máscara"]
         direction TB
-        CalcMask --> ReadPre[Leer CSVs PRE]
-        ReadPre --> ReadPost[Leer CSVs POST]
-        ReadPost --> Smooth[Suavizado Savitzky-Golay]
-        Smooth --> Align[Alineación de Frecuencias]
-        Align --> Subtract[Mascara = PRE - POST]
+        CalcMask --> ReadPre["Leer CSVs PRE"]
+        ReadPre --> ReadPost["Leer CSVs POST"]
+        ReadPost --> Smooth["Suavizado Savitzky-Golay"]
+        Smooth --> Align["Alineación de Frecuencias"]
+        Align --> Subtract["Mascara = PRE - POST"]
     end
 
     Subtract --> InputLoop[/"Entrada: Nombre Audio, 'ls' o 'q'"/]
 
     InputLoop --> LogicInput{"Analizar Entrada"}
-    LogicInput -- 'q' --> End
-    LogicInput -- 'ls' --> ShowList[Listar archivos WAV] --> InputLoop
-    LogicInput -- 'archivo' --> CheckExists{"¿Existe?"}
+    LogicInput -- "q" --> End
+    LogicInput -- "ls" --> ShowList["Listar archivos WAV"] 
+    ShowList --> InputLoop
+    LogicInput -- "archivo" --> CheckExists{"¿Existe?"}
 
-    CheckExists -- No --> MsgNoExist[Aviso: No existe] --> InputLoop
-    CheckExists -- Sí --> ApplyProc(Procesar Audio)
+    CheckExists -- No --> MsgNoExist["Aviso: No existe"] 
+    MsgNoExist --> InputLoop
+    CheckExists -- Sí --> ApplyProc("Procesar Audio")
 
     subgraph AudioProc ["Fase 2: Aplicación de Máscara"]
         direction TB
-        ApplyProc --> LoadWav[Cargar WAV]
-        LoadWav --> STFT[Calcular STFT]
-        STFT --> InterpMask[Interpolar Máscara a freqs del audio]
-        InterpMask --> Gain[Aplicar Ganancia Lineal]
-        Gain --> ISTFT[Reconstruir Audio (ISTFT)]
-        ISTFT --> SaveOut[Guardar WAV y MP3]
+        ApplyProc --> LoadWav["Cargar WAV"]
+        LoadWav --> STFT["Calcular STFT"]
+        STFT --> InterpMask["Interpolar Máscara a freqs del audio"]
+        InterpMask --> Gain["Aplicar Ganancia Lineal"]
+        Gain --> ISTFT["Reconstruir Audio (ISTFT)"]
+        ISTFT --> SaveOut["Guardar WAV y MP3"]
     end
 
-    SaveOut --> Success[Éxito] --> InputLoop
+    SaveOut --> Success["Éxito"] 
+    Success --> InputLoop
 
     %% ASIGNACIÓN CLASES
-    class Start,End,ErrDep terminator;
-    class CalcMask,ReadPre,ReadPost,Smooth,Align,Subtract,ShowList,ApplyProc,LoadWav,STFT,InterpMask,Gain,ISTFT,SaveOut,Success,MsgNoExist process;
-    class CheckDeps,LogicInput,CheckExists decision;
-    class InputLoop io;
+    class Start,End,ErrDep terminator
+    class CalcMask,ReadPre,ReadPost,Smooth,Align,Subtract,ShowList,ApplyProc,LoadWav,STFT,InterpMask,Gain,ISTFT,SaveOut,Success,MsgNoExist process
+    class CheckDeps,LogicInput,CheckExists decision
+    class InputLoop io
 
     style MaskGen fill:#21252b,stroke:#abb2bf,stroke-width:1px
     style AudioProc fill:#21252b,stroke:#abb2bf,stroke-width:1px
