@@ -1,0 +1,52 @@
+flowchart TD
+    %% --- ESTILOS ONE DARK PRO ---
+    classDef base fill:#282c34,color:#abb2bf,stroke-width:2px;
+    classDef process fill:#282c34,stroke:#61afef,color:#abb2bf,stroke-width:2px;
+    classDef decision fill:#282c34,stroke:#c678dd,color:#abb2bf,stroke-width:2px;
+    classDef terminator fill:#282c34,stroke:#e06c75,color:#abb2bf,stroke-width:2px;
+    classDef io fill:#282c34,stroke:#98c379,color:#abb2bf,stroke-width:2px;
+    linkStyle default stroke:#abb2bf,stroke-width:2px;
+
+    Start([Inicio]) --> CheckDeps{¿Existe Pydub?}
+    CheckDeps -- No --> ErrDep[Error Crítico] --> End([Fin])
+    CheckDeps -- Sí --> CalcMask(Calcular Máscara Transferencia)
+
+    subgraph MaskGen ["Fase 1: Generación de Máscara (Pre vs Post)"]
+        direction TB
+        CalcMask --> ReadPre[Leer CSVs PRE]
+        ReadPre --> ReadPost[Leer CSVs POST]
+        ReadPost --> Smooth[Suavizado Savitzky-Golay]
+        Smooth --> Align[Alineación de Frecuencias]
+        Align --> Subtract[Mascara = PRE - POST]
+    end
+
+    Subtract --> InputLoop[/"Entrada: Nombre Audio, 'ls' o 'q'"/]
+
+    InputLoop --> LogicInput{"Analizar Entrada"}
+    LogicInput -- 'q' --> End
+    LogicInput -- 'ls' --> ShowList[Listar archivos WAV] --> InputLoop
+    LogicInput -- 'archivo' --> CheckExists{"¿Existe?"}
+
+    CheckExists -- No --> MsgNoExist[Aviso: No existe] --> InputLoop
+    CheckExists -- Sí --> ApplyProc(Procesar Audio)
+
+    subgraph AudioProc ["Fase 2: Aplicación de Máscara"]
+        direction TB
+        ApplyProc --> LoadWav[Cargar WAV]
+        LoadWav --> STFT[Calcular STFT]
+        STFT --> InterpMask[Interpolar Máscara a freqs del audio]
+        InterpMask --> Gain[Aplicar Ganancia Lineal]
+        Gain --> ISTFT[Reconstruir Audio (ISTFT)]
+        ISTFT --> SaveOut[Guardar WAV y MP3]
+    end
+
+    SaveOut --> Success[Éxito] --> InputLoop
+
+    %% ASIGNACIÓN CLASES
+    class Start,End,ErrDep terminator;
+    class CalcMask,ReadPre,ReadPost,Smooth,Align,Subtract,ShowList,ApplyProc,LoadWav,STFT,InterpMask,Gain,ISTFT,SaveOut,Success,MsgNoExist process;
+    class CheckDeps,LogicInput,CheckExists decision;
+    class InputLoop io;
+
+    style MaskGen fill:#21252b,stroke:#abb2bf,stroke-width:1px
+    style AudioProc fill:#21252b,stroke:#abb2bf,stroke-width:1px

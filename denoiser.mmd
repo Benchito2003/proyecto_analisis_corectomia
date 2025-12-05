@@ -1,0 +1,60 @@
+flowchart TD
+    %% --- ESTILOS ONE DARK PRO ---
+    classDef base fill:#282c34,color:#abb2bf,stroke-width:2px;
+    classDef process fill:#282c34,stroke:#61afef,color:#abb2bf,stroke-width:2px;
+    classDef decision fill:#282c34,stroke:#c678dd,color:#abb2bf,stroke-width:2px;
+    classDef terminator fill:#282c34,stroke:#e06c75,color:#abb2bf,stroke-width:2px;
+    classDef io fill:#282c34,stroke:#98c379,color:#abb2bf,stroke-width:2px;
+    linkStyle default stroke:#abb2bf,stroke-width:2px;
+
+    Start([Inicio]) --> InitDirs[Crear/Verificar Directorios]
+    InitDirs --> InputUser[/"Entrada: Nombre archivo o 'q'"/]
+
+    InputUser --> IsQuit{"¿Salir?"}
+    IsQuit -- Sí --> End([Fin])
+    IsQuit -- No --> CheckFile{"¿Existe Archivo?"}
+    
+    CheckFile -- No --> ErrorMsg[Mostrar Error] --> InputUser
+    CheckFile -- Sí --> LoadFunc(Llamar load_audio)
+
+    subgraph Load ["Carga y Normalización"]
+        direction TB
+        LoadFunc --> PydubLoad[Cargar con Pydub]
+        PydubLoad --> ToMono[Convertir a Mono]
+        ToMono --> ToFloat[Normalizar a float32]
+        ToFloat --> ReturnData[Retornar Datos]
+    end
+
+    ReturnData --> DenoiseFunc(Llamar denoise_audio)
+
+    subgraph Denoise ["Algoritmo de Denoising"]
+        direction TB
+        DenoiseFunc --> STFT[Calcular STFT]
+        STFT --> Energy[Calcular Energía de Frames]
+        Energy --> Profile[Perfil de Ruido: <br/>Promedio del 10% más bajo]
+        Profile --> Wiener[Calcular Filtro Wiener]
+        Wiener --> Apply[Aplicar a Magnitud]
+        Apply --> ISTFT[ISTFT Inversa]
+    end
+
+    ISTFT --> SaveFunc(Llamar save_audio)
+
+    subgraph Save ["Exportación"]
+        direction TB
+        SaveFunc --> Clip[Clip -1.0 a 1.0]
+        Clip --> IntConv[Convertir a PCM Int]
+        IntConv --> ExpWav[Exportar .wav]
+        ExpWav --> ExpMp3[Exportar .mp3]
+    end
+
+    ExpMp3 --> Success[Mensaje Éxito] --> InputUser
+
+    %% ASIGNACIÓN CLASES
+    class Start,End,ErrorMsg terminator;
+    class InitDirs,LoadFunc,PydubLoad,ToMono,ToFloat,ReturnData,DenoiseFunc,STFT,Energy,Profile,Wiener,Apply,ISTFT,SaveFunc,Clip,IntConv,ExpWav,ExpMp3,Success process;
+    class IsQuit,CheckFile decision;
+    class InputUser io;
+    
+    style Load fill:#21252b,stroke:#abb2bf,stroke-width:1px
+    style Denoise fill:#21252b,stroke:#abb2bf,stroke-width:1px
+    style Save fill:#21252b,stroke:#abb2bf,stroke-width:1px
