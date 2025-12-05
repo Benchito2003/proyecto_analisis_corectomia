@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.11.11)  5 DEC 2025 13:03
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.11.11)  5 DEC 2025 14:32
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -652,8 +652,8 @@ Package biblatex Warning: 'babel/polyglossia' detected but 'csquotes' missing.
 \@quotelevel=\count439
 \@quotereset=\count440
 (./plantilla2.aux
-LaTeX Info: Redefining \. on input line 12.
-LaTeX Info: Redefining \% on input line 12.
+LaTeX Info: Redefining \. on input line 14.
+LaTeX Info: Redefining \% on input line 14.
 )
 \openout1 = `plantilla2.aux'.
 
@@ -844,90 +844,75 @@ LaTeX Font Info:    Font shape `T1/LibertinusSans-TLF/m/n' will be
 LaTeX Font Info:    Font shape `T1/LibertinusSans-TLF/b/n' will be
 (Font)              scaled to size 9.03374pt on input line 42.
 LaTeX Font Info:    Font shape `T1/LibertinusSans-TLF/b/n' will be
-(Font)              scaled to size 14.05249pt on input line 53.
+(Font)              scaled to size 14.05249pt on input line 57.
 LaTeX Font Info:    Font shape `T1/LibertinusSans-TLF/b/sc' will be
-(Font)              scaled to size 14.05249pt on input line 53.
+(Font)              scaled to size 14.05249pt on input line 57.
 LaTeX Font Info:    Font shape `T1/LibertinusSerif-TLF/m/sc' will be
-(Font)              scaled to size 12.045pt on input line 54.
+(Font)              scaled to size 12.045pt on input line 58.
+
+
+LaTeX Warning: Reference `fig:cordectomia' on page 1 undefined on input line 58.
+
 LaTeX Font Info:    Font shape `T1/LibertinusSans-TLF/b/n' will be
-(Font)              scaled to size 12.045pt on input line 61.
-LaTeX Font Info:    Calculating math sizes for size <12.045> on input line 68.
+(Font)              scaled to size 12.045pt on input line 64.
 
 
-LaTeX Warning: File `tu_imagen.png' not found on input line 78.
-
-
-./plantilla2.tex:78: Package pdftex.def Error: File `tu_imagen.png' not found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.78 ...egraphics[width=\linewidth]{tu_imagen.png}
-                                                   % \linewidth se ajusta a ...
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-LaTeX Font Info:    Trying to load font information for T1+LibertinusMono-TLF on input line 78.
-(/usr/share/texmf-dist/tex/latex/libertinus-type1/T1LibertinusMono-TLF.fd
-File: T1LibertinusMono-TLF.fd 2025/01/11 (autoinst) Font definitions for T1/LibertinusMono-TLF.
-)
-LaTeX Font Info:    Font shape `T1/LibertinusMono-TLF/m/n' will be
-(Font)              scaled to size 10.23831pt on input line 78.
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `LibertinusMono-TLF' (encoding: T1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-Package microtype Info: Character `guilsinglleft ' is missing
-(microtype)             in font `T1/LibertinusMono-TLF/m/n/12.045'.
-(microtype)             Ignoring protrusion settings for this character.
-Package microtype Info: Character `guilsinglright ' is missing
-(microtype)             in font `T1/LibertinusMono-TLF/m/n/12.045'.
-(microtype)             Ignoring protrusion settings for this character.
-
+LaTeX Font Info:    Calculating math sizes for size <12.045> on input line 88.
+<logo.png, id=46, 198.7425pt x 255.95625pt>
+File: logo.png Graphic file (type png)
+<use logo.png>
+Package pdftex.def Info: logo.png  used on input line 98.
+(pdftex.def)             Requested size: 252.94499pt x 325.77162pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-
-LaTeX Warning: Empty bibliography on input line 90.
-
-
-
+LaTeX Font Info:    Font shape `T1/LibertinusSerif-TLF/m/n' will be
+(Font)              scaled to size 8.43146pt on input line 110.
 
 
 LaTeX Font Info:    Font shape `T1/LibertinusSans-TLF/m/n' will be
-(Font)              scaled to size 8.03pt on input line 92.
+(Font)              scaled to size 8.03pt on input line 110.
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf-dist/fonts/enc/dvips/libertinus-type1/lbn1_mfadfl.enc}
 
 
-{/usr/share/texmf-dist/fonts/enc/dvips/libertinus-type1/lbn1_cb34qf.enc}{/usr/share/texmf-dist/fonts/enc/dvips/libertinus-type1/lbn1_75t36g.enc}{/usr/share/texmf-dist/fonts/enc/dvips/libertinus-type1/lbn1_sncvby.enc}{/usr/share/texmf-dist/fonts/enc/dvips/libertinus-type1/lbn1_or3pzs.enc}] (./plantilla2.aux
-LaTeX Info: Redefining \sptext on input line 12.
-LaTeX Info: Redefining \. on input line 12.
-LaTeX Info: Redefining \% on input line 12.
+{/usr/share/texmf-dist/fonts/enc/dvips/libertinus-type1/lbn1_cb34qf.enc}{/usr/share/texmf-dist/fonts/enc/dvips/libertinus-type1/lbn1_75t36g.enc}{/usr/share/texmf-dist/fonts/enc/dvips/libertinus-type1/lbn1_sfissr.enc}{/usr/share/texmf-dist/fonts/enc/dvips/libertinus-type1/lbn1_sncvby.enc}]
+
+
+
+[2
+
+ <./logo.png>] (./plantilla2.aux
+LaTeX Info: Redefining \sptext on input line 14.
+LaTeX Info: Redefining \. on input line 14.
+LaTeX Info: Redefining \% on input line 14.
 )
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
+
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `plantilla2.out' has not changed.
-(rerunfilecheck)             Checksum: 8CEB726B21AE8C85519A8D8364DC4F83;795.
+(rerunfilecheck)             Checksum: 8D77270676B7534507389A93C189148C;1192.
 Package logreq Info: Writing requests to 'plantilla2.run.xml'.
 \openout1 = `plantilla2.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 21869 strings out of 475109
- 391416 string characters out of 5765324
- 1234910 words of memory out of 5000000
- 44470 multiletter control sequences out of 15000+600000
- 829467 words of font info for 222 fonts, out of 8000000 for 9000
+ 22070 strings out of 475109
+ 395537 string characters out of 5765324
+ 1242054 words of memory out of 5000000
+ 44631 multiletter control sequences out of 15000+600000
+ 832796 words of font info for 243 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
  66i,6n,81p,1007b,1840s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texmf-dist/fonts/type1/public/libertinus-type1/LibertinusMono-Regular.pfb></usr/share/texmf-dist/fonts/type1/public/libertinus-type1/LibertinusSans-Bold.pfb></usr/share/texmf-dist/fonts/type1/public/libertinus-type1/LibertinusSans-Regular.pfb></usr/share/texmf-dist/fonts/type1/public/libertinus-type1/LibertinusSerif-Italic.pfb></usr/share/texmf-dist/fonts/type1/public/libertinus-type1/LibertinusSerif-Regular.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-dist/fonts/type1/urw/zapfding/uzdr.pfb>
-Output written on plantilla2.pdf (1 page, 473615 bytes).
+</usr/share/texmf-dist/fonts/type1/public/libertinus-type1/LibertinusSans-Bold.pfb></usr/share/texmf-dist/fonts/type1/public/libertinus-type1/LibertinusSans-Regular.pfb></usr/share/texmf-dist/fonts/type1/public/libertinus-type1/LibertinusSerif-Bold.pfb></usr/share/texmf-dist/fonts/type1/public/libertinus-type1/LibertinusSerif-Italic.pfb></usr/share/texmf-dist/fonts/type1/public/libertinus-type1/LibertinusSerif-Regular.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-dist/fonts/type1/urw/zapfding/uzdr.pfb>
+Output written on plantilla2.pdf (2 pages, 543734 bytes).
 PDF statistics:
- 118 PDF objects out of 1000 (max. 8388607)
- 88 compressed objects within 1 object stream
- 11 named destinations out of 1000 (max. 500000)
- 54841 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 141 PDF objects out of 1000 (max. 8388607)
+ 107 compressed objects within 2 object streams
+ 17 named destinations out of 1000 (max. 500000)
+ 66646 words of extra memory for PDF output out of 74296 (max. 10000000)
 

@@ -16,5 +16,88 @@
   {}
 \endgroup
 
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{remacle2000endoscopic}{article}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{10}{}{%
+        {{hash=8b1e8425bcd478906bb89b05b14d87d3}{%
+           family={Remacle},
+           familyi={R\bibinitperiod},
+           given={Marc},
+           giveni={M\bibinitperiod}}}%
+        {{hash=631154d9a4dc61b7202c9cc186312598}{%
+           family={Eckel},
+           familyi={E\bibinitperiod},
+           given={Hans\bibnamedelima E},
+           giveni={H\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+        {{hash=a173ed317f2a0e78fc83cb267f7286a0}{%
+           family={Antonelli},
+           familyi={A\bibinitperiod},
+           given={Antonio},
+           giveni={A\bibinitperiod}}}%
+        {{hash=fca537deeb0e9faa98cf42aee065968c}{%
+           family={Brasnu},
+           familyi={B\bibinitperiod},
+           given={Daniel},
+           giveni={D\bibinitperiod}}}%
+        {{hash=4642d8dbf874e8fc068fab888f7e42c2}{%
+           family={Chevalier},
+           familyi={C\bibinitperiod},
+           given={Dominique},
+           giveni={D\bibinitperiod}}}%
+        {{hash=8c14fa59a9c511fd1b3a0c36b8d30d17}{%
+           family={Friedrich},
+           familyi={F\bibinitperiod},
+           given={Gerhard},
+           giveni={G\bibinitperiod}}}%
+        {{hash=e3454305b422b01f84ecf50b372d1c0f}{%
+           family={Olofsson},
+           familyi={O\bibinitperiod},
+           given={Jan},
+           giveni={J\bibinitperiod}}}%
+        {{hash=c68795d2db9312128bf4081cae69bb4b}{%
+           family={Rudert},
+           familyi={R\bibinitperiod},
+           given={Heinrich\bibnamedelima H},
+           giveni={H\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=30048c7d65cf6c9048e4dd533cb4a1ac}{%
+           family={Thumfart},
+           familyi={T\bibinitperiod},
+           given={Walter},
+           giveni={W\bibinitperiod}}}%
+        {{hash=0f5649c40ad67b5e53cd7e9f2f2f4b3d}{%
+           family={De\bibnamedelima Vincentiis},
+           familyi={D\bibinitperiod\bibinitdelim V\bibinitperiod},
+           given={Marco},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{93cbf245181035bf52fec75e51dca328}
+      \strng{fullhash}{e4dcb8b5ecff99a8632813d36f6d123a}
+      \strng{fullhashraw}{e4dcb8b5ecff99a8632813d36f6d123a}
+      \strng{bibnamehash}{93cbf245181035bf52fec75e51dca328}
+      \strng{authorbibnamehash}{93cbf245181035bf52fec75e51dca328}
+      \strng{authornamehash}{93cbf245181035bf52fec75e51dca328}
+      \strng{authorfullhash}{e4dcb8b5ecff99a8632813d36f6d123a}
+      \strng{authorfullhashraw}{e4dcb8b5ecff99a8632813d36f6d123a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{European archives of oto-rhino-laryngology}
+      \field{number}{4}
+      \field{title}{Endoscopic cordectomy. A proposal for a classification by the Working Committee, European Laryngological Society}
+      \field{volume}{257}
+      \field{year}{2000}
+      \field{pages}{227\bibrangedash 231}
+      \range{pages}{5}
+    \endentry
+  \enddatalist
+\endrefsection
 \endinput
 

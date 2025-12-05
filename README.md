@@ -7,7 +7,7 @@
 * Gómez López Rafael
 * Juncal Rojas Leobardo
 
-## Actualmente el programa se divide en 3 códigos en los que posteriormente juntaremos en un solo script que los ejecute al mismo tiempo
+## Actualmente el programa se divide en 3 códigos en los que posteriormente juntaremos en un solo script que permita escoger cual ejecutar
 
 1. *denoiser.py:*
 

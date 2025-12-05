@@ -26,7 +26,7 @@
 \title{Análisis de Señales para la Detección de Patologías en Voz: Proyecto Cordectomía}
 
 % En IEEE, los autores se ponen en un bloque especial
-\author{Alfonso~Gamboa~Rubén% <- Este % evita espacios extra
+\author{Alfonso~Gamboa~Rubén, \\ Flores Monteros Edsel Yetlanezi% <- Este % evita espacios extra
 \thanks{Manuscrito entregado el \today. Trabajo realizado para la materia de Análisis de Señales, Universidad Veracruzana.}}
 
 % ==========================================================
@@ -40,23 +40,43 @@
 % --- RESUMEN (Abstract) ---
 % En formato IEEE, el resumen va en negrita y al inicio.
 \begin{abstract}
-\textbf{Resumen}---Aquí presentas la síntesis de tu victoria. El objetivo de este proyecto es analizar señales de voz para identificar patrones asociados a la cordectomía. Se implementaron filtros digitales (FIR/IIR) y se analizaron las frecuencias fundamentales... 
+  Resumen en español
+\end{abstract}
+
+\begin{abstract}
+  Abstract en inglés
 \end{abstract}
 
 % --- PALABRAS CLAVE ---
 \begin{IEEEkeywords}
-Procesamiento de Señales, Cordectomía, Filtros Digitales, Ingeniería Biomédica, MATLAB/Python.
+  Procesamiento Digital de Señales, Cordectom\'ia, Filtros Digitales, Formantes Vocales, Python.
 \end{IEEEkeywords}
 
 % --- EL CUERPO DEL TEXTO (Automáticamente en dos columnas) ---
 
 \section{Introducción}
-\IEEEPARstart{E}{l} análisis de la voz es una herramienta no invasiva fundamental... (Nota: `\IEEEPARstart` crea esa letra capital grande y elegante al inicio).
+\IEEEPARstart{L}a cordectom\'ia es un proceso quir\'urgico que implica la extirpaci\'on parcial o total de las cuerdas vocales como se aprecia en la figura \ref{fig:cordectomia}; esto por cuestiones m\'edicas, como la extirpación de tumores. \cite{remacle2000endoscopic}
+
 
 %Como se observa en el estudio de Betances et al. \cite{Betances2020}, el uso de sensores... (Aquí citas tu PDF de ejemplo).
 
+\section{Objetivos}
+  \subsection{Objetivo General}
+  Lo que se busca es el desarrollar un sistema que nos permite poder analizar y filtrar una señal de una voz de pacientes con post-cordectomia. Recibimos nuestra señal, donde primeramente se filtrará y después la amplificaremos para poder escucharla con un buen volumen y que sea entendible
+
+  \subsection{Objetivos Específicos}
+  \begin{itemize}
+  	\item Implementar t\'ecnicas de filtrado digital para reducir el ruido y analizar los componentes arm\'onicos de la señal de voz.
+  	\item Comparar con ayuda de gráficas y la desiación estándar el cambio que hubo en la voz.
+  	\item Validar el desepeño del software mediante diversas pruebas.
+    \item Implementar con APIs de inteligencia artificial, para la recostrucción de una voz más parecida a la original del paciente.
+  \end{itemize}
+
+
+
 \section{Metodología}
-Para este análisis se utilizó una base de datos de...
+La presente corresponde al diseño de un sistema enfocado en el desarrollo de una herramienta computacional para el análisis acústico de la voz en pacientes pre-cordectomía. La metodología se organiza en dos fases principales: (1) la definición de criterios de elegibilidad y análisis para la elección de las herramientas, y (2) el desarrollo del algoritmo de procesamiento y análisis de la señal.
+
 
 \subsection{Adquisición de Datos}
 Las señales fueron capturadas a una frecuencia de muestreo de...
@@ -75,7 +95,7 @@ La Figura \ref{fig:espectro} muestra el espectrograma comparativo...
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{tu_imagen.png} % \linewidth se ajusta a la columna
+    \includegraphics[width=\linewidth]{logo.png} % \linewidth se ajusta a la columna
     \caption{Comparación espectral. a) Voz sana. b) Voz con patología.}
     \label{fig:espectro}
 \end{figure}
