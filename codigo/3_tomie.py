@@ -1,250 +1,148 @@
 import os
 import glob
 import numpy as np
-import pandas as pd
-import scipy.io.wavfile as wav
-from scipy import signal
+import scipy.signal
+import soundfile as sf
 from scipy.interpolate import interp1d
-import sys
 
-# Intentar importar pydub para MP3
-try:
-    from pydub import AudioSegment
-except ImportError:
-    print("Error: Falta la librería 'pydub'. Instálala con: pip install pydub")
-    sys.exit(1)
+# --- CONFIGURACIÓN DE RUTAS ---
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# ==========================================
-# 1. CONFIGURACIÓN DE RUTAS Y PARÁMETROS
-# ==========================================
-BASE_DIR = "/home/yetmontero/Cordec/GFA"
-PATH_CSV_PRE = os.path.join(BASE_DIR, "Datum/CSV/PRE")
-PATH_CSV_POST = os.path.join(BASE_DIR, "Datum/CSV/POST")
-PATH_AUDIO_IN = os.path.join(BASE_DIR, "Recursos/Clean")
-PATH_AUDIO_OUT = os.path.join(BASE_DIR, "VoxAdj")
+# Leemos de Input (WAVs limpios)
+DIR_INPUT = os.path.join(BASE_DIR, "..", "data", "1_input")
+# Guardamos en Output (Resultados finales)
+DIR_OUTPUT = os.path.join(BASE_DIR, "..", "data", "2_output")
 
-# Parámetros de suavizado (Savitzky-Golay)
-WINDOW_LENGTH = 51
-POLYORDER = 3
-
-# Parámetros de procesamiento de Audio (STFT)
-N_FFT = 2048
-HOP_LENGTH = 512
-
-os.makedirs(PATH_AUDIO_OUT, exist_ok=True)
+# Parámetros de Procesamiento de Señal
+FS_TARGET = 44100  # Frecuencia de muestreo estándar
+N_FFT = 2048  # Tamaño de ventana para STFT
+HOP_LEN = 512  # Salto entre ventanas
 
 
-# ==========================================
-# 2. FUNCIONES DE UTILIDAD (Corrección de errores)
-# ==========================================
-def aplicar_filtro_seguro(columna_datos, window_len=51, polyorder=3):
-    """
-    Aplica savgol_filter con ajuste dinámico de ventana.
-    """
-    n_datos = len(columna_datos)
-    min_len = polyorder + 2
-
-    if n_datos < min_len:
-        return columna_datos
-
-    if window_len > n_datos:
-        window_len = n_datos
-
-    if window_len % 2 == 0:
-        window_len -= 1
-
-    if window_len <= polyorder:
-        window_len = n_datos if n_datos % 2 != 0 else n_datos - 1
-        if window_len <= polyorder:
-            return columna_datos
-
+def cargar_audio(ruta):
     try:
-        return signal.savgol_filter(columna_datos, window_len, polyorder)
-    except:
-        return columna_datos
-
-
-# ==========================================
-# 3. ANÁLISIS ESTADÍSTICO (Generación de Máscara)
-# ==========================================
-def obtener_perfil_promedio(ruta_carpeta, etiqueta):
-    archivos = glob.glob(os.path.join(ruta_carpeta, "*.csv"))
-    print(f"--- Analizando {etiqueta}: {len(archivos)} archivos encontrados ---")
-
-    acumulador_magnitud = []
-    eje_frecuencia_comun = None
-
-    for archivo in archivos:
-        try:
-            df = pd.read_csv(archivo)
-            if "Frecuencia_Hz" not in df.columns or "Magnitud_dB" not in df.columns:
-                continue
-
-            # Suavizar
-            df["Smooth"] = aplicar_filtro_seguro(
-                df["Magnitud_dB"], WINDOW_LENGTH, POLYORDER
-            )
-
-            if eje_frecuencia_comun is None:
-                eje_frecuencia_comun = df["Frecuencia_Hz"].values
-                acumulador_magnitud.append(df["Smooth"].values)
-            else:
-                f_interp = interp1d(
-                    df["Frecuencia_Hz"],
-                    df["Smooth"],
-                    kind="linear",
-                    fill_value="extrapolate",
-                )
-                magnitud_interpolada = f_interp(eje_frecuencia_comun)
-                acumulador_magnitud.append(magnitud_interpolada)
-
-        except Exception as e:
-            print(f"   [Error] {os.path.basename(archivo)}: {e}")
-
-    if not acumulador_magnitud:
-        raise ValueError(f"No se pudieron procesar datos en {etiqueta}")
-
-    promedio = np.mean(acumulador_magnitud, axis=0)
-    return eje_frecuencia_comun, promedio
-
-
-def calcular_mascara_transferencia():
-    print("Calculando máscara de transferencia (PRE vs POST)...")
-    freq_pre, mag_pre = obtener_perfil_promedio(PATH_CSV_PRE, "PRE-CORDECTOMÍA")
-    freq_post, mag_post = obtener_perfil_promedio(PATH_CSV_POST, "POST-CORDECTOMÍA")
-
-    # Alinear frecuencias
-    f_interp_post = interp1d(
-        freq_post, mag_post, kind="linear", fill_value="extrapolate"
-    )
-    mag_post_alineada = f_interp_post(freq_pre)
-
-    # Calcular Máscara
-    mascara_db = mag_pre - mag_post_alineada
-    mascara_suave = aplicar_filtro_seguro(mascara_db, window_len=101, polyorder=3)
-
-    print(
-        f"[Mascara Generada] Rango de corrección: {min(mascara_suave):.2f}dB a {max(mascara_suave):.2f}dB"
-    )
-    return freq_pre, mascara_suave
-
-
-# ==========================================
-# 4. PROCESAMIENTO DE AUDIO (Aplicación de Máscara)
-# ==========================================
-def aplicar_mascara_a_audio(ruta_archivo_completa, freq_mascara, ganancia_db_mascara):
-    nombre_base = os.path.basename(ruta_archivo_completa)
-    nombre_sin_ext = os.path.splitext(nombre_base)[0]
-
-    print(f"   Procesando: {nombre_base} ...")
-
-    # Cargar Audio
-    try:
-        fs, audio = wav.read(ruta_archivo_completa)
+        data, samplerate = sf.read(ruta)
+        # Forzar mono y resampling simple si no coincide (aunque normalizar.py ya lo hizo)
+        if data.ndim > 1:
+            data = np.mean(data, axis=1)
+        return data, samplerate
     except Exception as e:
-        print(f"   [Error] No se pudo leer el audio: {e}")
+        print(f"[ERROR] No se pudo leer {ruta}: {e}")
+        return None, None
+
+
+def calcular_perfil_espectral(data, fs):
+    """
+    Calcula el perfil de energía promedio (PSD) de un audio.
+    Nos dice 'cuánta energía hay en cada frecuencia' en promedio.
+    """
+    freqs, psd = scipy.signal.welch(data, fs, nperseg=N_FFT)
+    # Convertir a dB, con protección contra log(0)
+    psd_db = 10 * np.log10(psd + 1e-12)
+    return freqs, psd_db
+
+
+def suavizar_curva(curva):
+    """
+    Aplica filtro Savitzky-Golay para evitar picos bruscos que suenen robóticos.
+    """
+    window_length = 51  # Debe ser impar
+    polyorder = 3
+    if len(curva) < window_length:
+        window_length = len(curva) // 2 * 2 + 1
+    return scipy.signal.savgol_filter(curva, window_length, polyorder)
+
+
+def aplicar_restauracion(archivo_sano, archivo_enfermo):
+    print(f"\n--- Iniciando Restauración ---")
+    print(f"Ref (Sano):    {os.path.basename(archivo_sano)}")
+    print(f"Target (Post): {os.path.basename(archivo_enfermo)}")
+
+    # 1. Cargar Audios
+    y_ref, sr_ref = cargar_audio(archivo_sano)
+    y_tgt, sr_tgt = cargar_audio(archivo_enfermo)
+
+    if y_ref is None or y_tgt is None:
         return
 
-    if audio.dtype == np.int16:
-        audio = audio / 32768.0
+    # 2. Calcular la Máscara de Transferencia (La "Diferencia")
+    print(" -> Calculando perfiles espectrales...")
+    f_ref, psd_ref = calcular_perfil_espectral(y_ref, sr_ref)
+    f_tgt, psd_tgt = calcular_perfil_espectral(y_tgt, sr_tgt)
 
-    if len(audio.shape) > 1:
-        audio = audio[:, 0]  # Mono
+    # Interpolar para asegurar que las frecuencias coincidan exáctamente
+    interp_func = interp1d(f_tgt, psd_tgt, kind="linear", fill_value="extrapolate")
+    psd_tgt_aligned = interp_func(f_ref)
 
-    # STFT
-    f_stft, t_stft, Zxx = signal.stft(audio, fs, nperseg=N_FFT)
+    # Calcular diferencia (Sano - Enfermo)
+    # Si es positivo, falta energía en el enfermo. Si es negativo, sobra.
+    raw_mask_db = psd_ref - psd_tgt_aligned
 
-    # Interpolar Máscara
-    interpolador_mascara = interp1d(
-        freq_mascara, ganancia_db_mascara, kind="linear", fill_value="extrapolate"
+    # Suavizar la máscara (Clave para sonido natural)
+    smooth_mask_db = suavizar_curva(raw_mask_db)
+
+    # Limitar la ganancia máxima (Para no romper los tímpanos ni saturar)
+    smooth_mask_db = np.clip(smooth_mask_db, -10, 20)  # Máx 20dB de boost
+
+    print(" -> Aplicando corrección espectral (STFT)...")
+
+    # 3. Aplicar al audio enfermo usando STFT
+    # Convertimos audio a frecuencias (Tiempo x Frecuencia)
+    f_stft, t_stft, Zxx = scipy.signal.stft(
+        y_tgt, fs=sr_tgt, nperseg=N_FFT, noverlap=N_FFT - HOP_LEN
     )
-    mascara_interpolada = interpolador_mascara(f_stft)
 
-    # Aplicar ganancia
-    ganancia_lineal = 10 ** (mascara_interpolada / 20.0)
-    Zxx_modificado = Zxx * ganancia_lineal[:, np.newaxis]
+    # Crear interpolador para mapear nuestra máscara a las frecuencias de la STFT
+    mask_interpolator = interp1d(
+        f_ref, smooth_mask_db, kind="linear", fill_value="extrapolate"
+    )
+    gain_db_per_freq = mask_interpolator(f_stft)
 
-    # ISTFT
-    _, audio_recuperado = signal.istft(Zxx_modificado, fs)
+    # Convertir dB a Ganancia Lineal (Amplitud)
+    # Gain = 10 ^ (dB / 20)
+    gain_linear = 10 ** (gain_db_per_freq / 20.0)
 
-    # Normalizar
-    max_val = np.max(np.abs(audio_recuperado))
-    if max_val > 0:
-        audio_recuperado = audio_recuperado / max_val * 0.9
+    # Expandir dimensiones para multiplicar la matriz STFT
+    # Zxx tiene forma (Frecuencias, Tiempo). Gain es (Frecuencias).
+    # Necesitamos multiplicar cada columna de tiempo por el vector de ganancia.
+    Zxx_restored = Zxx * gain_linear[:, np.newaxis]
 
-    # Convertir a int16 para guardar
-    audio_int16 = (audio_recuperado * 32767).astype(np.int16)
+    # 4. Reconstruir audio (ISTFT)
+    _, y_restored = scipy.signal.istft(
+        Zxx_restored, fs=sr_tgt, nperseg=N_FFT, noverlap=N_FFT - HOP_LEN
+    )
 
-    # --- GUARDAR WAV ---
-    ruta_salida_wav = os.path.join(PATH_AUDIO_OUT, f"MOD_{nombre_sin_ext}.wav")
-    wav.write(ruta_salida_wav, fs, audio_int16)
-    print(f"   [WAV] Guardado en: {ruta_salida_wav}")
+    # 5. Guardar
+    nombre_base = os.path.splitext(os.path.basename(archivo_enfermo))[0]
+    ruta_salida = os.path.join(DIR_OUTPUT, f"{nombre_base}_RESTAURADO.wav")
 
-    # --- CONVERTIR Y GUARDAR MP3 ---
-    try:
-        ruta_salida_mp3 = os.path.join(PATH_AUDIO_OUT, f"MOD_{nombre_sin_ext}.mp3")
-        # Cargamos el WAV que acabamos de crear para convertirlo
-        audio_segment = AudioSegment.from_wav(ruta_salida_wav)
-        audio_segment.export(ruta_salida_mp3, format="mp3", bitrate="192k")
-        print(f"   [MP3] Guardado en: {ruta_salida_mp3}")
-    except Exception as e:
-        print(f"   [!] Error al generar MP3 (Verifica ffmpeg): {e}")
+    sf.write(ruta_salida, y_restored, sr_tgt)
+    print(f" [EXITO] Audio restaurado guardado en:\n    {ruta_salida}")
 
 
-# ==========================================
-# 5. MENÚ INTERACTIVO
-# ==========================================
 def main():
-    print("=== SISTEMA DE RESTAURACIÓN VOCAL (WAV + MP3) ===")
+    if not os.path.exists(DIR_OUTPUT):
+        os.makedirs(DIR_OUTPUT)
 
-    # 1. Preparación de Máscara
-    try:
-        freq_ref, mascara_db = calcular_mascara_transferencia()
-    except Exception as e:
-        print(f"Error crítico: {e}")
+    print("--- 3_TOMIE.PY: Restauración Espectral ---")
+    wavs = sorted(glob.glob(os.path.join(DIR_INPUT, "*.wav")))
+
+    if len(wavs) < 2:
+        print("[ERROR] Necesito al menos 2 audios en 'data/1_input'.")
         return
 
-    print("\n" + "=" * 50)
-    print(f"Carpeta de audios origen: {PATH_AUDIO_IN}")
-    print("Salida: Archivos .wav y .mp3 en carpeta VoxAdj")
-    print("=" * 50)
+    print("Selecciona los archivos:")
+    for i, w in enumerate(wavs):
+        print(f" [{i}] {os.path.basename(w)}")
 
-    # 2. Bucle Interactivo
-    while True:
-        try:
-            entrada = input("\n>> Ingrese nombre del audio (.wav): ").strip()
-        except KeyboardInterrupt:
-            print("\nSaliendo...")
-            break
+    try:
+        idx_ref = int(input("\n1. Selecciona el audio SANO (Referencia): "))
+        idx_tgt = int(input("2. Selecciona el audio ENFERMO (A restaurar): "))
 
-        if entrada.lower() in ["salir", "exit", "quit", "q"]:
-            print("Cerrando programa.")
-            break
+        aplicar_restauracion(wavs[idx_ref], wavs[idx_tgt])
 
-        if entrada.lower() in ["ls", "lista", "list", "dir"]:
-            print("\n--- Archivos disponibles en Recursos/Clean ---")
-            wavs = [f for f in os.listdir(PATH_AUDIO_IN) if f.endswith(".wav")]
-            if not wavs:
-                print("(Carpeta vacía)")
-            else:
-                for w in wavs:
-                    print(f" - {w}")
-            continue
-
-        if not entrada:
-            continue
-
-        # Manejo inteligente del nombre
-        nombre_archivo = entrada
-        if not nombre_archivo.lower().endswith(".wav"):
-            nombre_archivo += ".wav"
-
-        ruta_completa = os.path.join(PATH_AUDIO_IN, nombre_archivo)
-
-        if os.path.exists(ruta_completa):
-            aplicar_mascara_a_audio(ruta_completa, freq_ref, mascara_db)
-        else:
-            print(f"   [!] El archivo '{nombre_archivo}' no existe.")
+    except (ValueError, IndexError):
+        print("[ERROR] Selección inválida.")
 
 
 if __name__ == "__main__":
