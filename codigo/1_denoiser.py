@@ -6,13 +6,14 @@ import subprocess
 import sys
 
 # --- CONFIGURACIÓN DE RUTAS RELATIVAS ---
-# Obtenemos la ruta donde vive ESTE script (denoiser.py)
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(
+    os.path.abspath(__file__)
+)  # Obtenemos la ruta donde vive ESTE script (denoiser.py)
 
-# Definimos las carpetas de entrada y salida RELATIVAS a este script
-# Puedes cambiar "Input" y "Output" por los nombres que prefieras
-INPUT_DIR = os.path.join(BASE_DIR, "Input")
-OUTPUT_DIR = os.path.join(BASE_DIR, "Output")
+DATA_DIR = "../data"
+
+INPUT_DIR = os.path.join(BASE_DIR, DATA_DIR, "1_input")  # Ruta actualizada
+OUTPUT_DIR = os.path.join(BASE_DIR, DATA_DIR, "2_output")  # Ruta actualizada
 
 
 def load_audio(filepath):
