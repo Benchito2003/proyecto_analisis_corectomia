@@ -1,0 +1,78 @@
+flowchart LR
+    %% --- ESTILOS (One Dark Pro / Hand-Drawn Mimic) ---
+    classDef base fill:#282c34,color:#abb2bf,stroke:#abb2bf,stroke-width:2px;
+    classDef process fill:#282c34,stroke:#61afef,color:#abb2bf,stroke-width:2px;    
+    classDef input fill:#282c34,stroke:#98c379,color:#abb2bf,stroke-width:2px;
+    classDef fft fill:#000,stroke:#abb2bf,color:#fff,stroke-width:2px; %% Diamante Negro
+    classDef output fill:#282c34,stroke:#e06c75,color:#abb2bf,stroke-width:2px;
+    
+    linkStyle default stroke:#abb2bf,stroke-width:2px;
+
+    %% --- ENTRADAS ---
+    subgraph Inputs ["Entradas"]
+        direction TB
+        A[("A (PRE-OP)")]:::input
+        B[("B (POST-OP)")]:::input
+    end
+
+    %% --- PROCESO PRINCIPAL ---
+    NR[NOISEREDUCE]:::process
+    ENH[ENHANCE]:::process
+
+    %% Conexiones iniciales
+    A ==> NR
+    B ==> NR
+    NR ==> ENH
+
+    %% --- RAMA 1: DATOS (Arriba/Derecha en el dibujo) ---
+    %% El diamante negro de FFT
+    FFT1{{"FFT"}}:::fft
+    
+    %% Flujo DB
+    ENH --> FFT1
+    FFT1 --> DB[DB]:::process
+    
+    %% Salidas de texto
+    DB -- ".txt / .csv" --> DBA[DB-A]:::base
+    DB -- ".txt / .csv" --> DBB[DB-B]:::base
+    
+    %% Calculo Promedio y Delta
+    MEAN((x̄)):::process
+    CALC["[A] - [B]"]:::process
+    DELTA[/"ΔAB dB"\]:::output
+
+    DBA --> MEAN
+    DBB --> MEAN
+    MEAN --> CALC
+    CALC --> DELTA
+
+    %% --- RAMA 2: AUDIO (Salida directa de Enhance) ---
+    ENHA[ENH-A]:::output
+    ENHB[ENH-B]:::output
+    
+    ENH -- ".wav / .mp3" --> ENHA
+    ENH -- ".wav / .mp3" --> ENHB
+
+    %% --- RAMA 3: GRÁFICAS (Abajo en el dibujo) ---
+    %% Sub-proceso para gráficas
+    subgraph GraphicsProc ["Proceso Gráfico"]
+        direction TB
+        AG[A]:::base
+        BG[B]:::base
+        FFT2{{"FFT"}}:::fft
+        GRA[GRA .pdf]:::output
+    end
+
+    ENH --> AG
+    ENH --> BG
+    AG & BG --> FFT2
+    FFT2 --> GRA
+
+    %% Tipos de Gráficas
+    G_ENA[ENA-A]:::base
+    G_ENB[ENB-B]:::base
+    G_DIFF[ENA-ENB]:::base
+
+    GRA --- G_ENA
+    GRA --- G_ENB
+    GRA --- G_DIFF
