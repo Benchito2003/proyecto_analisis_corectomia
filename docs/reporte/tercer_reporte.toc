@@ -1,0 +1,78 @@
+\babel@toc {spanish}{}\relax 
+\babel@toc {spanish}{}\relax 
+\babel@toc {spanish}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {spanish}{}\relax 
+\babel@toc {spanish}{}\relax 
+\contentsline {section}{\numberline {I}Objetivos del Proyecto}{2}{section.1}%
+\contentsline {subsection}{\numberline {\mbox {I-A}}Objetivo General}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {\mbox {I-B}}Objetivos Específicos}{2}{subsection.1.2}%
+\contentsline {section}{\numberline {II}Marco Teórico}{2}{section.2}%
+\contentsline {subsection}{\numberline {\mbox {II-A}}Software y Herramientas}{2}{subsection.2.1}%
+\contentsline {subsubsection}{\numberline {\mbox {II-A}1}Lenguaje de Programación: Python}{2}{subsubsection.2.1.1}%
+\contentsline {subsubsection}{\numberline {\mbox {II-A}2}Librerías Especializadas}{2}{subsubsection.2.1.2}%
+\contentsline {subsection}{\numberline {\mbox {II-B}}Fundamentos Matemáticos}{3}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {\mbox {II-B}1}Transformada de Fourier de Tiempo Corto (STFT)}{3}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {\mbox {II-B}2}Transformada Inversa de Fourier de Tiempo Corto (iSTFT)}{3}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {\mbox {II-B}3}Algoritmo de Filtrado: Wiener y Ephraim-Malah}{3}{subsubsection.2.2.3}%
+\contentsline {subsubsection}{\numberline {\mbox {II-B}4}Detección Activa de Voz (VAD) Estadística}{3}{subsubsection.2.2.4}%
+\contentsline {subsection}{\numberline {\mbox {II-C}}Conceptos Estadísticos y de Programación}{3}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {\mbox {II-C}1}Expresiones Regulares (Regex)}{3}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {\mbox {II-C}2}Desviación Estándar ($\sigma $)}{3}{subsubsection.2.3.2}%
+\contentsline {subsection}{\numberline {\mbox {II-D}}Acústica y Características de la Voz}{3}{subsection.2.4}%
+\contentsline {subsubsection}{\numberline {\mbox {II-D}1}Timbre}{3}{subsubsection.2.4.1}%
+\contentsline {subsubsection}{\numberline {\mbox {II-D}2}Frecuencia Fundamental ($F_0$)}{3}{subsubsection.2.4.2}%
+\contentsline {subsubsection}{\numberline {\mbox {II-D}3}Armónicos}{3}{subsubsection.2.4.3}%
+\contentsline {subsubsection}{\numberline {\mbox {II-D}4}Los Formantes}{3}{subsubsection.2.4.4}%
+\contentsline {subsubsection}{\numberline {\mbox {II-D}5}La cordectomía}{4}{subsubsection.2.4.5}%
+\contentsline {subsubsection}{\numberline {\mbox {II-D}6}Teoría Fuente - Filtro de la Producción Vocal}{4}{subsubsection.2.4.6}%
+\contentsline {subsubsection}{\numberline {\mbox {II-D}7}Geometría del Aparato Fonador y Resonancia}{4}{subsubsection.2.4.7}%
+\contentsline {subsection}{\numberline {\mbox {II-E}}Hardware}{4}{subsection.2.5}%
+\contentsline {subsubsection}{\numberline {\mbox {II-E}1}Micrófono: Razer Seiren Mini}{4}{subsubsection.2.5.1}%
+\contentsline {subsubsection}{\numberline {\mbox {II-E}2}Sistema de Monitoreo: KZ ZSN Pro}{4}{subsubsection.2.5.2}%
+\contentsline {subsection}{\numberline {\mbox {II-F}}Inteligencia artificial (suplementario) }{4}{subsection.2.6}%
+\contentsline {subsubsection}{\numberline {\mbox {II-F}1}Representación y Caracterización de la Voz}{4}{subsubsection.2.6.1}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}1a}Red Neuronal Artificial (ANN)}{4}{paragraph.2.6.1.1}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}1b}Speaker Embedding (Incrustación del Hablante)}{4}{paragraph.2.6.1.2}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}1c}Tokens Semánticos y Unidades de Contenido}{4}{paragraph.2.6.1.3}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}1d}Unidades de Contenido}{4}{paragraph.2.6.1.4}%
+\contentsline {subsubsection}{\numberline {\mbox {II-F}2}Arquitecturas de Aprendizaje Auto-Supervisado (SSL)}{5}{subsubsection.2.6.2}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}2a}HuBERT (Hidden Unit BERT)}{5}{paragraph.2.6.2.1}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}2b}ContentVec}{5}{paragraph.2.6.2.2}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}2c}Information Bottleneck (Cuello de Botella de Información)}{5}{paragraph.2.6.2.3}%
+\contentsline {subsubsection}{\numberline {\mbox {II-F}3}Modelos de Síntesis y Conversión de Voz}{5}{subsubsection.2.6.3}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}3a}Modelos de Síntesis (Generativos)}{5}{paragraph.2.6.3.1}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}3b}Arquitectura RVC (Retrieval-based Voice Conversion)}{5}{paragraph.2.6.3.2}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}3c}``Centroide'' del Vector}{5}{paragraph.2.6.3.3}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}3d}So-VITS-SVC (SoftVC VITS Singing Voice Conversion)}{5}{paragraph.2.6.3.4}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}3e}XTTS v2}{5}{paragraph.2.6.3.5}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}3f}Whisper}{5}{paragraph.2.6.3.6}%
+\contentsline {subsubsection}{\numberline {\mbox {II-F}4}Componentes de Generación de Audio y Control}{5}{subsubsection.2.6.4}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}4a}Vocoder y HiFi-GAN}{5}{paragraph.2.6.4.1}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}4b}RLHF (Reinforcement Learning from Human Feedback)}{5}{paragraph.2.6.4.2}%
+\contentsline {paragraph}{\numberline {\mbox {II-F}4c}SER (Speech Emotion Recognition)}{5}{paragraph.2.6.4.3}%
+\contentsline {section}{\numberline {III}Metodología}{5}{section.3}%
+\contentsline {subsection}{\numberline {\mbox {III-A}}Versión 1.0: Análisis Espectral}{5}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {\mbox {III-A}1}Generalidades}{5}{subsubsection.3.1.1}%
+\contentsline {paragraph}{\numberline {\mbox {III-A}1a}Nomenclatura de Archivos}{5}{paragraph.3.1.1.1}%
+\contentsline {subsubsection}{\numberline {\mbox {III-A}2}Descripción de Algoritmos (v1.0)}{6}{subsubsection.3.1.2}%
+\contentsline {paragraph}{\numberline {\mbox {III-A}2a} Algoritmo 1.1.0: Preprocesamiento y Análisis Comparativos}{6}{paragraph.3.1.2.1}%
+\contentsline {subsubsection}{\numberline {\mbox {III-A}3}Algoritmo 1.2.0: Rehabilitación}{6}{subsubsection.3.1.3}%
+\contentsline {subsubsection}{\numberline {\mbox {III-A}4}Algoritmo 1.1.1: Archivos Independientes}{6}{subsubsection.3.1.4}%
+\contentsline {subsubsection}{\numberline {\mbox {III-A}5}Algoritmo 1.2.1: Suma Diferencial}{6}{subsubsection.3.1.5}%
+\contentsline {subsubsection}{\numberline {\mbox {III-A}6}Algoritmo 1.2.2: Inyección Proyectada}{6}{subsubsection.3.1.6}%
+\contentsline {subsection}{\numberline {\mbox {III-B}}Versión 2.0: Metadatos}{6}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {\mbox {III-B}1}Algoritmo 2.1.0: Filtrado Selectivo}{6}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {\mbox {III-B}2}Algoritmo 2.2.1.0: Modelo Espectral}{7}{subsubsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {\mbox {III-B}3}Algoritmo 2.2.2.0: Reconstrucción Híbrida}{7}{subsubsection.3.2.3}%
+\contentsline {subsection}{\numberline {\mbox {III-C}}Versión 3.0: Estimación MMSE}{7}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {\mbox {III-C}1}Algoritmo 3.1.0: MMSE-STSA con VAD}{7}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {\mbox {III-C}2}Algoritmo 3.2.0: Visualización}{7}{subsubsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {\mbox {III-C}3}Algoritmo 3.3.0: Máscara de Transferencia}{7}{subsubsection.3.3.3}%
+\contentsline {subsection}{\numberline {\mbox {III-D}}Versión 4.0: IA (Propuesta)}{7}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {\mbox {III-D}1}Fase 1: Reconstrucción Offline}{7}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {\mbox {III-D}2}Fase 2: Optimización de Preferencias}{7}{subsubsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {\mbox {III-D}3}Fase 3: Streaming Baja Latencia}{7}{subsubsection.3.4.3}%
+\contentsline {subsubsection}{\numberline {\mbox {III-D}4}Fase 4: Modulación Emocional}{7}{subsubsection.3.4.4}%
+\contentsline {section}{\numberline {IV}Conclusiones Generales}{7}{section.4}%
+\contentsline {section}{Referencias}{7}{section*.2}%

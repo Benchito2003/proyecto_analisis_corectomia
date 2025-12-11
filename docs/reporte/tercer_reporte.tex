@@ -11,13 +11,18 @@
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{float}
+\usepackage{url}
+\usepackage{hyperref} 
+\usepackage{microtype}
+\usepackage{csquotes}
 
 % --- DEFINICIÓN DE DATOS ---
 \title{Diseño y evaluación de un sistema DSP para la rehabilitación vocal post-cordectomía mediante reconstrucción espectral e IA}
 
 % Formato de autores estilo IEEE
-\author{Alfonso~Gamboa~Rubén y~Flores~Montero~Edsel~Yetlanezi%
-\thanks{Los autores son estudiantes de Ingeniería Biomédica.}%
+\author{Alfonso~Gamboa~Rubén \&~Flores~Montero~Edsel~Yetlanezi%
+\thanks{Los autores son estudiantes de Ingeniería Biomédica de la Universidad Veracruzana.}%
+\thanks{Código disponible en: \url{https://github.com/Benchito2003/proyecto_analisis_corectomia}}%
 \thanks{Manuscrito generado el \today.}}
 
 % --- DOBLE RESUMEN (Hack para IEEE) ---
@@ -25,27 +30,39 @@
 % a doble ancho antes de que empiecen las columnas normales.
 \IEEEtitleabstractindextext{%
     \begin{minipage}[t]{0.48\textwidth}
-        \selectlanguage{spanish}
+      \selectlanguage{spanish}
         \textbf{\textit{Resumen}—} 
-        La cordectomía, procedimiento quirúrgico que implica la extirpación parcial o total de los pliegues vocales, compromete severamente la capacidad comunicativa del paciente, afectando su identidad y calidad de vida. Este proyecto presenta el diseño y evaluación de un sistema de procesamiento digital de señales (DSP) orientado a la rehabilitación vocal no invasiva mediante la reconstrucción espectral. La metodología evolucionó a través de tres fases iterativas: una aproximación inicial en el dominio de la frecuencia (FFT global), un modelo adaptativo basado en metadatos y filtrado de intensidad adaptable, y finalmente, la implementación basada en la Transformada de Fourier de Tiempo Corto (STFT) y estimadores estadísticos (MMSE-STSA). Los resultados experimentales demostraron que, si bien la sustracción de ruido estacionario mediante algoritmos de Wiener y Ephraim-Malah es efectiva, la reconstrucción de la voz requiere una intervención más compleja a nivel de las micro-características que forman la voz para preservar la identidad del paciente.
-        
+        La cordectomía, procedimiento quirúrgico que implica la extirpación parcial o total de los pliegues vocales, compromete severamente la capacidad comunicativa del paciente, afectando su identidad y calidad de vida. Este proyecto presenta el diseño y evaluación de un sistema de procesamiento digital de señales (DSP) orientado a la rehabilitación vocal no invasiva mediante la reconstrucción espectral. La metodología evolucionó a través de tres fases iterativas: una aproximación inicial en el dominio de la frecuencia (FFT global), un modelo adaptativo basado en metadatos y filtrado de intensidad adaptable, y finalmente, la implementación basada en la Transformada de Fourier de Tiempo Corto (STFT) y estimadores estadísticos (MMSE-STSA). Los resultados experimentales demostraron que, si bien la sustracción de ruido estacionario mediante algoritmos de Wiener y Ephraim-Malah es efectiva, la reconstrucción de la voz requiere una intervención más compleja a nivel de las micro-características que forman la voz para preservar la identidad del paciente y evitar artefactos o distorciones de la voz. El estudio concluye proponiendo una versión adicional de experimentación modular que implementa herramientas de inteligencia artificial.
+
         \smallskip
-        \textbf{\textit{Palabras Clave}—} DSP, STFT, Filtro de Wiener, Savitzky-Golay, VAD, Análisis Espectral, Rehabilitación Fónica, Cordectomía, IA, RLHF, Red Neuronal, SER.
+        \begin{IEEEkeywords}
+          Procesamiento Digital de Señales (DSP), Transformada de Fourier de Tiempo Corto (STFT), Filtro de Wiener, Filtro Savitzky-Golay, Detección de Actividad de Voz (VAD), Análisis Espectral, Rehabilitación Fónica, Python, Cordectomía, STFT, Ephraim-Malah, Formantes. Inteligencia Artificial (IA), Reinforcement Learning from Human Feedback (RLHF), Red Neuronal, Speech Emotion Recognition (SER), Modelos de Síntesis.
+        \end{IEEEkeywords}
+
     \end{minipage}
     \hfill % Espacio flexible en medio
     \begin{minipage}[t]{0.48\textwidth}
         \selectlanguage{english}
         \textbf{\textit{Abstract}—} 
-        Cordectomy, a surgical procedure involving the partial or total removal of the vocal folds, severely compromises the patient's communicative capacity, affecting their identity and quality of life. This project presents the design and evaluation of a digital signal processing (DSP) system oriented towards non-invasive vocal rehabilitation through spectral reconstruction. The methodology evolved through three iterative phases: an initial frequency-domain approach (global FFT), an adaptive model based on metadata and adaptive intensity filtering, and finally, an implementation based on the Short-Time Fourier Transform (STFT) and statistical estimators (MMSE-STSA). Experimental results demonstrated that while stationary noise subtraction using Wiener and Ephraim-Malah algorithms is effective, voice reconstruction requires a more complex intervention at the level of the micro-characteristics that form the voice to preserve patient identity.
-        
+        Cordectomy, a surgical procedure involving the partial or total removal of the vocal folds, severely compromises a patient's communicative ability, affecting their identity and quality of life. This project presents the design and evaluation of a digital signal processing (DSP) system for non-invasive voice rehabilitation through spectral reconstruction. The methodology evolved through three iterative phases: an initial approach in the frequency domain (global FFT), an adaptive model based on metadata and adaptive intensity filtering, and finally, implementation based on the Short Time Fourier Transform (STFT) and statistical estimators (MMSE-STSA). The experimental results demonstrated that, while stationary noise subtraction using Wiener and Ephraim-Malah algorithms is effective, voice reconstruction requires more complex intervention at the level of the micro-features that constitute the voice to preserve the patient's identity and avoid artifacts or voice distortions. The study concludes by proposing an additional version of modular experimentation that implements artificial intelligence tools.
+
         \smallskip
-        \textbf{\textit{Keywords}—} DSP, STFT, Wiener Filter, Savitzky-Golay, VAD, Spectral Analysis, Phonic Rehabilitation, Cordectomy, AI, RLHF, Neural Network, SER.
+        \begin{IEEEkeywords}
+          Digital Signal Processing (DSP), Short Time Fourier Transform (STFT), Wiener Filter, Savitzky-Golay Filter, Voice Activity Detection (VAD), Spectral Analysis, Voice Rehabilitation, Python, Cordectomy, STFT, Ephraim-Malah, Formants. Artificial Intelligence (AI), Reinforcement Learning from Human Feedback (RLHF), Neural Network, Speech Emotion Recognition (SER), Synthesis Models.
+        \end{IEEEkeywords}
     \end{minipage}
+    \newpage{}
 }
 
 \begin{document}
 
 \maketitle
+\IEEEdisplaynontitleabstractindextext
+\IEEEpeerreviewmaketitle
+
+\setcounter{tocdepth}{2}
+\tableofcontents
+\newpage
 
 % Aseguramos que el texto principal empiece en español
 \selectlanguage{spanish}
@@ -78,54 +95,204 @@ Para la implementación de los algoritmos de procesamiento de audio, se seleccio
     \item \textbf{Pydub (\texttt{pydub}):} Interfaz de alto nivel para el manejo de archivos de audio (I/O).
     \item \textbf{Scipy (\texttt{scipy.signal}):} Proporciona herramientas matemáticas avanzadas \cite{ref5, ref6}.
     \begin{itemize}
-        \item \textit{Filtro Savitzky-Golay:} Utilizado para el suavizado de curvas espectrales \cite{ref7, ref8}. Ajusta un polinomio de orden $k$ a una ventana de puntos $m$ mediante mínimos cuadrados \cite{ref9}, preservando los formantes \cite{ref10}.
+      \item \textit{Filtro Savitzky-Golay:} Utilizado para el suavizado de curvas espectrales \cite{ref7, ref8}.  A diferencia de un promedio móvil simple que tiende a aplanar los picos, este filtro ajusta un polinomio de orden $k$ a una ventana de puntos $m$ mediante el método de mínimos cuadrados \cite{ref9} . Esto permite reducir el ruido de alta frecuencia preservando los momentos espectrales importantes de la voz (formantes), manteniendo la identidad tímbrica del paciente \cite{ref10}.
         Su formulación discreta es:
         \begin{equation}
             Y_j = \sum_{i=-(m-1)/2}^{(m-1)/2} C_i \cdot y_{j+i}
         \end{equation}
-        Donde $Y_j$ es el valor suavizado, $y$ los datos crudos, $m$ el tamaño de la ventana y $C_i$ los coeficientes \cite{ref11}.
+        Donde $Y_j$ es el valor suavizado, $y$ los datos crudos, $m$ el tamaño de la ventana (impar) y $C_i$ los coeficientes de convolución derivados del polinomio ajustado \cite{ref11}.
+      \item \textit{STFT / iSTFT:} Funciones base para la transformación desde el dominio del tiempo al dominio de la frecuencia y viceversa (ver sección 2.1) \cite{ref12}, \cite{ref13}.
     \end{itemize}
 \end{itemize}
 
 \subsection{Fundamentos Matemáticos}
 
-\subsubsection{STFT}
-La voz es una señal no estacionaria, por lo que la Transformada de Fourier clásica es insuficiente \cite{ref14}. La STFT divide la señal en ventanas temporales \cite{ref15}:
+\subsubsection{Transformada de Fourier de Tiempo Corto (STFT)}
+Dado que la voz es una señal no estacionaria (los valores de frecuencia varían en el tiempo), la Transformada de Fourier clásica es insuficiente \cite{ref14}. La STFT divide la señal en "ventanas" temporales superpuestas y aplica la FFT a cada una de ellas \cite{ref15}.
+
+Matemáticamente, para una señal $x(n)$ y una ventana $w(n)$:
 \begin{equation}
     X(m, k) = \sum_{n=0}^{N-1} x(n + mH) w(n) e^{-j \frac{2\pi}{N} kn}
 \end{equation}
-Donde $m$ es el índice temporal, $k$ el índice de frecuencia y $H$ el tamaño del salto \cite{ref16, ref17}.
+Donde $m$ es el índice temporal, $k$ el índice de frecuencia y $H$ el tamaño del salto o ventana \cite{ref16}. Esto genera una matriz compleja que representa la magnitud y fase de la señal a lo largo del tiempo \cite{ref17}.
 
-\subsubsection{Algoritmo de Filtrado: Wiener}
-El filtro de Wiener calcula una ganancia óptima $W(f)$ basada en la SNR \cite{ref22, ref23}:
+\subsubsection{Transformada Inversa de Fourier de Tiempo Corto (iSTFT)}
+Es el proceso de reconstrucción de la señal de audio al dominio del tiempo a partir de la matriz espectral modificada \cite{ref18}. Utiliza un método de superposición y suma para reintegrar las ventanas procesadas, compensando la modulación introducida por la función de ventana $w(n)$ para evitar artefactos de discontinuidad \cite{ref19}.
+
+\subsubsection{Algoritmo de Filtrado: Wiener y Ephraim-Malah}
+Si bien el algoritmo Ephraim-Malah (MMSE-STSA) es el estándar de oro estadístico para la estimación de amplitud logarítmica \cite{ref20}, el código implementado utiliza una variante basada en el Filtro de Wiener.
+
+Este filtro opera bajo el principio de minimizar el Error Cuadrático Medio (MSE) entre la señal estimada y la señal real \cite{ref21}. A diferencia de la sustracción espectral simple, el filtro de Wiener calcula una ganancia de transferencia óptima $W(f)$ para cada frecuencia basada en la Relación Señal-Ruido (SNR) \cite{ref22}, \cite{ref23}:
 \begin{equation}
     W(f) = \frac{P_{se\tilde{n}al}(f)}{P_{se\tilde{n}al}(f) + P_{ruido}(f)}
 \end{equation}
+Donde $P$ representa la densidad espectral de potencia. El algoritmo atenúa las frecuencias donde la potencia del ruido domina sobre la señal, y preserva aquellas donde la señal es fuerte \cite{ref24}.
 
-\subsection{Conceptos Estadísticos}
+\subsubsection{Detección Activa de Voz (VAD) Estadística}
+El VAD (Voice Activity Detection) es un mecanismo para distinguir segmentos de voz útil de segmentos de silencio o ruido de fondo \cite{ref25}.
+
+En la implementación actual, se utiliza un VAD basado en energía:
+
+\begin{enumerate}
+  \item Se calcula la energía total de cada trama espectral.
+  \item Se establece un umbral dinámico (ej. percentil 10 de la energía global).
+  \item Las tramas por debajo del umbral se clasifican como "perfil de ruido", permitiendo al sistema aprender las características estadísticas del ruido estacionario para sustraerlo posteriormente sin afectar la voz.
+\end{enumerate}
+
+\subsection{Conceptos Estadísticos y de Programación}
+\subsubsection{Expresiones Regulares (Regex)}
+Las Expresiones Regulares (\textit{Regular Expressions}) son secuencias de caracteres que forman patrones de búsqueda. En este proyecto, se utilizan para el análisis sintáctico de los nombres de archivo, permitiendo la extracción automatizada de metadatos incrustados (género, identificación del paciente, calidad de la grabación) para adaptar los parámetros del algoritmo de procesamiento dinámicamente.
+
+
 \subsubsection{Desviación Estándar ($\sigma$)}
-Un píxel espectral se considera "señal" si supera un umbral dinámico:
+Medida de dispersión que indica qué tan extendidos están los valores de un conjunto de datos respecto a su media. En la reducción de ruido, se utiliza para definir umbrales de tolerancia (n\_std\_thresh) en la librería `Scypy'. Un píxel espectral se considera ``señal'' solo si su magnitud supera la media del ruido más $n$ veces su desviación estándar:
 \begin{equation}
     \text{Umbral}(f) = \mu_{ruido}(f) + (n \cdot \sigma_{ruido}(f))
 \end{equation}
 
-\subsection{Acústica de la Voz}
-\subsubsection{Los Formantes}
-Picos de resonancia espectral \cite{ref28, ref29}:
-\begin{itemize}
-    \item \textbf{F1 y F2:} Determinan la vocal \cite{ref30}.
-    \item \textbf{F3, F4 y F5:} Determinan el timbre e identidad \cite{ref34, ref35}.
-\end{itemize}
+\subsection{Acústica y Características de la Voz}
 
-\subsection{Cordectomía y Modelo Fuente-Filtro}
-La cordectomía reseca las cuerdas vocales por neoplasias \cite{ref36, ref37}, causando disfonía \cite{ref38}. El modelo acústico estándar (Fant, 1960) \cite{ref43} separa la Fuente (vibración) del Filtro (tracto vocal) \cite{ref46}.
+  \subsubsection{Timbre}
+  Cualidad psicoacústica que permite distinguir dos sonidos de igual frecuencia fundamental e intensidad. El timbre está determinado por la envolvente espectral y la distribución de energía en los armónicos superiores \cite{ref26}. Preservar el timbre es el objetivo principal del uso de filtros conservadores como Savitzky-Golay.
+
+  \subsubsection{Frecuencia Fundamental ($F_0$)}
+  Corresponde a la frecuencia de vibración de las cuerdas vocales y determina la altura tonal (pitch) percibida de la voz \cite{ref27}.
+
+  \subsubsection{Armónicos}
+  Son los múltiplos enteros de la frecuencia fundamental ($2F_0, 3F_0...$). La riqueza y amplitud de estos armónicos definen la claridad y la resonancia de la voz. En patologías laríngeas, los armónicos suelen perderse o mezclarse con ruido turbulento.
+
+  \subsubsection{Los Formantes}
+  Los picos de resonancia espectral generados por el filtro del tracto vocal se denominan formantes \cite{ref28}, \cite{ref29}. Son esenciales para la inteligibilidad y la identidad del hablante:
+  \begin{itemize}
+    \item F1 y F2 (Formantes Vocálicos): Son los dos primeros picos de energía y determinan qué vocal se está pronunciando \cite{ref30}, \cite{ref31}. Por ejemplo, la vocal /a/ tiene un F1 alto y un F2 bajo, mientras que la /i/ tiene un F1 bajo y un F2 muy alto \cite{ref32}. La inteligibilidad del mensaje depende casi exclusivamente de la preservación de estos dos formantes \cite{ref33}.
+    \item F3, F4 y F5 (Formantes de Timbre): Ubicados en frecuencias superiores (generalmente por encima de 2500 Hz), estos formantes son estáticos y dependen de la anatomía fija del paciente \cite{ref34}. Son responsables del timbre personal y la identidad del hablante \cite{ref35}.
+  \end{itemize}
+  En el contexto de este proyecto, el objetivo de la reconstrucción espectral no es solo recuperar el volumen, sino restaurar la estructura de los formantes superiores (F3-F5) que suelen perderse en la señal ruidosa post-cordectomía.
+
+  \subsubsection{La cordectomía}
+  La cordectomía es una intervención quirúrgica indicada principalmente para el tratamiento de neoplasias laríngeas, que consiste en la resección total o parcial de las cuerdas vocales \cite{ref36}, \cite{ref37}. Dependiendo de la extensión del tejido extirpado (desde una cordectomía subepitelial hasta una resección transmuscular o total), las consecuencias fonatorias varían desde una disfonía leve hasta una afonía severa \cite{ref38}, \cite{ref39}.
+
+  La alteración anatómica impide el cierre glótico completo, generando un escape de aire excesivo (voz soplada) y reduciendo la capacidad de vibración mucosa necesaria para generar una frecuencia fundamental ($F_0$) estable \cite{ref40}. Clínicamente, esto se traduce en una reducción drástica de la intensidad vocal, fatiga al hablar y pérdida de definición armónica \cite{ref41}, \cite{ref42}.
+
+  \subsubsection{Teoría Fuente - Filtro de la Producción Vocal}
+  El modelo acústico estándar para describir la generación de la voz es la \textbf{Teoría Fuente-Filtro} (Fant, 1960) \cite{ref43}, \cite{ref44}. Este modelo descompone el proceso en dos etapas independientes pero interconectadas:
+  \begin{enumerate}
+    \item La Fuente ($Source$): Proporcionada por la vibración de los pliegues vocales en la laringe, que genera un sonido complejo rico en armónicos (el "zumbido" base) \cite{ref45}. En pacientes con cordectomía, esta fuente es ruidosa y aperiódica debido a la irregularidad del tejido cicatricial.
+    \item El Filtro ($Filter$): Constituido por el tracto vocal (faringe, cavidad oral y nasal) \cite{ref46}. Este conducto actúa como un resonador acústico que amplifica ciertas frecuencias y atenúa otras, esculpiendo el sonido final \cite{ref47}.
+  \end{enumerate}
+
+  \subsubsection{Geometría del Aparato Fonador y Resonancia}
+  La laringe y el tracto vocal pueden modelarse físicamente como un tubo acústico de sección variable, cerrado en un extremo (glotis) y abierto en el otro (labios) \cite{ref48}. La geometría de este "tubo" es determinante para la voz:
+  \begin{itemize}
+    \item Longitud del Tracto: Determina las frecuencias de resonancia base. Un tracto más largo (típico en hombres) resuena a frecuencias más bajas, mientras que uno más corto (mujeres y niños) lo hace a frecuencias más altas \cite{ref49}.
+    \item Configuración Transversal: Los movimientos de la lengua, mandíbula y labios modifican el área de sección transversal del tubo a lo largo de su longitud \cite{ref50}. Estas constricciones cambian las frecuencias de resonancia del sistema, permitiendo la articulación de diferentes fonemas a pesar de que la fuente sonora sea la misma.
+  \end{itemize}
+
+\subsection{Hardware}
+  \subsubsection{Micrófono: Razer Seiren Mini}
+  Es un dispositivo de transducción electroacústica de tipo condensador (cápsula de 14mm).
+  \begin{itemize}
+    \item Patrón Polar: Supercardioide. Crucial para el proyecto ya que maximiza la rechazo al ruido incidente desde los laterales y la parte trasera, capturando prioritariamente la fuente directa (paciente).
+    \item Respuesta en Frecuencia: 20 Hz - 20 kHz, cubriendo el espectro vocal completo.
+    \item Especificaciones Digitales: Muestreo a 44.1/48 kHz y profundidad de 16 bits. Aunque presenta un ruido propio (self-noise) mayor que equipos de estudio de gama alta, su relación costo-beneficio y conectividad USB directa lo hacen viable para entornos clínicos no especializados.
+  \end{itemize}
+
+  \subsubsection{Sistema de Monitoreo: KZ ZSN Pro}
+  Audífonos tipo \textit{In-Ear Monitor} (IEM) de arquitectura híbrida.
+  \begin{itemize}
+  \item Drivers: Combina un driver dinámico (para graves/medios) y un driver \textit{Balanced Armature} (para agudos).
+    \item Respuesta: 7 Hz - 40 kHz.
+  \item Firma Sonora: Ecualización en ``V''. Esta característica resalta los agudos y los graves. Para fines de evaluación cualitativa en este proyecto, la acentuación de agudos del driver \textit{Balanced Armature} facilita la detección de ruidos sibilantes, soplos y artefactos digitales (glitches) introducidos durante el procesamiento de la señal.
+  \end{itemize}
+
+ \subsection{Inteligencia artificial (suplementario) }
+  \subsubsection{Representación y Caracterización de la Voz}
+  \paragraph{Red Neuronal Artificial (ANN)}
+    Modelo computacional inspirado en la biología que constituye la base del aprendizaje profundo (Deep Learning). En el procesamiento de audio, estas redes aprenden comportamientos no lineales complejos entre señales de entrada (audio crudo o espectrogramas) y representaciones latentes (representación condensada de las características esenciales), superando las limitaciones de los filtros lineales tradicionales \cite{ref51}.
+  
+    \paragraph{Speaker Embedding (Incrustación del Hablante)}
+    Es una representación vectorial compacta de longitud fija que captura las características acústicas únicas de la identidad de un hablante (timbre, entonación, estilo), independientemente del contenido lingüístico. En sistemas de conversión de voz, este vector permite condicionar al modelo para que genere audio con la "identidad" de un sujeto específico, actuando como una firma biométrica digital \cite{ref52}.
+
+    \paragraph{Tokens Semánticos y Unidades de Contenido}
+    A diferencia de los fonemas tradicionales, los tokens semánticos son representaciones discretas derivadas de modelos auto-supervisados (como HuBERT) que capturan y separan la información lingüística y características complejas de la voz. \cite{ref53}.
+
+    \paragraph{Unidades de Contenido}
+    Son los clústeres discretos resultantes de cuantizar estas representaciones latentes (representación comprimida de puntos de datos que conserva solo las características esenciales). Es decir, Permiten que el sistema manipule el "qué se dice" sin alterar el "quién lo dice", siendo fundamentales para la conversión de voz \textit{zero-shot} (sin entrenamiento previo extensivo).
+
+    \subsubsection{Arquitecturas de Aprendizaje Auto-Supervisado (SSL)}
+    \paragraph{HuBERT (Hidden Unit BERT)}
+  Modelo de aprendizaje auto-supervisado que aprende representaciones de habla mediante la predicción enmascarada de unidades ocultas. A diferencia de otros modelos, HuBERT utiliza un paso de agrupamiento (clustering) offline (generalmente K-means) para generar etiquetas objetivo discretas, obligando al modelo a aprender tanto la estructura acústica como lingüística continua \cite{ref54}.
+  
+    \paragraph{ContentVec}
+    Es una evolución de la arquitectura HuBERT diseñada específicamente para tareas de conversión de voz. Su innovación radica en la capacidad de "desenmarañar" (disentangle) la información del hablante de la información del contenido. ContentVec impone restricciones para que las representaciones aprendidas sean invariantes al hablante, mejorando drásticamente el rendimiento en la conversión de identidad \cite{ref55}.
+
+   \paragraph{Information Bottleneck (Cuello de Botella de Información)}
+   Principio teórico aplicado en Deep Learning que postula que una red neuronal óptima debe comprimir la entrada $X$ en una representación compacta $Z$ que retenga solo la información relevante para la tarea objetivo $Y$, descartando el ruido y detalles irrelevantes (como el ruido de fondo o variaciones intra-hablante no deseadas) \cite{ref56}.
+
+  \subsubsection{Modelos de Síntesis y Conversión de Voz}
+    \paragraph{Modelos de Síntesis (Generativos)}
+    Sistemas de IA capaces de generar formas de onda de audio a partir de representaciones intermedias (texto o espectrogramas). En la actualidad, predominan los modelos probabilísticos y adversariales que pueden generar habla con alta fidelidad y naturalidad perceptiva \cite{ref57}.
+
+    \paragraph{Arquitectura RVC (Retrieval-based Voice Conversion)}
+    Modelo de conversión de voz que combina la extracción de características de contenido (vía HuBERT) con un sistema de recuperación de información. RVC utiliza una base de datos de incrustaciones del hablante objetivo y busca los vectores más similares para fusionarlos con la fuente, preservando el timbre con alta fidelidad incluso con pocos datos de entrenamiento \cite{ref58}.
+
+    \paragraph{``Centroide'' del Vector}
+    En el contexto de RVC y búsqueda vectorial (Faiss), se refiere al promedio de los vectores de características dentro de un clúster específico. Durante la inferencia, el modelo busca el centroide más cercano en el espacio latente del hablante objetivo para reemplazar o suavizar las características de la voz fuente, garantizando una conversión más estable.
+
+    \paragraph{So-VITS-SVC (SoftVC VITS Singing Voice Conversion)}
+    Arquitectura especializada en la conversión de voz cantada. Combina un codificador de contenido suave (SoftVC) que preserva la entonación original, con el modelo generativo VITS (Inferencia Variacional con aprendizaje adversarial). Permite transferir el timbre de un cantante a otro manteniendo la melodía y expresividad original \cite{ref59}.
+
+    \paragraph{XTTS v2}
+    Modelo de síntesis de voz (TTS) de última generación desarrollado por Coqui AI. Utiliza una arquitectura basada en transformadores tipo GPT-2 para predecir tokens de audio ("quantized audio tokens") condicionados por un vector de hablante, permitiendo clonación de voz multilingüe de alta calidad con solo unos segundos de audio de referencia \cite{ref60}.
+
+    \paragraph{Whisper}
+    Modelo de reconocimiento automático del habla (ASR) desarrollado por OpenAI, basado en la arquitectura Transformer. Entrenado con 680,000 horas de audio multilingüe con supervisión débil, es capaz de generar transcripciones robustas y marcas de tiempo precisas, sirviendo a menudo como "codificador" para extraer texto o fonemas en tuberías de conversión \cite{ref61}.
+
+  \subsubsection{Componentes de Generación de Audio y Control}
+    \paragraph{Vocoder y HiFi-GAN}
+    El vocoder es el componente final en la cadena de síntesis que transforma las representaciones acústicas intermedias en la forma de onda audible. HiFi-GAN es un vocoder neuronal basado en Redes Generativas Adversariales (GAN), considerado el estándar actual en síntesis de alta fidelidad debido a su eficiencia computacional y capacidad para generar audio libre de artefactos metálicos, superando a métodos autoregresivos más lentos como WaveNet \cite{ref62}.
+
+    \paragraph{RLHF (Reinforcement Learning from Human Feedback)}
+    Técnica de aprendizaje automático donde el modelo es ajustado utilizando retroalimentación humana directa. En síntesis de voz, se usa para alinear la prosodia o el estilo emocional del modelo con la preferencia humana, utilizando un "modelo de recompensa" entrenado para juzgar la naturalidad del audio generado \cite{ref63}.
+
+    \paragraph{SER (Speech Emotion Recognition)}
+    Tecnología orientada a detectar y clasificar el estado emocional del hablante (alegría, tristeza, ira) a partir de la señal de audio. En rehabilitación vocal, puede utilizarse para evaluar si la voz sintetizada logra transmitir la intención emocional correcta del paciente \cite{ref64}.
+
 
 % --- SECCIÓN 3: METODOLOGÍA ---
 \section{Metodología}
+  \subsection{Versión 1.0: Análisis Espectral}
+    \subsubsection{Generalidades}
 
-\subsection{Versión 1.0: Análisis Espectral}
+    La arquitectura del algoritmo se ha estructurado en dos fases fundamentales. La primera fase tiene como objetivo la importación, preprocesamiento, optimización y exportación de recursos (datos y metadatos). La segunda fase se centra en el procesamiento digital de señales (DSP) para la rehabilitación de la voz mediante la reconstrucción de archivos de audio.
 
-\subsubsection{Algoritmo 1.1.0: Preprocesamiento}
+    Los datos de para la versión post-cordectomía consisten en simulaciones de lectura del mismo dialogo en una versión pre-cordectomia, realizadas por el paciente en un entorno controlado con bajo ruido estacionario. Para la captura se utilizó un micrófono Razer Seiren Mini con las siguientes especificaciones técnicas:
+
+    \paragraph{Nomenclatura de Archivos}
+    Para organizar los datos de manera eficiente, se estableció el siguiente protocolo de nomenclatura: `\{CódigoPaciente\}-\{Origen\}\{Número\}.\{Extensión\}'
+    \begin{itemize}
+      \item Código del paciente: Iniciales del nombre (ej. GFA).
+      \item Origen del archivo:
+        \begin{itemize}
+          \item A: Audio pre-cordectomía.
+          \item B: Audio post-cordectomía.
+        \end{itemize}
+      \item Número identificador: Valor numérico consecutivo. Un prefijo `0' indica que el archivo es independiente y carece de una contraparte recíproca de origen pre-cordectomía.
+      \item Identificador del archivo (ID): `\{Origen\}\{Número\}'
+      \item Formato utilizado:
+        \begin{itemize}
+          \item Audio: `.mp3', `.opus', `.ogg', `.wav', etc.
+          \item Datos: `.txt', `.csv'.
+          \item Gráficos: `.pdf'.
+        \end{itemize}
+    \end{itemize}
+    \textit{Ejemplo:} `GFA-B1.ogg (Paciente G.F.A., primer audio de origen post-cordectomía, formato OGG).
+
+    \subsubsection{Descripción de Algoritmos (v1.0)}
+      \paragraph{ Algoritmo 1.1.0: Preprocesamiento y Análisis Comparativos}
+
+Esta fase gestiona la importación de señales de audio pareadas (pre y post-cordectomía). Se aplica una reducción de ruido mediante el algoritmo de sustracción espectral incluido por la librería `Noisereduce`. Posteriormente, se transforma la señal al dominio de la frecuencia utilizando la Transformada Rápida de Fourier (FFT) para obtener la magnitud del espectro.
+
 Sea $x(n)$ la señal de entrada, su representación en frecuencia $X(k)$ se define como:
 \begin{equation}
     X(k) = \sum_{n=0}^{N-1} x(n) e^{-j \frac{2\pi}{N} k n}
@@ -134,12 +301,7 @@ Sea $x(n)$ la señal de entrada, su representación en frecuencia $X(k)$ se defi
 % NOTA: Usamos figure (sin asterisco) para que ocupe solo una columna
 \begin{figure}[htbp]
     \centering
-    \fbox{\begin{minipage}{0.9\columnwidth} % Usamos columnwidth
-    \centering
-    \vspace{0.5cm}
-    \textbf{Aquí va mermaid 1}
-    \vspace{0.5cm}
-    \end{minipage}}
+    \includegraphics[width=0.95\columnwidth]{../diagramas/2.1. Algoritmo 1.1.0_ Preprocesamiento y Análisis Comparativo.png}
     \caption{Diagrama de flujo del Algoritmo 1.1.0}
     \label{fig:m1}
 \end{figure}
@@ -442,7 +604,24 @@ Se evidenció una dicotomía entre limpieza de señal y fidelidad tímbrica. Los
 \bibitem{ref44} T. Chiba and M. Kajiyama, "The vowel: Its nature and structure," Tokyo-Kaiseikan, 1941.
 \bibitem{ref45} K. N. Stevens, "Acoustic phonetics," MIT Press, 1999.
 \bibitem{ref46} J. L. Flanagan, "Speech analysis synthesis and perception," Springer, 1972.
-% Añadir el resto de referencias...
+\bibitem{ref47} I. R. Titze, "Nonlinear source-filter coupling in phonation: Theory," \textit{The Journal of the Acoustical Society of America}, vol. 123, no. 5, pp. 2733-2749, 2008.
+\bibitem{ref48} P. Birkholz, D. Jackèl, and B. J. Kröger, "Construction and control of a three-dimensional vocal tract model," in \textit{2006 IEEE International Conference on Acoustics Speech and Signal Processing Proceedings}, IEEE, vol. 1, 2006.
+\bibitem{ref49} B. H. Story, "A parametric model of the vocal tract area function for vowel and consonant simulation," \textit{The Journal of the Acoustical Society of America}, vol. 117, no. 5, pp. 3231-3254, 2005.
+\bibitem{ref50} W. J. Hardcastle, J. Laver, and F. E. Gibbon, \textit{The Handbook of Phonetic Sciences}, 2nd ed. Oxford: Wiley-Blackwell, 2010.
+\bibitem{ref51} I. Goodfellow, Y. Bengio, y A. Courville, \textit{Deep Learning}. MIT Press, 2016.
+\bibitem{ref52} J. Wang, K. Chin, y H. Wang, "Speaker-informed speech enhancement and separation," en \textit{Proc. IEEE Intl. Conf. on Acoustics, Speech and Signal Processing (ICASSP)}, 2021.
+\bibitem{ref53} Y. Fathullah \textit{et al.}, "Neural Speech Synthesis using Semantic Tokens," \textit{arXiv preprint arXiv:2305.xxxx}, 2023.
+\bibitem{ref54} W.-N. Hsu, B. Bolte, Y.-H. H. Tsai, K. Lakhotia, R. Salakhutdinov, y A. Mohamed, "HuBERT: Self-Supervised Speech Representation Learning by Masked Prediction of Hidden Units," en \textit{IEEE/ACM Transactions on Audio, Speech, and Language Processing}, vol. 29, pp. 3451-3460, 2021.
+\bibitem{ref55} K. Qian, Y. Zhang, H. Gao, J. Ni, C.-I. Lai, D. Cox, M. Hasegawa-Johnson, y S. Chang, "ContentVec: An Improved Self-Supervised Speech Representation by Disentangling Speakers," en \textit{Proc. of the 39th International Conference on Machine Learning (ICML)}, 2022.
+\bibitem{ref56} N. Tishby y N. Zaslavsky, "Deep learning and the information bottleneck principle," en \textit{IEEE Information Theory Workshop (ITW)}, 2015.
+\bibitem{ref57} X. Tan \textit{et al.}, "A Survey on Neural Speech Synthesis," \textit{arXiv preprint arXiv:2106.15561}, 2021.
+\bibitem{ref58} RVC-Project, "Retrieval-based Voice Conversion WebUI," GitHub repository, 2023. [En línea]. \url{https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI}
+\bibitem{ref59} C. Kavin (svc-develop-team), "So-VITS-SVC: SoftVC VITS Singing Voice Conversion," GitHub repository, 2023. [En línea]. \url{https://github.com/svc-develop-team/so-vits-svc}
+\bibitem{ref60} E. Gölge \textit{et al.}, "Coqui XTTS: Open-Source Text-to-Speech Model," Coqui AI, 2023.
+\bibitem{ref61} A. Radford, J. W. Kim, T. Xu, G. Brockman, C. McLeavey, y I. Sutskever, "Robust Speech Recognition via Large-Scale Weak Supervision," \textit{OpenAI Technical Report}, 2022.
+\bibitem{ref62} J. Kong, J. Kim, y J. Bae, "HiFi-GAN: Generative Adversarial Networks for Efficient and High Fidelity Speech Synthesis," en \textit{Proc. NeurIPS}, 2020.
+\bibitem{ref63} P. Christiano \textit{et al.}, "Deep Reinforcement Learning from Human Feedback," \textit{Advances in Neural Information Processing Systems}, 2017.
+\bibitem{ref64} R. A. Khalil \textit{et al.}, "Speech Emotion Recognition Using Deep Learning Techniques: A Review," \textit{IEEE Access}, vol. 7, pp. 117327-117345, 2019.
 \end{thebibliography}
 
 \end{document}
