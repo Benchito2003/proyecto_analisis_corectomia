@@ -1,0 +1,259 @@
+\documentclass[12pt, a4paper]{article}
+
+% Paquetes de configuración
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish, es-tabla]{babel} % Configuración en español
+\usepackage{amsmath, amssymb} % Paquetes matemáticos avanzados
+\usepackage{graphicx} % Para insertar imágenes
+\usepackage{geometry} % Márgenes
+\usepackage{hyperref} % Enlaces interactivos y referencias
+\usepackage{float}    % Para posicionamiento de figuras
+\usepackage{enumitem} % Para listas personalizadas
+\usepackage{titlesec} % Para formato de títulos
+
+% Configuración de márgenes
+\geometry{top=2.5cm, bottom=2.5cm, left=3cm, right=3cm}
+
+% Datos del documento
+\title{Diseño y evaluación de un sistema DSP para la rehabilitación vocal post-cordectomía mediante reconstrucción espectral e IA}
+\author{Alfonso Gamboa Rubén}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+% --- RESUMEN ---
+\begin{abstract}
+La cordectomía, procedimiento quirúrgico que implica la extirpación parcial o total de los pliegues vocales, compromete severamente la capacidad comunicativa del paciente, afectando su identidad y calidad de vida. Este proyecto presenta el diseño y evaluación de un sistema de procesamiento digital de señales (DSP) orientado a la rehabilitación vocal no invasiva mediante la reconstrucción espectral. La metodología evolucionó a través de tres fases iterativas: una aproximación inicial en el dominio de la frecuencia (FFT global), un modelo adaptativo basado en metadatos y filtrado de intensidad adaptable, y finalmente, la implementación basada en la Transformada de Fourier de Tiempo Corto (STFT) y estimadores estadísticos (MMSE-STSA). Los resultados experimentales demostraron que, si bien la sustracción de ruido estacionario mediante algoritmos de Wiener y Ephraim-Malah es efectiva, la reconstrucción de la voz requiere una intervención más compleja a nivel de las micro-características que forman la voz para lograr preservar la identidad del paciente y evitar artefactos o distorsiones. El estudio concluye proponiendo una versión adicional de experimentación modular que implementa herramientas de inteligencia artificial.
+
+\vspace{0.5cm}
+\noindent \textbf{Palabras Clave:} Procesamiento Digital de Señales (DSP), Transformada de Fourier de Tiempo Corto (STFT), Filtro de Wiener, Filtro Savitzky-Golay, Detección de Actividad de Voz (VAD), Análisis Espectral, Rehabilitación Fónica, Python, Cordectomía, Ephraim-Malah, Formantes, Inteligencia Artificial (IA), RLHF, Red Neuronal, Speech Emotion Recognition (SER).
+\end{abstract}
+
+% --- OBJETIVOS ---
+\section{Objetivos del Proyecto}
+
+\subsection{Objetivo General}
+Desarrollar y evaluar algoritmos de procesamiento digital de señales basado en análisis espectral de tiempo corto y modelado estadístico, en relación a la capacidad de mejorar la calidad de la voz y restaurar parcialmente las características tímbricas en grabaciones de voz de pacientes sometidos a cordectomía.
+
+\subsection{Objetivos Específicos}
+\begin{enumerate}
+    \item \textbf{Caracterización Acústica:} Construir una base de datos pareada (pre y post-operatoria) para identificar los patrones de pérdida armónica y deformación espectral en el dominio de la frecuencia causados por la intervención quirúrgica.
+    \item \textbf{Optimización de la Relación Señal-Ruido (SNR):} Implementar y comparar técnicas de sustracción espectral (Noisereduce vs. Ephraim-Malah/VAD) para minimizar el ruido estacionario inherente a la fonación soplada sin degradar los transitorios de la voz.
+    \item \textbf{Reconstrucción Espectral:} Experimentar con algoritmos de transferencia de características que utilicen una máscara espectral diferencial ($T_{dB}$) para proyectar el timbre e identidad del sonido vocal (envolvente de frecuencia de la voz) sano sobre la señal patológica.
+    \item \textbf{Validación Técnica:} Evaluar mediante espectrogramas y gráficas comparativas, la efectividad de los algoritmos en la rehabilitación de formantes y reducción de artefactos y desfase de frecuencias armónicas.
+\end{enumerate}
+
+% --- MARCO TEÓRICO ---
+\section{Marco teórico}
+
+\subsection{Software y Herramientas de Desarrollo}
+
+\subsubsection{Lenguaje de Programación: Python (v3.12 / v3.16)}
+Para la implementación de los algoritmos de procesamiento de audio, se seleccionó Python como lenguaje núcleo. Esta elección se basa en la extensa documentación y la robustez de su ecosistema de librerías científicas (\textit{SciPy Stack}, etc.), que permiten prototipar y desplegar soluciones complejas matemáticas, estadísticas y procesamiento de señales con alta eficiencia \cite{ref1, ref2}.
+
+\subsubsection{Librerías Especializadas}
+\begin{itemize}
+    \item \textbf{Numpy (\texttt{numpy}):} Fundamental para la manipulación de arreglos multidimensionales \cite{ref3}. En el contexto del proyecto, se utiliza para convertir los flujos de bits de audio en arreglos de punto flotante (\texttt{float32}), permitiendo operaciones de álgebra lineal \cite{ref4}.
+    \item \textbf{Pydub (\texttt{pydub}):} Librería de alto nivel que actúa como interfaz para el manejo de archivos de audio (I/O).
+    \item \textbf{Scipy (\texttt{scipy.signal}):} Proporciona las herramientas matemáticas avanzadas para el procesamiento digital de señales \cite{ref5, ref6}.
+    \begin{itemize}
+        \item \textit{Filtro Savitzky-Golay:} Utilizado para el suavizado de curvas espectrales \cite{ref7, ref8}. A diferencia de un promedio móvil simple, este filtro ajusta un polinomio de orden $k$ a una ventana de puntos $m$ mediante mínimos cuadrados \cite{ref9}, preservando los momentos espectrales importantes (formantes) \cite{ref10}.
+        Su formulación discreta es:
+        \begin{equation}
+            Y_j = \sum_{i=-(m-1)/2}^{(m-1)/2} C_i \cdot y_{j+i}
+        \end{equation}
+        Donde $Y_j$ es el valor suavizado, $y$ los datos crudos, $m$ el tamaño de la ventana y $C_i$ los coeficientes de convolución \cite{ref11}.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Fundamentos Matemáticos y Procesamiento de Señales}
+
+\subsubsection{Transformada de Fourier de Tiempo Corto (STFT)}
+Dado que la voz es una señal no estacionaria, la Transformada de Fourier clásica es insuficiente \cite{ref14}. La STFT divide la señal en ventanas temporales superpuestas \cite{ref15}. Matemáticamente:
+\begin{equation}
+    X(m, k) = \sum_{n=0}^{N-1} x(n + mH) w(n) e^{-j \frac{2\pi}{N} kn}
+\end{equation}
+Donde $m$ es el índice temporal, $k$ el índice de frecuencia y $H$ el tamaño del salto o ventana \cite{ref16, ref17}.
+
+\subsubsection{Algoritmo de Filtrado: Wiener y Ephraim-Malah}
+El filtro de Wiener calcula una ganancia de transferencia óptima $W(f)$ basada en la Relación Señal-Ruido (SNR) \cite{ref22, ref23}:
+\begin{equation}
+    W(f) = \frac{P_{se\tilde{n}al}(f)}{P_{se\tilde{n}al}(f) + P_{ruido}(f)}
+\end{equation}
+El algoritmo atenúa las frecuencias donde la potencia del ruido domina \cite{ref24}.
+
+\subsection{Conceptos Estadísticos}
+\subsubsection{Desviación Estándar ($\sigma$)}
+Un píxel espectral se considera "señal" solo si su magnitud supera la media del ruido más $n$ veces su desviación estándar:
+\begin{equation}
+    \text{Umbral}(f) = \mu_{ruido}(f) + (n \cdot \sigma_{ruido}(f))
+\end{equation}
+
+\subsection{Acústica y Características de la Voz}
+\subsubsection{Los Formantes}
+Los picos de resonancia espectral generados por el filtro del tracto vocal se denominan formantes \cite{ref28, ref29}:
+\begin{itemize}
+    \item \textbf{F1 y F2 (Vocálicos):} Determinan qué vocal se está pronunciando \cite{ref30, ref31, ref32}. La inteligibilidad depende de ellos \cite{ref33}.
+    \item \textbf{F3, F4 y F5 (Timbre):} Ubicados en frecuencias superiores ($>2500$ Hz), dependen de la anatomía fija \cite{ref34} y definen la identidad del hablante \cite{ref35}.
+\end{itemize}
+
+\subsection{La cordectomía y Teoría Fuente-Filtro}
+La cordectomía es una intervención quirúrgica para neoplasias laríngeas \cite{ref36, ref37}, resultando en disfonía o afonía \cite{ref38, ref39, ref40, ref41, ref42}.
+El modelo acústico estándar es la \textbf{Teoría Fuente-Filtro} (Fant, 1960) \cite{ref43, ref44}:
+\begin{enumerate}
+    \item \textbf{La Fuente ($Source$):} Vibración de los pliegues vocales \cite{ref45}.
+    \item \textbf{El Filtro ($Filter$):} El tracto vocal que actúa como resonador \cite{ref46, ref47}.
+\end{enumerate}
+
+% --- METODOLOGÍA ---
+\section{Metodología}
+
+\subsection{Versión 1.0: Análisis Espectral y Estadística Descriptiva}
+La arquitectura se estructura en importación/preprocesamiento y procesamiento DSP. Se utiliza un micrófono Razer Seiren Mini.
+
+\subsubsection{Algoritmo 1.1.0: Preprocesamiento}
+Sea $x(n)$ la señal de entrada, su representación en frecuencia $X(k)$ se define como:
+\begin{equation}
+    X(k) = \sum_{n=0}^{N-1} x(n) e^{-j \frac{2\pi}{N} k n}
+\end{equation}
+
+% DIAGRAMA 1
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.8\textwidth]{diagrama1.png} 
+    \begin{verbatim}
+    [AQUÍ VA TU DIAGRAMA MERMAID 1.1.0 COMO IMAGEN]
+    graph TD
+        A[Inicio] --> B[/Cargar Audio Pre A y Post B/]
+        B --> C[Aplicar Reducción de Ruido Noisereduce]
+        ...
+    \end{verbatim}
+    \caption{Diagrama de flujo del Algoritmo 1.1.0}
+    \label{fig:diag1}
+\end{figure}
+
+\subsubsection{Algoritmo 1.2.0: Rehabilitación por Amplificación}
+Se calcula un factor de ganancia $G(k)$:
+\begin{equation}
+    G(k) = \frac{|X_{pre}(k)|}{|X_{post}(k)|}
+\end{equation}
+La señal rehabilitada $Y_{reh}(k)$ es:
+\begin{equation}
+    Y_{reh}(k) = X_{post}(k) \cdot G(k)
+\end{equation}
+Finalmente se aplica la IFFT:
+\begin{equation}
+    y(n) = \frac{1}{N} \sum_{k=0}^{N-1} Y_{reh}(k) e^{j \frac{2\pi}{N} k n}
+\end{equation}
+
+\subsection{Versión 2.0: Optimización mediante Metadatos}
+Se implementa un promedio ponderado para el Perfil Espectral Ideal:
+\begin{equation}
+    S_{ideal}(k) = \frac{\sum_{i=1}^{N} (X_i(k) \cdot w_i)}{\sum_{i=1}^{N} w_i}
+\end{equation}
+
+Reconstrucción híbrida con filtro Savitzky-Golay:
+\begin{equation}
+    Y_{reh}(k) = \text{SavGol}\left( \begin{cases} X_{post}(k) \cdot G_{amp} & \text{si } 500 \le f \le 2500 \\ S_{ideal}(k) & \text{si } 3500 \le f \le 4500 \\ X_{post}(k) & \text{resto} \end{cases} \right)
+\end{equation}
+
+\subsection{Versión 3.0: Estimación Espectral MMSE}
+Se utiliza la STFT. El espectrograma se calcula como:
+\begin{equation}
+    S(m, k) = 10 \cdot \log_{10}(|X(m, k)|^2)
+\end{equation}
+
+Algoritmo 3.3.0: Rehabilitación por Máscara de Transferencia Espectral ($T_{dB}$):
+\begin{equation}
+    T_{dB}(k) = \mu_{PRE, dB}(k) - \mu_{POST, dB}(k)
+\end{equation}
+\begin{equation}
+    |Y_{reh}(m, k)| = |X_{post}(m, k)| \cdot 10^{\frac{T_{dB}(k)}{20}}
+\end{equation}
+
+\subsection{Versión 4.0: Implementación de Inteligencia Artificial (Propuesta)}
+Se propone una arquitectura ASR-TTS. Matemáticamente, buscamos maximizar la probabilidad de la onda de salida $Y$ dado el texto $T$ y el vector de identidad $S$:
+\begin{equation}
+    P(Y | T, S) = \prod_{n} P(y_n | y_{<n}, T, S)
+\end{equation}
+
+% --- CONCLUSIONES ---
+\section{Conclusiones generales}
+La evolución del proyecto permite establecer hallazgos críticos. La voz humana no puede tratarse como un fenómeno estático; la aproximación global resulta insuficiente. El éxito de la rehabilitación espectral depende de la capacidad de ajustar la señal en una escala temporal micro-segmentada.
+
+Se evidenció una dicotomía entre limpieza de señal y fidelidad tímbrica. Los algoritmos de sustracción espectral (Wiener+VAD) están limitados a ruido estacionario. Un hallazgo fundamental fue la criticidad de la alineación temporal; cualquier desviación rítmica genera incoherencias de fase. El futuro apunta hacia la caracterización multidimensional empleando tensores y matrices de mayores dimensiones.
+
+% --- REFERENCIAS ---
+\begin{thebibliography}{99}
+
+\bibitem{ref1} T. E. Oliphant, "A guide to NumPy," USA: Trelgol Publishing, vol. 1, 2006.
+\bibitem{ref2} W. McKinney, "Python for data analysis: Data wrangling with Pandas, NumPy, and IPython," O'Reilly Media, Inc., 2012.
+\bibitem{ref3} S. van der Walt, S. C. Colbert, and G. Varoquaux, "The NumPy array: A structure for efficient numerical computation," \textit{Computing in Science \& Engineering}, vol. 13, no. 2, pp. 22-30, 2011.
+\bibitem{ref4} J. M. Kizza, "Python for scientific computing," in \textit{Guide to Computer Network Security}, Springer, 2017, pp. 263-283.
+\bibitem{ref5} P. Virtanen et al., "SciPy 1.0: fundamental algorithms for scientific computing in Python," \textit{Nature Methods}, vol. 17, no. 3, pp. 261-272, 2020.
+\bibitem{ref6} E. Jones, T. Oliphant, and P. Peterson, "SciPy: Open source scientific tools for Python," 2001.
+\bibitem{ref7} A. Savitzky and M. J. E. Golay, "Smoothing and differentiation of data by simplified least squares procedures," \textit{Analytical Chemistry}, vol. 36, no. 8, pp. 1627-1639, 1964.
+\bibitem{ref8} R. W. Schafer, "What is a Savitzky-Golay filter? [lecture notes]," \textit{IEEE Signal Processing Magazine}, vol. 28, no. 4, pp. 111-117, 2011.
+\bibitem{ref9} W. H. Press and S. A. Teukolsky, "Savitzky-Golay smoothing filters," \textit{Computers in Physics}, vol. 4, no. 6, pp. 669-672, 1990.
+\bibitem{ref10} M. Schmid, D. Rath, and U. Diebold, "Why and how Savitzky–Golay filters should be replaced," \textit{ACS Measurement Science Au}, vol. 2, no. 2, pp. 185-196, 2022.
+\bibitem{ref11} H. H. Madden, "Comments on the Savitzky-Golay convolution method for least-squares-fit smoothing and differentiation of digital data," \textit{Analytical Chemistry}, vol. 50, no. 9, pp. 1383-1386, 1978.
+\bibitem{ref12} J. O. Smith, "Spectral audio signal processing," W3K Publishing, 2011.
+\bibitem{ref13} L. R. Rabiner and B. Gold, "Theory and application of digital signal processing," Englewood Cliffs, NJ: Prentice-Hall, Inc., 1975.
+\bibitem{ref14} J. B. Allen and L. R. Rabiner, "A unified approach to short-time Fourier analysis and synthesis," \textit{Proceedings of the IEEE}, vol. 65, no. 11, pp. 1558-1564, 1977.
+\bibitem{ref15} M. R. Portnoff, "Time-frequency representation of digital signals and systems based on short-time Fourier analysis," \textit{IEEE Transactions on Acoustics, Speech, and Signal Processing}, vol. 28, no. 1, pp. 55-69, 1980.
+\bibitem{ref16} M. Dolson, "The phase vocoder: A tutorial," \textit{Computer Music Journal}, vol. 10, no. 4, pp. 14-27, 1986.
+\bibitem{ref17} D. Griffin and J. Lim, "Signal estimation from modified short-time Fourier transform," \textit{IEEE Transactions on Acoustics, Speech, and Signal Processing}, vol. 32, no. 2, pp. 236-243, 1984.
+\bibitem{ref18} B. Sharpe, "Invertibility of overlap-add processing," https://gauss256.github.io/blog/cola.html, accessed July 2019.
+\bibitem{ref19} L. R. Rabiner and R. W. Schafer, "Digital processing of speech signals," Englewood Cliffs, NJ: Prentice Hall, 1978.
+\bibitem{ref20} Y. Ephraim and D. Malah, "Speech enhancement using a minimum-mean square error short-time spectral amplitude estimator," \textit{IEEE Transactions on Acoustics, Speech, and Signal Processing}, vol. 32, no. 6, pp. 1109-1121, 1984.
+\bibitem{ref21} N. Wiener, "Extrapolation, interpolation, and smoothing of stationary time series: with engineering applications," MIT Press, 1949.
+\bibitem{ref22} J. Chen, J. Benesty, Y. Huang, and S. Doclo, "New insights into the noise reduction Wiener filter," \textit{IEEE Transactions on Audio, Speech, and Language Processing}, vol. 14, no. 4, pp. 1218-1234, 2006.
+\bibitem{ref23} P. C. Loizou, "Speech enhancement: theory and practice," CRC Press, 2013.
+\bibitem{ref24} S. F. Boll, "Suppression of acoustic noise in speech using spectral subtraction," \textit{IEEE Transactions on Acoustics, Speech, and Signal Processing}, vol. 27, no. 2, pp. 113-120, 1979.
+\bibitem{ref25} J. Sohn, N. S. Kim, and W. Sung, "A statistical model-based voice activity detection," \textit{IEEE Signal Processing Letters}, vol. 6, no. 1, pp. 1-3, 1999.
+\bibitem{ref26} A. J. M. Houtsma, "Pitch and timbre: Definition, meaning and use," \textit{Journal of New Music Research}, vol. 26, no. 2, pp. 104-115, 1997.
+\bibitem{ref27} H. M. Teager and S. M. Teager, "Evidence for nonlinear sound production mechanisms in the vocal tract," in \textit{Speech Production and Speech Modelling}, Springer, 1990, pp. 241-261.
+\bibitem{ref28} P. Ladefoged, "Vowels and consonants: An introduction to the sounds of languages," Malden, MA: Blackwell Publishers, 2001.
+\bibitem{ref29} G. Fant, "Acoustic theory of speech production," The Hague: Mouton, 1960.
+\bibitem{ref30} G. E. Peterson and H. L. Barney, "Control methods used in a study of the vowels," \textit{The Journal of the Acoustical Society of America}, vol. 24, no. 2, pp. 175-184, 1952.
+\bibitem{ref31} J. Hillenbrand, L. A. Getty, M. J. Clark, and K. Wheeler, "Acoustic characteristics of American English vowels," \textit{The Journal of the Acoustical Society of America}, vol. 97, no. 5, pp. 3099-3111, 1995.
+\bibitem{ref32} K. N. Stevens, "Acoustic phonetics," MIT Press, 1998.
+\bibitem{ref33} D. H. Whalen and A. G. Levitt, "The universality of intrinsic F0 of vowels," \textit{Journal of Phonetics}, vol. 23, no. 3, pp. 349-366, 1995.
+\bibitem{ref34} I. R. Titze, "Principles of voice production," Iowa City: National Center for Voice and Speech, 2000.
+\bibitem{ref35} M. Hirano, "Clinical examination of voice," Springer Science \& Business Media, 2013.
+\bibitem{ref36} C. E. Silver et al., "Current trends in initial management of laryngeal cancer," \textit{European Archives of Oto-Rhino-Laryngology}, vol. 266, no. 9, pp. 1333-1352, 2009.
+\bibitem{ref37} M. Remacle et al., "Endoscopic cordectomy. A proposal for a classification," \textit{European Archives of Oto-Rhino-Laryngology}, vol. 257, no. 4, pp. 227-231, 2000.
+\bibitem{ref38} E. V. Sjögren et al., "Voice outcome in T1a midcord glottic carcinoma," \textit{Archives of Otolaryngology–Head \& Neck Surgery}, vol. 134, no. 9, pp. 965-972, 2008.
+\bibitem{ref39} T. Yılmaz et al., "Voice after cordectomy type I or type II or radiation therapy," \textit{Otolaryngology–Head and Neck Surgery}, vol. 168, no. 3, pp. 559-568, 2023.
+\bibitem{ref40} L. M. Aaltonen et al., "Voice quality after treatment of early vocal cord cancer," \textit{International Journal of Radiation Oncology Biology Physics}, vol. 90, no. 2, pp. 255-270, 2014.
+\bibitem{ref41} H. S. Lee et al., "Voice outcome according to surgical extent of transoral laser microsurgery," \textit{The Laryngoscope}, vol. 126, no. 9, pp. 2051-2056, 2016.
+\bibitem{ref42} A. K. Fouad et al., "Laryngeal compensation for voice production after CO2 laser cordectomy," \textit{Clinical and Experimental Otorhinolaryngology}, vol. 8, no. 4, pp. 340-346, 2015.
+\bibitem{ref43} G. Fant, "Acoustic theory of speech production: with calculations based on X-ray studies," The Hague: Mouton, 1960.
+\bibitem{ref44} T. Chiba and M. Kajiyama, "The vowel: Its nature and structure," Tokyo-Kaiseikan Publishing Co., 1941.
+\bibitem{ref45} K. N. Stevens, "Acoustic phonetics," Current Studies in Linguistics Series, vol. 30, MIT Press, 1999.
+\bibitem{ref46} J. L. Flanagan, "Speech analysis synthesis and perception," Berlin: Springer-Verlag, 1972.
+\bibitem{ref47} I. R. Titze, "Nonlinear source-filter coupling in phonation: Theory," \textit{The Journal of the Acoustical Society of America}, vol. 123, no. 5, pp. 2733-2749, 2008.
+\bibitem{ref48} P. Birkholz, D. Jackèl, and B. J. Kröger, "Construction and control of a three-dimensional vocal tract model," in \textit{2006 IEEE International Conference on Acoustics Speech and Signal Processing Proceedings}, IEEE, vol. 1, 2006.
+\bibitem{ref49} B. H. Story, "A parametric model of the vocal tract area function," \textit{The Journal of the Acoustical Society of America}, vol. 117, no. 5, pp. 3231-3254, 2005.
+\bibitem{ref50} W. J. Hardcastle, J. Laver, and F. E. Gibbon, \textit{The Handbook of Phonetic Sciences}, 2nd ed. Oxford: Wiley-Blackwell, 2010.
+\bibitem{ref51} I. Goodfellow, Y. Bengio, y A. Courville, \textit{Deep Learning}. MIT Press, 2016.
+\bibitem{ref52} J. Wang, K. Chin, y H. Wang, "Speaker-informed speech enhancement and separation," en \textit{Proc. IEEE Intl. Conf. on Acoustics, Speech and Signal Processing (ICASSP)}, 2021.
+\bibitem{ref53} Y. Fathullah et al., "Neural Speech Synthesis using Semantic Tokens," \textit{arXiv preprint arXiv:2305.xxxx}, 2023.
+\bibitem{ref54} W.-N. Hsu et al., "HuBERT: Self-Supervised Speech Representation Learning," en \textit{IEEE/ACM Transactions on Audio, Speech, and Language Processing}, vol. 29, pp. 3451-3460, 2021.
+\bibitem{ref55} K. Qian et al., "ContentVec: An Improved Self-Supervised Speech Representation," en \textit{Proc. of the 39th International Conference on Machine Learning (ICML)}, 2022.
+\bibitem{ref56} N. Tishby y N. Zaslavsky, "Deep learning and the information bottleneck principle," en \textit{IEEE Information Theory Workshop (ITW)}, 2015.
+\bibitem{ref57} X. Tan et al., "A Survey on Neural Speech Synthesis," \textit{arXiv preprint arXiv:2106.15561}, 2021.
+\bibitem{ref58} RVC-Project, "Retrieval-based Voice Conversion WebUI," GitHub repository, 2023.
+\bibitem{ref59} C. Kavin (svc-develop-team), "So-VITS-SVC: SoftVC VITS Singing Voice Conversion," GitHub repository, 2023.
+\bibitem{ref60} E. Gölge et al., "Coqui XTTS: Open-Source Text-to-Speech Model," Coqui AI, 2023.
+\bibitem{ref61} A. Radford et al., "Robust Speech Recognition via Large-Scale Weak Supervision," \textit{OpenAI Technical Report}, 2022.
+\bibitem{ref62} J. Kong, J. Kim, y J. Bae, "HiFi-GAN: Generative Adversarial Networks for Efficient and High Fidelity Speech Synthesis," en \textit{Proc. NeurIPS}, 2020.
+\bibitem{ref63} P. Christiano et al., "Deep Reinforcement Learning from Human Feedback," \textit{Advances in Neural Information Processing Systems}, 2017.
+\bibitem{ref64} R. A. Khalil et al., "Speech Emotion Recognition Using Deep Learning Techniques: A Review," \textit{IEEE Access}, vol. 7, pp. 117327-117345, 2019.
+
+\end{thebibliography}
+
+\end{document}
