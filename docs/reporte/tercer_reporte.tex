@@ -374,7 +374,7 @@ Medida de dispersión que indica qué tan extendidos están los valores de un co
 
     \paragraph{Algoritmo 1.2.1: Rehabilitación por Suma Espectral Diferencial} \hfill \\
     \textbf{Descripción técnica:}
-    ste método se basa en la compensación aditiva. Se calculan los promedios espectrales de las muestras pre y post-cordectomía ($\mu_{pre}$ y $\mu_{post}$) para determinar la diferencia promedio $\Delta_{media}$.
+    Este método se basa en la compensación aditiva. Se calculan los promedios espectrales de las muestras pre y post-cordectomía ($\mu_{pre}$ y $\mu_{post}$) para determinar la diferencia promedio $\Delta_{media}$.
     \begin{equation}
         \Delta_{media}(k) = \mu_{pre}(k) - \mu_{post}(k)
     \end{equation}
@@ -479,8 +479,9 @@ En esta iteración, se refina el protocolo de nomenclatura para incluir metadato
 
 
 
-      \subsubsection{Descripción de Algoritmos (v2.0)}
+      \subsubsection{Descripción de Algoritmos (v2.0)}\hfill \\
         \paragraph{Algoritmo 2.1.0: Importación Adaptativa y Filtrado Selectivo}\hfill \\
+
         \textbf{Descripción Técnica:}
 
         Este módulo implementa un sistema de análisis sintáctico mediante Expresiones Regulares (REGEX) para extraer los metadatos del nombre del archivo y configurar dinámicamente los parámetros del procesamiento digital de señales (DSP).
@@ -494,10 +495,6 @@ En esta iteración, se refina el protocolo de nomenclatura para incluir metadato
         \end{itemize}
 
         Posteriormente, se aplica un algoritmo de reducción de ruido espectral (librería `noisereduce') cuyos parámetros se ajustan según la calidad ($Q$) detectada del nombre del archivo (Tabla \ref{tab:params_ruido}).
-
-        \textbf{Diagrama de Flujo:}
-
-
 
         \begin{table}[htbp]
           \centering
@@ -522,7 +519,7 @@ En esta iteración, se refina el protocolo de nomenclatura para incluir metadato
             \end{tabular}
         \end{table}
 
-        \textbf{Diagrama:} Apreciable en la figura \ref{fig:2.1-2.1.0}
+        \textbf{Diagrama de flujo:} Apreciable en la figura \ref{fig:2.1-2.1.0}
 
         \begin{figure}[htbp]
             \centering
@@ -589,7 +586,7 @@ En esta iteración, se refina el protocolo de nomenclatura para incluir metadato
 
       El error fundamental de esta versión radica en tratar la voz como una señal estacionaria (constante en el tiempo). Al aplicar una Transformada de Fourier (FFT) sobre la totalidad del archivo y promediar los espectros, se pierde completamente la dimensión temporal.
 
-      La inyección de una banda de frecuencias artificial funciona matemáticamente para rellenar huecos, pero acústicamente es como intentar reemplazar la cuerda rota de una guitarra con una cuerda de piano. Aunque la nota sea la misma, el timbre no coincide, creando una voz que suena "metálica" o procesada, perdiendo identidad del paciente.
+      La inyección de una banda de frecuencias artificial funciona matemáticamente para rellenar huecos, pero acústicamente es como intentar reemplazar la cuerda rota de una guitarra con una cuerda de piano. Aunque la nota sea la misma, el timbre no coincide, creando una voz que suena ``metálica'' o procesada, perdiendo identidad del paciente.
 
     \subsection{Versión 3.0: Estimación MMSE y Enmascaramiento Adaptativo}
 
@@ -655,8 +652,8 @@ En esta iteración, se refina el protocolo de nomenclatura para incluir metadato
         \end{figure}
 
 
-        \paragraph{Algoritmo 3.3.0: Rehabilitación por Máscara de Transferencia Espectral}
-        \textbf{Descripción técnica:} \hfill \\
+        \paragraph{Algoritmo 3.3.0: Rehabilitación por Máscara de Transferencia Espectral}\hfill \\
+        \textbf{Descripción técnica:} 
 
         ste algoritmo genera un "Perfil de Usuario" promediando las curvas espectrales de las bases de datos pre y post-cordectomía, suavizadas previamente mediante un filtro Savitzky-Golay para eliminar ruido aleatorio de las curvas de tendencia.
 
@@ -699,8 +696,10 @@ En esta iteración, se refina el protocolo de nomenclatura para incluir metadato
       Para abordar la complejidad del habla; calidad de la voz vs. latencia (resultados en tiempo real) vs. expresividad/emociones del hablante, el desarrollo se dividió en cuatro fases. Cada fase aborda una limitación específica de las versiones anteriores, pasando del procesamiento \textit{offline} de alta fidelidad a la ejecución en tiempo real.
 
       \subsubsection{Descripción de Algoritmos (v4.0 - Propuesta)}
-        \paragraph{Fase 1: Reconstrucción y Síntesis de Alta Fidelidad (Offline)}
-        \textbf{Fundamento teórico:} \hfill \\
+        \paragraph{Fase 1: Reconstrucción y Síntesis de Alta Fidelidad (Offline)}\hfill \\
+
+        \textbf{Fundamento teórico:}
+
         Esta fase resuelve el problema de la "alineación temporal" mediante una arquitectura ASR-TTS (Automatic Speech Recognition $\to$ Text-to-Speech).
 
         El sistema desacopla totalmente la señal de entrada. Utiliza un modelo de reconocimiento robusto (ej. Whisper) para extraer los "tokens semánticos" (el texto/mensaje), descartando cualquier información acústica patológica (ronquera, falta de aire). Posteriormente, un modelo de síntesis (ej. XTTS v2) condicionada por un Speaker Embedding (vector latente extraído de los audios pre-cordectomía) genera una onda sonora completamente nueva.
@@ -725,8 +724,9 @@ En esta iteración, se refina el protocolo de nomenclatura para incluir metadato
             \label{fig:2.1-f1}
         \end{figure}
 
-        \paragraph{Algoritmo 4.2.0: Optimización de Preferencias (Fase 2)}
-        \textbf{Fundamento teórico:}\hfill \\
+        \paragraph{Algoritmo 4.2.0: Optimización de Preferencias (Fase 2)}\hfill \\
+
+        \textbf{Fundamento teórico:}
 
         Dado que la Fase 1 produce una voz "neutra", esta fase introduce un algoritmo de Entrenamiento Supervisado por Preferencias. Se basa en principios de Reinforcement Learning from Human Feedback (RLHF) simplificado o selección de vectores de estilo.
 
