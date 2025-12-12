@@ -1,6 +1,8 @@
 # Fdb version 4
-["pdflatex"] 1765450416.77233 "tercer_reporte.tex" "tercer_reporte.pdf" "tercer_reporte" 1765450419.3722 0
+["pdflatex"] 1765499117.4773 "tercer_reporte.tex" "tercer_reporte.pdf" "tercer_reporte" 1765499121.09395 0
   "../diagramas/2.1. Algoritmo 1.1.0_ Preprocesamiento y Análisis Comparativo.png" 1765431592.98044 544404 6adff155360757fa749dac3f9f9ff037 ""
+  "../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png" 1765431589.41844 481978 e3d5d8f767bad28f9c8182bdde530510 ""
+  "../diagramas/Algoritmo_1.2.0.png" 1765496901.54044 159443 da4c62e2d89ce2f9d76e8c5955bfee1e ""
   "/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc" 1755987285 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1755987285 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texmf-dist/fonts/tfm/adobe/courier/pcrb8r.tfm" 1755987285 1292 3059476c50a24578715759f22652f3d0 ""
@@ -140,10 +142,10 @@
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1755987285 42087 b0f9697c952c8f5a8eede4134282cb0d ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1762056128 5311557 9da84c45f5b388655502706482323571 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1762901361 2030638 844ada1bc1193bf82e138542ab1f5f2f ""
-  "tercer_reporte.aux" 1765450419.23062 16096 8aaae54ceb824b15dd91b778971bf663 "pdflatex"
-  "tercer_reporte.out" 1765450419.23862 3028 1d6a091228cc8ca4170236880a87064c "pdflatex"
-  "tercer_reporte.tex" 1765450412.67159 45212 72820493c859a603f7eeb53d18bb31cf ""
-  "tercer_reporte.toc" 1765450419.23862 8146 65af7c344e5ebf175d3a3eaa6cdfe3f4 "pdflatex"
+  "tercer_reporte.aux" 1765499120.89769 16091 22e7a551d9ef080014c1b3666b0dc564 "pdflatex"
+  "tercer_reporte.out" 1765499120.91069 3028 1d6a091228cc8ca4170236880a87064c "pdflatex"
+  "tercer_reporte.tex" 1765499112.40752 46895 390d96da70321f6c3427b8e96814d235 ""
+  "tercer_reporte.toc" 1765499120.91069 8140 cfe562307ac5fc3d2b7ef9e8f90e516b "pdflatex"
   (generated)
   "tercer_reporte.aux"
   "tercer_reporte.log"

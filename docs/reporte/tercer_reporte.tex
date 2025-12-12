@@ -289,59 +289,68 @@ Medida de dispersión que indica qué tan extendidos están los valores de un co
     \textit{Ejemplo:} `GFA-B1.ogg (Paciente G.F.A., primer audio de origen post-cordectomía, formato OGG).
 
     \subsubsection{Descripción de Algoritmos (v1.0)}
-      \paragraph{ Algoritmo 1.1.0: Preprocesamiento y Análisis Comparativos}
+      \paragraph{ Algoritmo 1.1.0: Preprocesamiento y Análisis Comparativo}
+      \textbf{Descripción Técnica:}
 
-Esta fase gestiona la importación de señales de audio pareadas (pre y post-cordectomía). Se aplica una reducción de ruido mediante el algoritmo de sustracción espectral incluido por la librería `Noisereduce`. Posteriormente, se transforma la señal al dominio de la frecuencia utilizando la Transformada Rápida de Fourier (FFT) para obtener la magnitud del espectro.
+      Esta fase gestiona la importacSea $x(n)$ la señal de entrada discretizada, su representación en frecuencia $X(k)$ se define como:ión de señales de audio pareadas (pre y post-cordectomía). Se aplica una reducción de ruido mediante el algoritmo de sustracción espectral incluido por la librería `Noisereduce'. Posteriormente, se transforma la señal al dominio de la frecuencia utilizando la Transformada Rápida de Fourier (FFT) para obtener la magnitud del espectro.
 
-Sea $x(n)$ la señal de entrada, su representación en frecuencia $X(k)$ se define como:
-\begin{equation}
-    X(k) = \sum_{n=0}^{N-1} x(n) e^{-j \frac{2\pi}{N} k n}
-\end{equation}
+      Sea $x(n)$ la señal de entrada discretizada, su representación en frecuencia $X(k)$ se define como:
+      \begin{equation}
+        X(k) = \sum_{n=0}^{N-1} x(n) e^{-j \frac{2\pi}{N} k n}
+      \end{equation}
 
-% NOTA: Usamos figure (sin asterisco) para que ocupe solo una columna
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.95\columnwidth]{../diagramas/2.1. Algoritmo 1.1.0_ Preprocesamiento y Análisis Comparativo.png}
-    \caption{Diagrama de flujo del Algoritmo 1.1.0}
-    \label{fig:m1}
-\end{figure}
+      Donde la magnitud espectral se calcula como $|X(k)| = \sqrt{Re(X(k))^2 + Im(X(k))^2}$.
 
-\subsubsection{Algoritmo 1.2.0: Rehabilitación}
-Se calcula un factor de ganancia $G(k)$:
-\begin{equation}
-    G(k) = \frac{|X_{pre}(k)|}{|X_{post}(k)|}
-\end{equation}
-Señal rehabilitada $Y_{reh}(k)$:
-\begin{equation}
-    Y_{reh}(k) = X_{post}(k) \cdot G(k)
-\end{equation}
-Aplicación de la IFFT:
-\begin{equation}
-    y(n) = \frac{1}{N} \sum_{k=0}^{N-1} Y_{reh}(k) e^{j \frac{2\pi}{N} k n}
-\end{equation}
+      Se generan reportes gráficos comparativos y tablas de datos estructuradas (.csv y .txt) que relacionan las bandas de frecuencia con la magnitud de la señal.
 
-\begin{figure}[htbp]
-    \centering
-    \fbox{\begin{minipage}{0.9\columnwidth}
-    \centering
-    \vspace{0.5cm}
-    \textbf{Aquí va mermaid 2}
-    \vspace{0.5cm}
-    \end{minipage}}
-    \caption{Diagrama de flujo del Algoritmo 1.2.0}
-\end{figure}
+      De acuerdo al tipo de archivo obtenido, se asignan los siguientes prefijos al nombre al archivo como indicadores de procesamiento:
+      \begin{itemize}
+        \item ENH- (\textit{Enhanced}): Indica aplicación de reducción de ruido.
+        \item REH- (Rehabilitado): Indica archivo resultante del proceso de rehabilitación.
+        \item GRA- (Gráfica): 
+          \begin{itemize}
+            \item Solo el prefijo si se analiza un archivo independiente. Genera la gráfica comparativa "Antes y después de la reducción de ruido" 
+            \item Si es comparativo, incluye ambos IDs en orden de carga después del Código de paciente: `{Código del paciente}(ID1-ID2)'.
+          \end{itemize}
+      \item  DB- (\textit{Database}): Tablas de datos numéricos exportados.
+      \end{itemize}
+
+        % NOTA: Usamos figure (sin asterisco) para que ocupe solo una columna
+      \begin{figure}[H]
+          \centering
+          \includegraphics[width=0.95\columnwidth]{../diagramas/2.1. Algoritmo 1.1.0_ Preprocesamiento y Análisis Comparativo.png}
+          \caption{Diagrama de flujo del Algoritmo 1.1.0}
+          \label{fig:m1}
+      \end{figure}
+
+    \paragraph{Algoritmo 1.2.0: Rehabilitación}
+
+    \textbf{Descripción técnica:}
+    Utilizando unicamente archivos pareados. El objetivo es igualar la respuesta en frecuencia de la señal post-cordectomía a la de la señal original. Se calcula un factor de ganancia $G(k)$ para cada banda de frecuencia $k$, tal que la magnitud post-cordectomía se aproxime a la pre-cordectomía.
+    \begin{equation}
+        G(k) = \frac{|X_{pre}(k)|}{|X_{post}(k)|}
+    \end{equation}
+    La señal rehabilitada en el dominio de la frecuencia $Y_{reh}(k)$ se obtiene mediante:
+    \begin{equation}
+        Y_{reh}(k) = X_{post}(k) \cdot G(k)
+    \end{equation}
+    Finalmente, se aplica la Transformada Inversa de Fourier (IFFT) para recuperar la señal de audio:
+    \begin{equation}
+        y(n) = \frac{1}{N} \sum_{k=0}^{N-1} Y_{reh}(k) e^{j \frac{2\pi}{N} k n}
+    \end{equation}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.95\columnwidth]{../diagramas/Algoritmo_1.2.0.png}
+        \caption{Diagrama de flujo del Algoritmo 1.2.0}
+    \end{figure}
 
 \subsubsection{Algoritmo 1.1.1: Archivos Independientes}
 Iteración para procesamiento unilateral.
 
 \begin{figure}[htbp]
     \centering
-    \fbox{\begin{minipage}{0.9\columnwidth}
-    \centering
-    \vspace{0.5cm}
-    \textbf{Aquí va mermaid 3}
-    \vspace{0.5cm}
-    \end{minipage}}
+    \includegraphics[width=0.95\columnwidth]{../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png}
     \caption{Diagrama de flujo del Algoritmo 1.1.1}
 \end{figure}
 
