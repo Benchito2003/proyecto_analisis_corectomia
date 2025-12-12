@@ -1,0 +1,18 @@
+graph TD
+    A[Entrada Micrófono: Voz Post-Op] --> B[Buffer Circular / Chunking 40ms]
+    B --> C[Encoder: ContentVec / HuBERT]
+    
+    subgraph "Cuello de Botella de Información"
+    C -->|Unidades Semánticas| D[Descarte de Ruido y Timbre Original]
+    end
+    
+    B --> E[Extractor de Pitch F0]
+    E --> F{Modulador de F0}
+    F -- Ignorar F0 Real --> G[Generar Curva F0 Plana/Neutra]
+    
+    D --> H[Decoder / Vocoder HiFi-GAN]
+    G --> H
+    H -->|Condicionado por| I[/Perfil de Estilo Pre-Op Fase 2/]
+    
+    H --> J[Overlap-Add: Reconstrucción de Flujo]
+    J --> K[Salida Altavoz]

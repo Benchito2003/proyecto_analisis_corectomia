@@ -15,6 +15,8 @@
 \usepackage{hyperref}
 \usepackage{microtype}
 \usepackage{csquotes}
+\usepackage{booktabs}
+\usepackage{multirow}
 
 % --- DEFINICIÓN DE DATOS ---
 \title{Diseño y evaluación de un sistema DSP para la rehabilitación vocal post-cordectomía mediante reconstrucción espectral e IA}
@@ -269,7 +271,13 @@ Medida de dispersión que indica qué tan extendidos están los valores de un co
     Los datos de para la versión post-cordectomía consisten en simulaciones de lectura del mismo dialogo en una versión pre-cordectomia, realizadas por el paciente en un entorno controlado con bajo ruido estacionario. Para la captura se utilizó un micrófono Razer Seiren Mini con las siguientes especificaciones técnicas:
 
     \paragraph{Nomenclatura de Archivos}
-    Para organizar los datos de manera eficiente, se estableció el siguiente protocolo de nomenclatura: `\{CódigoPaciente\}-\{Origen\}\{Número\}.\{Extensión\}'
+    Para organizar los datos de manera eficiente, se estableció el siguiente protocolo de nomenclatura:
+
+    \begin{center}
+      <CódigoPaciente>-<Origen><Número>.<Extensió>
+    \end{center}
+    
+
     \begin{itemize}
       \item Código del paciente: Iniciales del nombre (ej. GFA).
       \item Origen del archivo:
@@ -291,9 +299,9 @@ Medida de dispersión que indica qué tan extendidos están los valores de un co
     \subsubsection{Descripción de Algoritmos (v1.0)}
       \paragraph{ Algoritmo 1.1.0: Preprocesamiento y Análisis Comparativo}
       \textbf{Descripción Técnica:}
-
-      Esta fase gestiona la importacSea $x(n)$ la señal de entrada discretizada, su representación en frecuencia $X(k)$ se define como:ión de señales de audio pareadas (pre y post-cordectomía). Se aplica una reducción de ruido mediante el algoritmo de sustracción espectral incluido por la librería `Noisereduce'. Posteriormente, se transforma la señal al dominio de la frecuencia utilizando la Transformada Rápida de Fourier (FFT) para obtener la magnitud del espectro.
-
+      Utilizando unicamente archivos pareados. El objetivo es igualar la respuesta en frecuencia de la señal post-cordectomía a la de la señal original. Se calcula un factor de ganancia $G(k)$ para cada banda de frecuencia $k$, tal que la magnitud post-cordectomía se aproxime a la pre-cordectomía.
+      
+      
       Sea $x(n)$ la señal de entrada discretizada, su representación en frecuencia $X(k)$ se define como:
       \begin{equation}
         X(k) = \sum_{n=0}^{N-1} x(n) e^{-j \frac{2\pi}{N} k n}
@@ -315,18 +323,20 @@ Medida de dispersión que indica qué tan extendidos están los valores de un co
       \item  DB- (\textit{Database}): Tablas de datos numéricos exportados.
       \end{itemize}
 
-        % NOTA: Usamos figure (sin asterisco) para que ocupe solo una columna
-      \begin{figure}[H]
+      \textbf{Diagrama de flujo:} Vease la figura \ref{fig:2.1-1.1.0}
+
+      \begin{figure}[htbp]
           \centering
-          \includegraphics[width=0.95\columnwidth]{../diagramas/2.1. Algoritmo 1.1.0_ Preprocesamiento y Análisis Comparativo.png}
+          \includegraphics[width=0.95\columnwidth, height=0.5\textheight, keepaspectratio]{../diagramas/2.1. Algoritmo 1.1.0_ Preprocesamiento y Análisis Comparativo.png}
           \caption{Diagrama de flujo del Algoritmo 1.1.0}
-          \label{fig:m1}
+          \label{fig:2.1-1.1.0}
       \end{figure}
 
     \paragraph{Algoritmo 1.2.0: Rehabilitación}
 
     \textbf{Descripción técnica:}
     Utilizando unicamente archivos pareados. El objetivo es igualar la respuesta en frecuencia de la señal post-cordectomía a la de la señal original. Se calcula un factor de ganancia $G(k)$ para cada banda de frecuencia $k$, tal que la magnitud post-cordectomía se aproxime a la pre-cordectomía.
+
     \begin{equation}
         G(k) = \frac{|X_{pre}(k)|}{|X_{post}(k)|}
     \end{equation}
@@ -334,235 +344,472 @@ Medida de dispersión que indica qué tan extendidos están los valores de un co
     \begin{equation}
         Y_{reh}(k) = X_{post}(k) \cdot G(k)
     \end{equation}
-    Finalmente, se aplica la Transformada Inversa de Fourier (IFFT) para recuperar la señal de audio:
+    Finalmente, se aplica la Transformada Inversa de Fourier (IFFT) para recuperar la señal de audio     
     \begin{equation}
         y(n) = \frac{1}{N} \sum_{k=0}^{N-1} Y_{reh}(k) e^{j \frac{2\pi}{N} k n}
     \end{equation}
 
-    \begin{figure}[H]
+    \textbf{Diagrama de flujo:} vease la figura \ref{fig:2.2-1.2.0}
+
+
+    \begin{figure}[htbp]
         \centering
-        \includegraphics[width=0.95\columnwidth]{../diagramas/Algoritmo_1.2.0.png}
+        \includegraphics[width=0.95\columnwidth, height=0.5\textheight, keepaspectratio]{../diagramas/2.2_Algoritmo1.2.0.png}
         \caption{Diagrama de flujo del Algoritmo 1.2.0}
+        \label{fig:2.2-1.2.0}
     \end{figure}
 
-\subsubsection{Algoritmo 1.1.1: Archivos Independientes}
-Iteración para procesamiento unilateral.
+    \paragraph{Algoritmo 1.1.1: Procesamiento de Archivos Independientes}\hfill \\
+    \textbf{Descripción Técnica:}
+    La iteración del Algoritmo 1.1.0 que permite el procesamiento de señales pre-cordectomía aisladas (sin reciproco post-cordectomía). Mantiene la estandarización en la generación de tablas de datos (`DB-') y nomenclatura, facilitando la creación de bases de datos de referencia para análisis estadísticos posteriores.
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.95\columnwidth]{../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png}
-    \caption{Diagrama de flujo del Algoritmo 1.1.1}
-\end{figure}
+    \textbf{Diagrama de flujo:} Vease la figrura \ref{fig:2.3-1.1.1}
 
-\subsubsection{Algoritmo 1.2.1: Suma Diferencial}
-Compensación aditiva basada en promedios espectrales.
-\begin{equation}
-    \Delta_{media}(k) = \mu_{pre}(k) - \mu_{post}(k)
-\end{equation}
-\begin{equation}
-    |Y_{rehab}(k)| = |X_{post}(k)| + \Delta_{media}(k)
-\end{equation}
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.95\columnwidth, height=0.5\textheight, keepaspectratio]{../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png}
+        \caption{Diagrama de flujo del Algoritmo 1.1.1}
+        \label{fig:2.3-1.1.1}
+    \end{figure}
 
-\begin{figure}[htbp]
-    \centering
-    \fbox{\begin{minipage}{0.9\columnwidth}
-    \centering
-    \vspace{0.5cm}
-    \textbf{Aquí va mermaid 4}
-    \vspace{0.5cm}
-    \end{minipage}}
-    \caption{Diagrama de flujo del Algoritmo 1.2.1}
-\end{figure}
+    \paragraph{Algoritmo 1.2.1: Rehabilitación por Suma Espectral Diferencial} \hfill \\
+    \textbf{Descripción técnica:}
+    ste método se basa en la compensación aditiva. Se calculan los promedios espectrales de las muestras pre y post-cordectomía ($\mu_{pre}$ y $\mu_{post}$) para determinar la diferencia promedio $\Delta_{media}$.
+    \begin{equation}
+        \Delta_{media}(k) = \mu_{pre}(k) - \mu_{post}(k)
+    \end{equation}
+    La reconstrucción se realiza sumando este diferencial al espectro objetivo antes de la IFFT:
+    \begin{equation}
+        |Y_{rehab}(k)| = |X_{post}(k)| + \Delta_{media}(k)
+    \end{equation}
 
-\subsubsection{Algoritmo 1.2.2: Inyección Proyectada}
-Control estadístico para evitar distorsión usando $\mu$ y $\sigma$.
-\begin{equation}
-    G_{corr}(k) = \frac{|X_{post}(k)| + I_{proy}(k)}{\mu_{pre}(k)}
-\end{equation}
+    \textbf{Diagrama de flujo:} Vease la figura \ref{fig:2.4-1.2.1}
+    
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.95\columnwidth, height=0.5\textheight, keepaspectratio]{../diagramas/2.4. Algoritmo 1.2.1_ Rehabilitación por Suma Espectral Diferencial.png}
+        \caption{Diagrama de flujo del Algoritmo 1.2.1}
+        \label{fig:2.4-1.2.1}
+    \end{figure}
 
-\begin{figure}[htbp]
-    \centering
-    \fbox{\begin{minipage}{0.9\columnwidth}
-    \centering
-    \vspace{0.5cm}
-    \textbf{Aquí va mermaid 5}
-    \vspace{0.5cm}
-    \end{minipage}}
-    \caption{Diagrama de flujo del Algoritmo 1.2.2}
-\end{figure}
+    \paragraph{Algoritmo 1.2.2: Rehabilitación por Inyección Proyectada (Desviación Estándar)}\hfill \\
+    \textbf{Descripción técnica:}
 
-\subsection{Versión 2.0: Metadatos}
+    Este algoritmo introduce un control estadístico para evitar la sobreamplificación artificial (clipping o distorsión). Se utilizan la media ($\mu$) y la desviación estándar ($\sigma$) de cada banda de frecuencia.
 
-\subsubsection{Algoritmo 2.1.0: Filtrado Selectivo}
-Uso de REGEX para configuración dinámica de filtros.
+    Se define una "Inyección Proyectada" ($I_{proyectada}$) basada en el margen existente entre el límite superior de la señal patológica ($\mu_{post} + 1/2\sigma_{post}$) y el límite inferior de la señal sana ($\mu_{pre} - 1/2\sigma_{pre}$).
 
-\begin{figure}[htbp]
-    \centering
-    \fbox{\begin{minipage}{0.9\columnwidth}
-    \centering
-    \vspace{0.5cm}
-    \textbf{Aquí va mermaid 6}
-    \vspace{0.5cm}
-    \end{minipage}}
-    \caption{Diagrama de flujo del Algoritmo 2.1.0}
-\end{figure}
+    El factor de amplificación corregido $G_{corr}$ se calcula como:
 
-\subsubsection{Algoritmo 2.2.1.0: Modelo Espectral}
-Promedio ponderado ($w$) según calidad de grabación.
-\begin{equation}
-    S_{ideal}(k) = \frac{\sum_{i=1}^{N} (X_i(k) \cdot w_i)}{\sum_{i=1}^{N} w_i}
-\end{equation}
+    \begin{equation}
+        G_{corr}(k) = \frac{|X_{post}(k)| + I_{proy}(k)}{\mu_{pre}(k)}
+    \end{equation}
+    Donde el objetivo es que la señal resultante no exceda el umbral natural de la voz del paciente ($\mu_{pre}$). Posteriormente, se aplica la IFFT.
+    
+    \textbf{Diagrama de flujo:} Vease la figura \ref{fig:2.5-1.2.2}
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.95\columnwidth,height=0.5\textheight, keepaspectratio]{../diagramas/2.5. Algoritmo 1.2.2_ Rehabilitación por Inyección Proyectada (Desviación Estándar).png}
+        \caption{Diagrama de flujo del Algoritmo 1.2.2}
+        \label{fig:2.5-1.2.2}
+    \end{figure}
 
-\begin{figure}[htbp]
-    \centering
-    \fbox{\begin{minipage}{0.9\columnwidth}
-    \centering
-    \vspace{0.5cm}
-    \textbf{Aquí va mermaid 7}
-    \vspace{0.5cm}
-    \end{minipage}}
-    \caption{Diagrama de flujo del Algoritmo 2.2.1.0}
-\end{figure}
+  \subsubsection{Conclusiones (v1.0)}
+  El fallo crítico de esta versión radica en no haber considerado las alteraciones anatómicas derivadas de la intervención quirúrgica ni la severa degradación del contenido armónico. En la primera versión, debido a la escasa información vocal y a una baja Relación Señal-Ruido (SNR), la amplificación global elevó el "piso de ruido" presente en los periodos de silencio. Esto resultó en una señal con mayor ganancia, pero que conservaba la proporción desfavorable entre ruido y voz.
 
-\subsubsection{Algoritmo 2.2.2.0: Reconstrucción Híbrida}
-Sustitución espectral en banda alta y amplificación en media, suavizado con Savitzky-Golay.
+  Asimismo, la aplicación indiscriminada de un factor de ganancia afecta a todos los componentes del audio por igual. Por tanto, resulta imperativo garantizar que los datos de entrada correspondan, en su totalidad o en su gran mayoría, a información vocal aislada.
 
-\begin{figure}[htbp]
-    \centering
-    \fbox{\begin{minipage}{0.9\columnwidth}
-    \centering
-    \vspace{0.5cm}
-    \textbf{Aquí va mermaid 8}
-    \vspace{0.5cm}
-    \end{minipage}}
-    \caption{Diagrama de flujo del Algoritmo 2.2.2.0}
-\end{figure}
+  Si bien la inyección de bandas de frecuencia mitigó parcialmente los artefactos metálicos, estos permanecieron perceptibles. Se atribuye esta persistencia a la interacción entre la información sintética inyectada y el ruido residual que no pudo ser eliminado eficazmente.
 
-\subsection{Versión 3.0: Estimación MMSE}
+  En la evaluación cualitativa final, el audio resultante no evidenció mejoras significativas: el tono se mantiene monocromático y excesivamente grave, careciendo de calidad tímbrica. Además, la voz se percibe con una textura robótica y los artefactos metálicos persistente.
 
-\subsubsection{Algoritmo 3.1.0: MMSE-STSA con VAD}
-Estimador de Ephraim-Malah con Detección de Actividad de Voz.
+\subsection{Versión 2.0: Optimización mediante Metadatos y Reconstrucción Estadística Ponderada}
 
-\begin{figure}[htbp]
-    \centering
-    \fbox{\begin{minipage}{0.9\columnwidth}
-    \centering
-    \vspace{0.5cm}
-    \textbf{Aquí va mermaid 9}
-    \vspace{0.5cm}
-    \end{minipage}}
-    \caption{Diagrama de flujo del Algoritmo 3.1.0}
-\end{figure}
+  \subsubsection{Generalidades y Protocolo de Adquisición}
+En esta iteración, se refina el protocolo de nomenclatura para incluir metadatos críticos que condicionan el procesamiento posterior, lo cual permite una aplicación más agresiva de los filtros de reducción de ruido. Se incorpora una evaluación cualitativa del ruido de fondo, realizada mediante monitoreo con audífonos \textit{In-Ear Monitor} (KZ ZSN Pro) para garantizar la fidelidad de la clasificación.
+    \paragraph{Nomenclatura Estructurada}
+    La estructura de los archivos evoluciona para integrar variables de género y calidad de la señal (Relación Señal-Ruido estimada). El esquema se define como:
 
-\subsubsection{Algoritmo 3.2.0: Visualización}
-Generación de espectrogramas logarítmicos.
-\begin{equation}
-    S(m, k) = 10 \cdot \log_{10}(|X(m, k)|^2)
-\end{equation}
+    \begin{center}
+      <CódigoPaciente>-<Género><ID>.<Extensión>
+    \end{center}
 
-\begin{figure}[htbp]
-    \centering
-    \fbox{\begin{minipage}{0.9\columnwidth}
-    \centering
-    \vspace{0.5cm}
-    \textbf{Aquí va mermaid 10}
-    \vspace{0.5cm}
-    \end{minipage}}
-    \caption{Diagrama de flujo del Algoritmo 3.2.0}
-\end{figure}
+    \textbf{Definición de Metadatos:}
+    \begin{itemize}
+      \item Código del paciente: Iniciales del sujeto.
+      \item Género: Parámetro para ajuste de filtros de paso de banda.
+        \begin{itemize}
+          \item \textbf{M}: Masculino.
+          \item \textbf{F}: Femenino
+          \item \textbf{N}: Neutro.
+        \end{itemize}
+      \item Origen y Calidad ($Q$):** Se concatena el indicador de origen (\textbf{A}: Pre-cordectomía, \textbf{B}: Post-cordectomía) repitiéndose $n$ veces según el nivel de ruido percibido.
+        \begin{itemize}
+          \item $n=1$ (\textbf{A}): Calidad Alta / Ruido Bajo.
+          \item $n=2$ (\textbf{AA}): Calidad Media / Ruido Moderado.
+          \item $n=3$ (\textbf{AAA}): Calidad Baja / Ruido Alto.
+        \end{itemize}
+      \item Para los audios post-cordectomia, el prefijo numérico \textbf{0} denota ausencia de su par recíproco pre-cordectomía.
+    \end{itemize}
+    
+    \textit{Ejemplo del uso de la nomenclatura:}
+    \begin{equation}
+       \texttt{GFA-MBBB013.opus}
+    \end{equation}
+    
+    Donde en la figura \ref{tab:ejemplo_nomenclatura} podemos aprecias como obtenemos mucha información del archivo con tan solo ver su nombre.
 
-\subsubsection{Algoritmo 3.3.0: Máscara de Transferencia}
-Definición de Función de Transferencia Objetivo ($T_{dB}$):
-\begin{equation}
-    T_{dB}(k) = \mu_{PRE, dB}(k) - \mu_{POST, dB}(k)
-\end{equation}
-Aplicación a la señal post-operatoria:
-\begin{equation}
-    |Y_{reh}(m, k)| = |X_{post}(m, k)| \cdot 10^{\frac{T_{dB}(k)}{20}}
-\end{equation}
+     \begin{table}[htbp]
+     \caption{Ejemplo de aplicación del uso de la nomenclatura}
+     \label{tab:ejemplo_nomenclatura}
+     \centering
+     \begin{tabular}{@{}cll@{}}
+         \toprule
+         \textbf{Campo} & \textbf{Significado} \\ \midrule
+         \texttt{GFA} & Código del paciente\\
+         \texttt{-} & Separador \\
+         \texttt{M} & Género masculino \\
+         \texttt{B} & Post-cordectomía \\
+         \texttt{BBB} & Nivel de ruido alto \\
+         \texttt{0} & Sin par recíproco \\
+         \texttt{13} & Identificador secuencial \\
+         \texttt{.opus}& Tipo de formato opus \\ \bottomrule
+     \end{tabular}
+\end{table}
 
-\begin{figure}[htbp]
-    \centering
-    \fbox{\begin{minipage}{0.9\columnwidth}
-    \centering
-    \vspace{0.5cm}
-    \textbf{Aquí va mermaid 11}
-    \vspace{0.5cm}
-    \end{minipage}}
-    \caption{Diagrama de flujo del Algoritmo 3.3.0}
-\end{figure}
 
-\subsection{Versión 4.0: IA (Propuesta)}
 
-% NOTA: Usamos figure* (con asterisco) para diagramas complejos
-% Esto hace que la imagen ocupe AMBAS columnas (ancho de página)
-\begin{figure*}[htbp]
-    \centering
-    \fbox{\begin{minipage}{0.8\textwidth} % ancho del 80% de la pagina
-    \centering
-    \vspace{1cm}
-    \textbf{Aquí va mermaid 12 (Diagrama Fase 1)}
-    \vspace{1cm}
-    \end{minipage}}
-    \caption{Diagrama de flujo de la Fase 1: Reconstrucción Offline}
-\end{figure*}
+      \subsubsection{Descripción de Algoritmos (v2.0)}
+        \paragraph{Algoritmo 2.1.0: Importación Adaptativa y Filtrado Selectivo}\hfill \\
+        \textbf{Descripción Técnica:}
 
-\subsubsection{Fase 1: Reconstrucción Offline}
-Arquitectura ASR-TTS (Whisper + XTTS).
-\begin{equation}
-    P(Y | T, S) = \prod_{n} P(y_n | y_{<n}, T, S)
-\end{equation}
+        Este módulo implementa un sistema de análisis sintáctico mediante Expresiones Regulares (REGEX) para extraer los metadatos del nombre del archivo y configurar dinámicamente los parámetros del procesamiento digital de señales (DSP).
 
-\begin{figure*}[htbp]
-    \centering
-    \fbox{\begin{minipage}{0.8\textwidth}
-    \centering
-    \vspace{1cm}
-    \textbf{Aquí va mermaid 13 (Diagrama Fase 2)}
-    \vspace{1cm}
-    \end{minipage}}
-    \caption{Diagrama de flujo de la Fase 2: Optimización de Preferencias}
-\end{figure*}
+        Se define un filtro paso banda $H(f)$ ajustado a las características fisiológicas del tracto vocal según el género:
 
-\subsubsection{Fase 2: Optimización de Preferencias}
-Ajuste de vectores de estilo (RLHF simplificado).
+        \begin{itemize}
+          \item Masculino: $70 \text{ Hz} \le f \le 7000 \text{ Hz}$
+          \item Femenino: $100 \text{ Hz} \le f \le 8000 \text{ Hz}$
+          \item Neutro: $65 \text{ Hz} \le f \le 8000 \text{ Hz}$
+        \end{itemize}
 
-\subsubsection{Fase 3: Streaming Baja Latencia}
-Conversión RVC/So-VITS-SVC con Information Bottleneck.
-\begin{equation}
-    Y_{str} = Dec(Content(X_{post}), F0_{smooth}, S_{pre})
-\end{equation}
+        Posteriormente, se aplica un algoritmo de reducción de ruido espectral (librería `noisereduce') cuyos parámetros se ajustan según la calidad ($Q$) detectada del nombre del archivo (Tabla \ref{tab:params_ruido}).
 
-\begin{figure}[htbp]
-    \centering
-    \fbox{\begin{minipage}{0.9\columnwidth}
-    \centering
-    \vspace{0.5cm}
-    \textbf{Aquí va mermaid 14}
-    \vspace{0.5cm}
-    \end{minipage}}
-    \caption{Diagrama de flujo: Fase 3}
-\end{figure}
+        \textbf{Diagrama de Flujo:}
 
-\subsubsection{Fase 4: Modulación Emocional}
-Integración de Speech Emotion Recognition (SER).
 
-\begin{figure}[htbp]
-    \centering
-    \fbox{\begin{minipage}{0.9\columnwidth}
-    \centering
-    \vspace{0.5cm}
-    \textbf{Aquí va mermaid 15}
-    \vspace{0.5cm}
-    \end{minipage}}
-    \caption{Diagrama de flujo: Fase 4}
-\end{figure}
 
-% --- CONCLUSIONES ---
-\section{Conclusiones Generales}
-La evolución del proyecto permite establecer hallazgos críticos. La voz humana no puede tratarse como un fenómeno estático; la aproximación global resulta insuficiente. El éxito de la rehabilitación espectral depende de la capacidad de ajustar la señal en una escala temporal micro-segmentada.
+        \begin{table}[htbp]
+          \centering
+          \caption{Parámetros de Reducción de Ruido}
+          \label{tab:params_ruido}
+            
+            % 1. Reducimos la fuente
+            \scriptsize 
+            
+            % 2. Reducimos el espacio entre columnas (padding)
+            % El default es 6pt, lo bajamos a 2pt para que quepa todo
+            \setlength{\tabcolsep}{2.5pt} 
+            
+            \begin{tabular}{@{} l c c c p{3.2cm} @{}}
+                \toprule
+                \textbf{Nivel} & \textbf{Prop.} & \textbf{Std.} & \textbf{T(s)} & \textbf{Objetivo} \\ 
+                \midrule
+                1 (A/B)     & 0.60 & 2.0 & 0.5 & Conservar textura natural y ``aire''. \\ \addlinespace
+                2 (AA/BB)   & 0.90 & 1.5 & 2.0 & Eliminar ruido estacionario moderado. \\ \addlinespace
+                3 (AAA/BBB) & 0.90 & 1.5 & 1.0 & Supresión agresiva. Prioriza inteligibilidad. \\ 
+                \bottomrule
+            \end{tabular}
+        \end{table}
 
-Se evidenció una dicotomía entre limpieza de señal y fidelidad tímbrica. Los algoritmos de sustracción espectral (Wiener+VAD) están limitados a ruido estacionario. Un hallazgo fundamental fue la criticidad de la alineación temporal; cualquier desviación rítmica genera incoherencias de fase. El futuro apunta hacia la caracterización multidimensional empleando tensores y matrices de mayores dimensiones.
+        \textbf{Diagrama:} Apreciable en la figura \ref{fig:2.1-2.1.0}
+
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=0.95\columnwidth,height=0.5\textheight, keepaspectratio]{../diagramas/2.1. Algoritmo 2.1.0_ Importación Adaptativa y Filtrado Selectivo.png}
+            \caption{Diagrama de flujo del Algoritmo 2.1.0}
+            \label{fig:2.1-2.1.0}
+        \end{figure}
+
+        \paragraph{Algoritmo 2.2.1.0: Generación del Modelo Espectral Ponderado (Entrenamiento)} \hfill \\
+
+        \textbf{Descripción técnica:}
+
+        Este algoritmo tiene como objetivo construir un "Perfil Espectral Ideal" ($S_{ideal}$) a partir del conjunto de datos pre-cordectomía. Dado que la calidad de las grabaciones varía, se implementa un promedio ponderado donde los archivos con menor ruido tienen mayor influencia en el modelo resultante.
+
+        Se asignan los siguientes "pesos" ($w$) basados en la longitud de la cadena de calidad:
+        \begin{itemize}
+          \item Calidad Alta ($n=1$): $w = 10$
+          \item Calidad Media ($n=2$): $w = 2$
+          \item Calidad Baja ($n=3$): $w = 0.3$
+        \end{itemize}
+        El perfil espectral ideal para cada banda de frecuencia $k$ se calcula mediante:
+
+        \begin{equation}
+            S_{ideal}(k) = \frac{\sum_{i=1}^{N} (X_i(k) \cdot w_i)}{\sum_{i=1}^{N} w_i}
+        \end{equation}
+
+        Donde $X_i(k)$ es la magnitud espectral del archivo $i$-ésimo y $w_i$ su peso correspondiente. Esto asegura que la reconstrucción se base en las señales más limpias, utilizando las señales ruidosas únicamente para corroborar tendencias estadísticas.
+
+        \textbf{Diagrama de flujo:} Apreciable en la figura \ref{fig:2.2-2.2.1.0}
+
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=0.95\columnwidth,height=0.5\textheight, keepaspectratio]{../diagramas/2.2. Algoritmo 2.2.1.0_ Generación del Modelo Espectral Ponderado (Entrenamiento).png}
+            \caption{Diagrama de flujo del Algoritmo 2.2.1.0}
+            \label{fig:2.2-2.2.1.0}
+        \end{figure}
+
+        \paragraph{Algoritmo 2.2.2.0: Reconstrucción Híbrida y Suavizado}\hfill \\
+        \textbf{Descripción técnica:}
+
+        La fase final de rehabilitación utiliza un enfoque híbrido que divide el espectro en bandas funcionales para aplicar tratamientos diferenciados:
+
+        \begin{enumerate}
+          \item Banda Media (500 - 2500 Hz): Se considera la región con mayor información armónica remanente en el paciente. Se aplica una amplificación selectiva para proyectar la energía hacia la octava objetivo.
+          \item Banda Alta (3500 - 4500 Hz): Debido a la pérdida severa de información en altas frecuencias post-cordectomía, se realiza una "Sustitución Espectral". Los valores de magnitud en este rango son reemplazados por los valores correspondientes del $S_{ideal}$ obtenido en la fase de entrenamiento.
+        \end{enumerate}
+
+        Finalmente, para evitar discontinuidades abruptas generadas por la sustitución artificial, se aplica un filtro de suavizado Savitzky-Golay sobre el espectro resultante antes de aplicar la Transformada Inversa de Fourier (IFFT).
+        \begin{equation}
+          Y_{reh}(k) = \text{SavGol}\left( \begin{cases} X_{post}(k) \cdot G_{amp} & \text{si } 500 \le f \le 2500 \\ S_{ideal}(k) & \text{si } 3500 \le f \le 4500 \\ X_{post}(k) & \text{resto} \end{cases} \right)
+        \end{equation}
+
+        \textbf{Diagrama de flujo:} Apreciable en la figura \ref{fig:2.3-2.2.2.0}
+
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=0.95\columnwidth,height=0.5\textheight, keepaspectratio]{../diagramas/2.3. Algoritmo 2.2.2.0_ Reconstrucción Híbrida y Suavizado.png}
+            \caption{Diagrama de flujo del Algoritmo 2.2.2.0}
+            \label{fig:2.3-2.2.2.0}
+        \end{figure}
+
+      \subsubsection{Conclusiones (v2.0)}
+      Esta versión intentó solucionar el problema de la calidad mediante la creación de un "Perfil Ideal" ponderado y la inyección de armónicos artificiales. Sin embargo, fracasa al nuevamente intentar "estandarizar" la identidad de la voz que es más compleja.
+
+      El error fundamental de esta versión radica en tratar la voz como una señal estacionaria (constante en el tiempo). Al aplicar una Transformada de Fourier (FFT) sobre la totalidad del archivo y promediar los espectros, se pierde completamente la dimensión temporal.
+
+      La inyección de una banda de frecuencias artificial funciona matemáticamente para rellenar huecos, pero acústicamente es como intentar reemplazar la cuerda rota de una guitarra con una cuerda de piano. Aunque la nota sea la misma, el timbre no coincide, creando una voz que suena "metálica" o procesada, perdiendo identidad del paciente.
+
+    \subsection{Versión 3.0: Estimación MMSE y Enmascaramiento Adaptativo}
+
+      \subsubsection{Implementación y Estrategia de Procesamiento}
+      Esta fase se centra en la optimización de señales pre-cordectomía de alta fidelidad, donde el ruido presente es predominantemente estacionario y periódico. A diferencia de las iteraciones anteriores, se ha desacoplado el módulo de reducción de ruido, estableciéndolo como un proceso independiente para garantizar la integridad de la señal antes de la extracción de sus características y la generación de los recursos gráficos.
+
+      Se ha sustituido la Transformada Rápida de Fourier (FFT) por la Transformada de Fourier de Tiempo Corto (STFT). Esto es fundamental dado que la voz es una señal no estacionaria; su contenido espectral varía en el tiempo. La STFT permite analizar la señal en ventanas temporales ($m$) y bandas de frecuencia ($k$):
+      \begin{equation}
+        X(m, k) = \sum_{n=0}^{N-1} x(n + mH) w(n) e^{-j \frac{2\pi}{N} kn}
+      \end{equation}
+      Donde $w(n)$ es la función de ventana (ej. Hann o Hamming) y $H$ es el tamaño del salto (\textit{hop size}).
+
+        \paragraph{Protocolo de Visualización y Nomenclatura}
+        Para profundizar en el análisis cualitativo, se introduce la generación de espectrogramas comparativos, permitiendo visualizar la energía espectral en función del tiempo.
+        \begin{itemize}
+          \item Prefijo de Reporte: `ESP-' (Espectrograma).
+            \begin{itemize}
+              \item Identificador Comparativo: Se mantiene la identificación comparativa mediante la estructura <Código del paciente><(ID1-ID2)>.
+            \end{itemize}
+          \item Simplificación de Nomenclatura: Dado el enfoque en archivos de alta calidad y la eliminación de la librería `noisereduce' (basada en sustracción espectral simple), se revierten las reglas de la Versión 2.0, limitando el procesamiento a archivos que cumplan con los estándares de relación señal-ruido (SNR) adecuados.
+        \end{itemize}
+
+      \subsubsection{Descripción de Algoritmos (v3.0)}
+        \paragraph{Algoritmo 3.1.0: Reducción de Ruido MMSE-STSA con VAD}\hfill \\
+        \textbf{Descripción técnica:}
+
+        Este módulo implementa el estimador de Amplitud Espectral de Mínimo Error Cuadrático Medio (MMSE-STSA) basado en el algoritmo de Ephraim-Malah. A diferencia de la sustracción espectral simple, este método minimiza el error de estimación de la amplitud espectral de la voz bajo un modelo estadístico gaussiano.
+
+        Se integra un sistema de Detección de Actividad de Voz (VAD). El VAD actúa como una compuerta lógica que clasifica cada trama $m$ en dos estados: $H_0$ (ausencia de voz) y $H_1$ (presencia de voz).
+        
+        \begin{itemize}
+          \item Estado $H_0$ (Silencio/Ruido): Se aplica una atenuación máxima o supresión total.
+          \item Estado $H_1$ (Voz): Se calcula la ganancia óptima $G(k)$ basada en la SNR a priori y a posteriori.
+        \end{itemize}
+
+        \textbf{Diagrama de flujo:} Apreciable en la figura \ref{fig:2.1-3.1.0}
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=0.95\columnwidth,height=0.5\textheight, keepaspectratio]{../diagramas/2.1. Algoritmo 3.1.0_ Reducción de Ruido MMSE-STSA con VAD.png}
+            \caption{Diagrama de flujo del Algoritmo 3.1.0}
+            \label{fig:2.1-3.1.0}
+        \end{figure}
+
+        \paragraph{Algoritmo 3.2.0: Extracción de Características y Visualización}\hfill \\
+        \textbf{Descripción técnica:}
+
+        Este algoritmo implementa una búsqueda recursiva en el árbol de directorios para indexar los activos de audio disponibles. Permite la selección flexible de archivos (individuales o pares pareados) para la generación de reportes técnicos.
+
+        El producto principal es el espectrograma, calculado como la magnitud cuadrada de la STFT en escala logarítmica:
+
+        \begin{equation}
+          S(m, k) = 10 \cdot \log_{10}(|X(m, k)|^2)
+        \end{equation}
+
+        Esto permite inspeccionar visualmente la estructura de los formantes y la efectividad de la limpieza de ruido en las bandas de frecuencia a lo largo del tiempo.
+
+        \textbf{Diagrama de flujo:} Apreciable en la figura \ref{fig:2.2-3.2.0}
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=0.95\columnwidth,height=0.5\textheight, keepaspectratio]{../diagramas/2.2. Algoritmo 3.2.0_ Extracción de Características y Visualización.png}
+            \caption{Diagrama de flujo del Algoritmo 3.2.0}
+            \label{fig:2.2-3.2.0}
+        \end{figure}
+
+
+        \paragraph{Algoritmo 3.3.0: Rehabilitación por Máscara de Transferencia Espectral}
+        \textbf{Descripción técnica:} \hfill \\
+
+        ste algoritmo genera un "Perfil de Usuario" promediando las curvas espectrales de las bases de datos pre y post-cordectomía, suavizadas previamente mediante un filtro Savitzky-Golay para eliminar ruido aleatorio de las curvas de tendencia.
+
+        Definimos la Función de Transferencia Objetivo ($T_{dB}$) como:
+        \begin{equation}
+          T_{dB}(k) = \mu_{PRE, dB}(k) - \mu_{POST, dB}(k)
+        \end{equation}
+
+        Este valor representa la ganancia necesaria en cada banda $k$ para igualar la energía de la voz patológica a la voz sana.
+
+        Al procesar el audio objetivo, si las frecuencias de muestreo difieren, se aplica una interpolación lineal a $T_{dB}(k)$ para ajustar la resolución en frecuencia. Finalmente, la reconstrucción se realiza en el dominio lineal:
+
+        \begin{equation}
+          |Y_{reh}(m, k)| = |X_{post}(m, k)| \cdot 10^{\frac{T_{dB}(k)}{20}}
+        \end{equation}
+        
+        Posteriormente se aplica la Transformada Inversa de Fourier de Tiempo Corto (iSTFT) para recuperar la señal en el dominio del tiempo.
+
+        \textbf{Diagrama de flujo:} Apreciable en la figura \ref{fig:2.3-3.3.0}
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=0.95\columnwidth,height=0.5\textheight, keepaspectratio]{../diagramas/2.3. Algoritmo 3.3.0_ Rehabilitación por Máscara de Transferencia Espectral.png}
+            \caption{Diagrama de flujo del Algoritmo 3.1.0}
+            \label{fig:2.3-3.3.0}
+        \end{figure}
+
+      \subsubsection{Conclusiones (v3.0)}
+      Este método intenta reconstruir la "canción"  de la voz promediando todas las notas tocadas en una sola "super-nota" gigante. Pero, no es posible distinguir entre una vocal "A" y una consonante "S"; simplemente amplifica las frecuencias promedio de una manera aleatorio.
+
+      Si el paciente pronuncia una sílaba milisegundos más rápido o lento en la versión post-cordectomía que en la versión original, el ajuste espectral intentará corregir una "S" usando la información de una "A".
+
+      Al promediar múltiples archivos para crear el $S_{ideal}$ y aplicar filtros como Savitzky-Golay, se eliminan las micro-variaciones necesarias para dar "textura" y humanidad a la voz.
+
+      El audio resultante es "ronco", monocromático y carece de articulación, ya que se aplica la misma curva de ecualización a sonidos que físicamente requieren configuraciones del tracto vocal únicas para cada situación.
+
+    \subsection{Versión 4.0: Implementación de Inteligencia Artificial (Propuesta)}
+      \subsubsection{Generalidades}
+      Para esta versión, se sustituye el procesamiento digital de señales "sustractivo" (filtrado de ruido y perfiles espectrales) para adoptar un enfoque potenciado por la inteligencia artificial enfocado a la generación sintética. La premisa principal de la Versión 4.0 es que la patología vocal no es "ruido" que debe eliminarse o sonidos que deben amplificarse, sino una característica que debe ser deconstruida; extraer su contenido lingüístico y re-sintetizarla con la forma deseada.
+
+      Para abordar la complejidad del habla; calidad de la voz vs. latencia (resultados en tiempo real) vs. expresividad/emociones del hablante, el desarrollo se dividió en cuatro fases. Cada fase aborda una limitación específica de las versiones anteriores, pasando del procesamiento \textit{offline} de alta fidelidad a la ejecución en tiempo real.
+
+      \subsubsection{Descripción de Algoritmos (v4.0 - Propuesta)}
+        \paragraph{Fase 1: Reconstrucción y Síntesis de Alta Fidelidad (Offline)}
+        \textbf{Fundamento teórico:} \hfill \\
+        Esta fase resuelve el problema de la "alineación temporal" mediante una arquitectura ASR-TTS (Automatic Speech Recognition $\to$ Text-to-Speech).
+
+        El sistema desacopla totalmente la señal de entrada. Utiliza un modelo de reconocimiento robusto (ej. Whisper) para extraer los "tokens semánticos" (el texto/mensaje), descartando cualquier información acústica patológica (ronquera, falta de aire). Posteriormente, un modelo de síntesis (ej. XTTS v2) condicionada por un Speaker Embedding (vector latente extraído de los audios pre-cordectomía) genera una onda sonora completamente nueva.
+
+        Matemáticamente, buscamos maximizar la probabilidad de la onda de salida $Y$ dado el texto transcrito $T$ y el vector de identidad del hablante $S$:
+        \begin{equation}
+          P(Y | T, S) = \prod_{n} P(y_n | y_{<n}, T, S)
+        \end{equation}
+
+        \textbf{Expectativa:}\hfill \\
+        \begin{itemize}
+          \item Calidad: Máxima posible. Eliminación del 100% de los artefactos de la cordectomía. La voz sonará limpia y sana.
+          \item Latencia: Alta (No apto para tiempo real).
+          \item Limitación: Se pierde la prosodia original (ritmo y entonación) del paciente al momento de grabar, reemplazándola por una prosodia "neutra" generada por la IA.
+        \end{itemize}
+
+        \textbf{Diagrama de flujo (propuesta):} Apreciable en la figura \ref{fig:2.1-f1}
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=0.95\columnwidth,height=0.5\textheight, keepaspectratio]{../diagramas/2.1. Fase 1_ Reconstrucción y Síntesis de Alta Fidelidad (Offline).png}
+            \caption{Diagrama de flujo propuesto para la fase 1}
+            \label{fig:2.1-f1}
+        \end{figure}
+
+        \paragraph{Algoritmo 4.2.0: Optimización de Preferencias (Fase 2)}
+        \textbf{Fundamento teórico:}\hfill \\
+
+        Dado que la Fase 1 produce una voz "neutra", esta fase introduce un algoritmo de Entrenamiento Supervisado por Preferencias. Se basa en principios de Reinforcement Learning from Human Feedback (RLHF) simplificado o selección de vectores de estilo.
+
+        El sistema genera $N$ variaciones de una misma frase modificando los hiperparámetros del espacio latente (temperatura, velocidad, pitch). El paciente realiza una prueba A/B, y el sistema ajusta los pesos o selecciona el "centroide" del vector de estilo que mejor representa la identidad percibidla por el usuario para diferentes contextos (Familiar, Profesional, Emocional).
+
+        \textbf{Expectativa:}\hfill \\
+        \begin{itemize}
+          \item Resultado: Creación de una biblioteca de "Presets de Identidad".
+          \item Interacción: El paciente recupera control sobre su expresión, pudiendo elegir si quiere sonar "serio" o "feliz", algo imposible con filtros DSP tradicionales.
+          \item Diagrama propuesto apreciable en la figura \ref{fig:2.1-f2}
+        \end{itemize}
+
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=0.95\columnwidth,height=0.5\textheight, keepaspectratio]{../diagramas/fase2.png}
+            \caption{Diagrama de flujo propuesto para la fase 2}
+            \label{fig:2.1-f2}
+        \end{figure}
+
+        \paragraph{Fase 3: Conversión de Voz por Streaming de Baja Latencia} \hfill \\
+        \textbf{Fundamento teórico:}
+
+        Para lograr la comunicación en tiempo real ("Efecto Micrófono"), se elimina el paso intermedio de conversión a texto. Se implementa una arquitectura RVC (Retrieval-based Voice Conversion) o So-VITS-SVC.
+
+        El fundamento es el "Information Bottleneck" (Cuello de botella de información). Una red neuronal (ej. HuBERT o ContentVec) comprime el audio post-op en "unidades de contenido" de baja resolución, perdiendo el ruido de la patología en el proceso.
+
+        Simultáneamente, se implementa un Predictor de F0 (Pitch) Plano/Suavizado. En lugar de copiar el tono errático de la voz esofágica, la IA inyecta una curva de entonación estable antes de que el Vocoder (ej. HiFi-GAN) reconstruya el audio.
+
+        \begin{equation}
+          Y_{stream} = Dec(Content(X_{post}), F0_{smooth}, S_{pre})
+        \end{equation}
+
+        \textbf{Expectativa:}
+
+        \begin{itemize}
+          \item Latencia: < 100ms (percibido como casi instantáneo con hardware adecuado).
+          \item Calidad: Ligeramente inferior a la Fase 1, pero superior a cualquier filtro MMSE (v3.0).
+          \item Estabilidad: La voz será monotónica pero inteligible y libre de quiebres, ideal para llamadas telefónicas o conversaciones fluidas.
+        \end{itemize}
+
+        \textbf{Diagrama de flujo (propuesta):} Apreciable en la figura \ref{fig:2.1-f3}
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=0.95\columnwidth,height=0.5\textheight, keepaspectratio]{../diagramas/fase3.png}
+            \caption{Diagrama de flujo propuesto para la fase 3}
+            \label{fig:2.1-f3}
+        \end{figure}
+
+        \paragraph{Fase 4: Modulación Emocional Dinámica en Tiempo Real}\hfill \\
+        \textbf{Fundamento teórico:}
+
+        Esta es la fase de integración final. Se añade un módulo paralelo de Reconocimiento de Emociones en el Habla (SER - Speech Emotion Recognition) de baja latencia.
+
+        Este módulo analiza características suprasegmentales (volumen, ritmo relativo) de la voz post-op para inferir la intención emocional, a pesar de la patología. Esta inferencia se modula dinámicamente el Vector de Estilo utilizado en la Fase 3.
+
+        \textbf{Expectativa:}
+
+        \begin{itemize}
+          \item Un sistema orgánico. Si el paciente intenta gritar o hablar rápido (excitación), la voz sintética aumentará su volumen y cambiará el timbre acorde a los perfiles definidos en la Fase 2.
+          \item Desafío: Alta complejidad computacional y riesgo de "alucinaciones emocionales" (que la IA interprete un jadeo por falta de aire como una expresión de sorpresa). Requiere un ajuste fino (Fine-tuning) muy agresivo.
+        \end{itemize}
+
+        \textbf{Diagrama de flujo (propuesta):} Apreciable en la figura \ref{fig:2.1-f4}
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=0.95\columnwidth,height=0.5\textheight, keepaspectratio]{../diagramas/fase4.png}
+            \caption{Diagrama de flujo propuesto para la fase 4}
+            \label{fig:2.1-f4}
+        \end{figure}
+
+  \section{Conclusiones generales.}
+
+  La evolución del proyecto, desde la implementación de análisis espectrales estáticos hasta la adopción de modelos como Ephraim-Malah y la transformada de tiempo corto (STFT), permite establecer una serie de hallazgos críticos sobre la naturaleza del procesamiento digital de señales aplicado a la rehabilitación vocal.
+
+En primer lugar, la aproximación al problema ha revelado que la voz humana no puede tratarse como un fenómeno estático monotónico, sino que debe comprenderse bajo una analogía armónica compleja, similar a la ejecución de una pieza de guitarra. Si bien la "tonalidad" general (frecuencia fundamental) puede mantenerse, la riqueza de la información reside en la superposición dinámica de armónicos y formantes que varían milimétricamente con cada fonema. Se concluye que las técnicas de procesamiento global —que aplican una ecualización estática a todo el archivo— resultan insuficientes para capturar la esencia de la articulación vocal-consonante. El éxito de la rehabilitación espectral depende, por tanto, de la capacidad de descomponer y ajustar la señal en una escala temporal micro-segmentada, atendiendo a la "ejecución de cada acorde" fonético y no solo al promedio de la obra.
+
+En cuanto a la reducción de ruido, se evidenció una dicotomía técnica entre la limpieza de la señal y la fidelidad tímbrica. Si bien los algoritmos de sustracción espectral y filtrado de Wiener+VAD logran atenuar significativamente la contaminación estacionaria, estan limitados a archivos cuyo ruido estacionario sea consistente. Además, la presencia de transitorios no estacionarios (ruidos repentinos) expuso las limitaciones de la STFT, sugiriendo que futuras experimenta deberían explorar el uso de la Transformada Wavelet, cuya propiedad es superior para tratar irregularidades temporales y esporádicas.
+
+Un hallazgo fundamental en el análisis pareado (Pre vs. Post cordectomía) fue la criticidad de la alineación temporal. Aunque se logró una aproximación general a la prosodia, se demostró que cualquier desviación rítmica entre la grabación original y la simulación patológica resulta catastrófica en el dominio del tiempo. Al reconstruir la señal, el desfase entre las bandas de frecuencia y la intención articulatoria original genera incoherencias de fase, produciendo sonidos sintéticos o inexactos. Esto subraya la necesidad de implementar algoritmos de alineación elástica temporal (\textit{Dynamic Time Warping}) antes de cualquier operación de sustracción o transferencia espectral.
+
+Finalmente, aunque el marco teórico actual sugiere la viabilidad de la rehabilitación por transferencia espectral, la complejidad anatómica observada —donde estructuras geométricas simples como la laringe generan bandas de frecuencia de alta complejidad— demanda herramientas computacionales más sofisticadas. El futuro de esta investigación apunta hacia la caracterización multidimensional a nivel silábico, empleando tensores y matrices de mayores dimensiones que permitan aislar, modelar y reconstruir la voz no como un flujo continuo, sino como una secuencia discreta de eventos acústicos únicos.
+
+
 
 % --- REFERENCIAS ---
 \begin{thebibliography}{00}

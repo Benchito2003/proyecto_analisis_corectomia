@@ -1,0 +1,7 @@
+graph TD
+    A[Entrada Micrófono] --> B[Extracción de Contenido ContentVec]
+    A --> C[Detector de Intención/Emoción]
+    D[Base de Datos: Vectores de Estilo] --> C
+    B --> E{Generador VITS/RVC}
+    C -->|Modulación del Vector| E
+    E --> F[Salida Altavoz Tiempo Real]

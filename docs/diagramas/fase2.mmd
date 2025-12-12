@@ -1,0 +1,22 @@
+graph TD
+    A[Inicio: Texto de Calibración] --> B[/Cargar Identidad Pre-Op Vector S/]
+    B --> C{Generador de Variaciones}
+    
+    subgraph "Exploración del Espacio Latente"
+    C -->|Var: Pitch/Velocidad| D[Generar Audio Opción A]
+    C -->|Var: Entonación/Timbre| E[Generar Audio Opción B]
+    end
+    
+    D --> F{Selección del Paciente}
+    E --> F
+    
+    F -- "Prefiero A" --> G[Ajustar Centroide hacia A]
+    F -- "Prefiero B" --> H[Ajustar Centroide hacia B]
+    F -- "Ninguna" --> C
+    
+    G --> I{¿Satisfecho?}
+    H --> I
+    
+    I -- No (Refinar) --> C
+    I -- Sí --> J[Guardar Vector de Estilo Optimizado]
+    J --> K[(Base de Datos de Perfiles: Familiar, Serio, etc.)]

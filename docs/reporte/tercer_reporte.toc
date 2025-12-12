@@ -58,21 +58,32 @@
 \contentsline {subsubsection}{\numberline {\mbox {III-A}2}Descripción de Algoritmos (v1.0)}{6}{subsubsection.3.1.2}%
 \contentsline {paragraph}{\numberline {\mbox {III-A}2a} Algoritmo 1.1.0: Preprocesamiento y Análisis Comparativo}{6}{paragraph.3.1.2.1}%
 \contentsline {paragraph}{\numberline {\mbox {III-A}2b}Algoritmo 1.2.0: Rehabilitación}{6}{paragraph.3.1.2.2}%
-\contentsline {subsubsection}{\numberline {\mbox {III-A}3}Algoritmo 1.1.1: Archivos Independientes}{8}{subsubsection.3.1.3}%
-\contentsline {subsubsection}{\numberline {\mbox {III-A}4}Algoritmo 1.2.1: Suma Diferencial}{8}{subsubsection.3.1.4}%
-\contentsline {subsubsection}{\numberline {\mbox {III-A}5}Algoritmo 1.2.2: Inyección Proyectada}{8}{subsubsection.3.1.5}%
-\contentsline {subsection}{\numberline {\mbox {III-B}}Versión 2.0: Metadatos}{8}{subsection.3.2}%
-\contentsline {subsubsection}{\numberline {\mbox {III-B}1}Algoritmo 2.1.0: Filtrado Selectivo}{8}{subsubsection.3.2.1}%
-\contentsline {subsubsection}{\numberline {\mbox {III-B}2}Algoritmo 2.2.1.0: Modelo Espectral}{8}{subsubsection.3.2.2}%
-\contentsline {subsubsection}{\numberline {\mbox {III-B}3}Algoritmo 2.2.2.0: Reconstrucción Híbrida}{8}{subsubsection.3.2.3}%
-\contentsline {subsection}{\numberline {\mbox {III-C}}Versión 3.0: Estimación MMSE}{8}{subsection.3.3}%
-\contentsline {subsubsection}{\numberline {\mbox {III-C}1}Algoritmo 3.1.0: MMSE-STSA con VAD}{8}{subsubsection.3.3.1}%
-\contentsline {subsubsection}{\numberline {\mbox {III-C}2}Algoritmo 3.2.0: Visualización}{8}{subsubsection.3.3.2}%
-\contentsline {subsubsection}{\numberline {\mbox {III-C}3}Algoritmo 3.3.0: Máscara de Transferencia}{8}{subsubsection.3.3.3}%
-\contentsline {subsection}{\numberline {\mbox {III-D}}Versión 4.0: IA (Propuesta)}{8}{subsection.3.4}%
-\contentsline {subsubsection}{\numberline {\mbox {III-D}1}Fase 1: Reconstrucción Offline}{8}{subsubsection.3.4.1}%
-\contentsline {subsubsection}{\numberline {\mbox {III-D}2}Fase 2: Optimización de Preferencias}{9}{subsubsection.3.4.2}%
-\contentsline {subsubsection}{\numberline {\mbox {III-D}3}Fase 3: Streaming Baja Latencia}{9}{subsubsection.3.4.3}%
-\contentsline {subsubsection}{\numberline {\mbox {III-D}4}Fase 4: Modulación Emocional}{9}{subsubsection.3.4.4}%
-\contentsline {section}{\numberline {IV}Conclusiones Generales}{9}{section.4}%
-\contentsline {section}{Referencias}{9}{section*.2}%
+\contentsline {paragraph}{\numberline {\mbox {III-A}2c}Algoritmo 1.1.1: Procesamiento de Archivos Independientes}{6}{paragraph.3.1.2.3}%
+\contentsline {paragraph}{\numberline {\mbox {III-A}2d}Algoritmo 1.2.1: Rehabilitación por Suma Espectral Diferencial}{6}{paragraph.3.1.2.4}%
+\contentsline {paragraph}{\numberline {\mbox {III-A}2e}Algoritmo 1.2.2: Rehabilitación por Inyección Proyectada (Desviación Estándar)}{7}{paragraph.3.1.2.5}%
+\contentsline {subsubsection}{\numberline {\mbox {III-A}3}Conclusiones (v1.0)}{7}{subsubsection.3.1.3}%
+\contentsline {subsection}{\numberline {\mbox {III-B}}Versión 2.0: Optimización mediante Metadatos y Reconstrucción Estadística Ponderada}{8}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {\mbox {III-B}1}Generalidades y Protocolo de Adquisición}{8}{subsubsection.3.2.1}%
+\contentsline {paragraph}{\numberline {\mbox {III-B}1a}Nomenclatura Estructurada}{8}{paragraph.3.2.1.1}%
+\contentsline {subsubsection}{\numberline {\mbox {III-B}2}Descripción de Algoritmos (v2.0)}{8}{subsubsection.3.2.2}%
+\contentsline {paragraph}{\numberline {\mbox {III-B}2a}Algoritmo 2.1.0: Importación Adaptativa y Filtrado Selectivo}{9}{paragraph.3.2.2.1}%
+\contentsline {paragraph}{\numberline {\mbox {III-B}2b}Algoritmo 2.2.1.0: Generación del Modelo Espectral Ponderado (Entrenamiento)}{9}{paragraph.3.2.2.2}%
+\contentsline {paragraph}{\numberline {\mbox {III-B}2c}Algoritmo 2.2.2.0: Reconstrucción Híbrida y Suavizado}{9}{paragraph.3.2.2.3}%
+\contentsline {subsubsection}{\numberline {\mbox {III-B}3}Conclusiones (v2.0)}{9}{subsubsection.3.2.3}%
+\contentsline {subsection}{\numberline {\mbox {III-C}}Versión 3.0: Estimación MMSE y Enmascaramiento Adaptativo}{10}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {\mbox {III-C}1}Implementación y Estrategia de Procesamiento}{10}{subsubsection.3.3.1}%
+\contentsline {paragraph}{\numberline {\mbox {III-C}1a}Protocolo de Visualización y Nomenclatura}{10}{paragraph.3.3.1.1}%
+\contentsline {subsubsection}{\numberline {\mbox {III-C}2}Descripción de Algoritmos (v3.0)}{10}{subsubsection.3.3.2}%
+\contentsline {paragraph}{\numberline {\mbox {III-C}2a}Algoritmo 3.1.0: Reducción de Ruido MMSE-STSA con VAD}{10}{paragraph.3.3.2.1}%
+\contentsline {paragraph}{\numberline {\mbox {III-C}2b}Algoritmo 3.2.0: Extracción de Características y Visualización}{11}{paragraph.3.3.2.2}%
+\contentsline {paragraph}{\numberline {\mbox {III-C}2c}Algoritmo 3.3.0: Rehabilitación por Máscara de Transferencia Espectral}{11}{paragraph.3.3.2.3}%
+\contentsline {subsubsection}{\numberline {\mbox {III-C}3}Conclusiones (v3.0)}{12}{subsubsection.3.3.3}%
+\contentsline {subsection}{\numberline {\mbox {III-D}}Versión 4.0: Implementación de Inteligencia Artificial (Propuesta)}{12}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {\mbox {III-D}1}Generalidades}{12}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {\mbox {III-D}2}Descripción de Algoritmos (v4.0 - Propuesta)}{12}{subsubsection.3.4.2}%
+\contentsline {paragraph}{\numberline {\mbox {III-D}2a}Fase 1: Reconstrucción y Síntesis de Alta Fidelidad (Offline)}{12}{paragraph.3.4.2.1}%
+\contentsline {paragraph}{\numberline {\mbox {III-D}2b}Algoritmo 4.2.0: Optimización de Preferencias (Fase 2)}{12}{paragraph.3.4.2.2}%
+\contentsline {paragraph}{\numberline {\mbox {III-D}2c}Fase 3: Conversión de Voz por Streaming de Baja Latencia}{13}{paragraph.3.4.2.3}%
+\contentsline {paragraph}{\numberline {\mbox {III-D}2d}Fase 4: Modulación Emocional Dinámica en Tiempo Real}{13}{paragraph.3.4.2.4}%
+\contentsline {section}{\numberline {IV}Conclusiones generales.}{14}{section.4}%
+\contentsline {section}{Referencias}{14}{section*.2}%

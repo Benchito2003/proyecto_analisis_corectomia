@@ -186,6 +186,10 @@ INPUT /usr/share/texmf-dist/tex/latex/csquotes/csquotes.def
 INPUT /usr/share/texmf-dist/tex/latex/csquotes/csquotes.cfg
 INPUT /usr/share/texmf-dist/tex/latex/csquotes/csquotes.cfg
 INPUT /usr/share/texmf-dist/tex/latex/csquotes/csquotes.cfg
+INPUT /usr/share/texmf-dist/tex/latex/booktabs/booktabs.sty
+INPUT /usr/share/texmf-dist/tex/latex/booktabs/booktabs.sty
+INPUT /usr/share/texmf-dist/tex/latex/multirow/multirow.sty
+INPUT /usr/share/texmf-dist/tex/latex/multirow/multirow.sty
 INPUT /usr/share/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 INPUT /usr/share/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 INPUT ./tercer_reporte.aux
@@ -336,21 +340,93 @@ INPUT ../diagramas/2.1. Algoritmo 1.1.0_ Preprocesamiento y Análisis Comparativ
 INPUT ../diagramas/2.1. Algoritmo 1.1.0_ Preprocesamiento y Análisis Comparativo.png
 INPUT ../diagramas/2.1. Algoritmo 1.1.0_ Preprocesamiento y Análisis Comparativo.png
 INPUT ../diagramas/2.1. Algoritmo 1.1.0_ Preprocesamiento y Análisis Comparativo.png
+INPUT ../diagramas/2.2_Algoritmo1.2.0.png
+INPUT ../diagramas/2.2_Algoritmo1.2.0.png
+INPUT ../diagramas/2.2_Algoritmo1.2.0.png
+INPUT ../diagramas/2.2_Algoritmo1.2.0.png
+INPUT ../diagramas/2.2_Algoritmo1.2.0.png
+INPUT ../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png
+INPUT ../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png
+INPUT ../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png
+INPUT ../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png
+INPUT ../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png
 INPUT /usr/share/texmf-dist/fonts/vf/adobe/times/ptmr8t.vf
 INPUT /usr/share/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
-INPUT ../diagramas/Algoritmo_1.2.0.png
-INPUT ../diagramas/Algoritmo_1.2.0.png
-INPUT ../diagramas/Algoritmo_1.2.0.png
-INPUT ../diagramas/Algoritmo_1.2.0.png
-INPUT ../diagramas/Algoritmo_1.2.0.png
-INPUT ../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png
-INPUT ../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png
-INPUT ../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png
-INPUT ../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png
-INPUT ../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png
-INPUT /usr/share/texmf-dist/fonts/tfm/adobe/times/ptmr8t.tfm
+INPUT ../diagramas/2.4. Algoritmo 1.2.1_ Rehabilitación por Suma Espectral Diferencial.png
+INPUT ../diagramas/2.4. Algoritmo 1.2.1_ Rehabilitación por Suma Espectral Diferencial.png
+INPUT ../diagramas/2.4. Algoritmo 1.2.1_ Rehabilitación por Suma Espectral Diferencial.png
+INPUT ../diagramas/2.4. Algoritmo 1.2.1_ Rehabilitación por Suma Espectral Diferencial.png
+INPUT ../diagramas/2.4. Algoritmo 1.2.1_ Rehabilitación por Suma Espectral Diferencial.png
+INPUT ../diagramas/2.5. Algoritmo 1.2.2_ Rehabilitación por Inyección Proyectada (Desviación Estándar).png
+INPUT ../diagramas/2.5. Algoritmo 1.2.2_ Rehabilitación por Inyección Proyectada (Desviación Estándar).png
+INPUT ../diagramas/2.5. Algoritmo 1.2.2_ Rehabilitación por Inyección Proyectada (Desviación Estándar).png
+INPUT ../diagramas/2.5. Algoritmo 1.2.2_ Rehabilitación por Inyección Proyectada (Desviación Estándar).png
+INPUT ../diagramas/2.5. Algoritmo 1.2.2_ Rehabilitación por Inyección Proyectada (Desviación Estándar).png
+INPUT /usr/share/texmf-dist/fonts/tfm/adobe/courier/pcrr8t.tfm
+INPUT /usr/share/texmf-dist/fonts/tfm/adobe/courier/pcrr8t.tfm
+INPUT /usr/share/texmf-dist/fonts/tfm/adobe/times/ptmrc8t.tfm
+INPUT /usr/share/texmf-dist/fonts/tfm/adobe/courier/pcrr8t.tfm
+INPUT /usr/share/texmf-dist/fonts/vf/adobe/times/ptmrc8t.vf
+INPUT /usr/share/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
+INPUT /usr/share/texmf-dist/fonts/vf/adobe/times/ptmb8t.vf
+INPUT /usr/share/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm
+INPUT /usr/share/texmf-dist/fonts/vf/adobe/courier/pcrr8t.vf
+INPUT /usr/share/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm
+INPUT ../diagramas/2.1. Algoritmo 2.1.0_ Importación Adaptativa y Filtrado Selectivo.png
+INPUT ../diagramas/2.1. Algoritmo 2.1.0_ Importación Adaptativa y Filtrado Selectivo.png
+INPUT ../diagramas/2.1. Algoritmo 2.1.0_ Importación Adaptativa y Filtrado Selectivo.png
+INPUT ../diagramas/2.1. Algoritmo 2.1.0_ Importación Adaptativa y Filtrado Selectivo.png
+INPUT ../diagramas/2.1. Algoritmo 2.1.0_ Importación Adaptativa y Filtrado Selectivo.png
+INPUT ../diagramas/2.2. Algoritmo 2.2.1.0_ Generación del Modelo Espectral Ponderado (Entrenamiento).png
+INPUT ../diagramas/2.2. Algoritmo 2.2.1.0_ Generación del Modelo Espectral Ponderado (Entrenamiento).png
+INPUT ../diagramas/2.2. Algoritmo 2.2.1.0_ Generación del Modelo Espectral Ponderado (Entrenamiento).png
+INPUT ../diagramas/2.2. Algoritmo 2.2.1.0_ Generación del Modelo Espectral Ponderado (Entrenamiento).png
+INPUT ../diagramas/2.2. Algoritmo 2.2.1.0_ Generación del Modelo Espectral Ponderado (Entrenamiento).png
+INPUT ../diagramas/2.3. Algoritmo 2.2.2.0_ Reconstrucción Híbrida y Suavizado.png
+INPUT ../diagramas/2.3. Algoritmo 2.2.2.0_ Reconstrucción Híbrida y Suavizado.png
+INPUT ../diagramas/2.3. Algoritmo 2.2.2.0_ Reconstrucción Híbrida y Suavizado.png
+INPUT ../diagramas/2.3. Algoritmo 2.2.2.0_ Reconstrucción Híbrida y Suavizado.png
+INPUT ../diagramas/2.3. Algoritmo 2.2.2.0_ Reconstrucción Híbrida y Suavizado.png
+INPUT /usr/share/texmf-dist/fonts/vf/adobe/times/ptmb8t.vf
+INPUT /usr/share/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm
+INPUT ../diagramas/2.1. Algoritmo 3.1.0_ Reducción de Ruido MMSE-STSA con VAD.png
+INPUT ../diagramas/2.1. Algoritmo 3.1.0_ Reducción de Ruido MMSE-STSA con VAD.png
+INPUT ../diagramas/2.1. Algoritmo 3.1.0_ Reducción de Ruido MMSE-STSA con VAD.png
+INPUT ../diagramas/2.1. Algoritmo 3.1.0_ Reducción de Ruido MMSE-STSA con VAD.png
+INPUT ../diagramas/2.1. Algoritmo 3.1.0_ Reducción de Ruido MMSE-STSA con VAD.png
+INPUT ../diagramas/2.2. Algoritmo 3.2.0_ Extracción de Características y Visualización.png
+INPUT ../diagramas/2.2. Algoritmo 3.2.0_ Extracción de Características y Visualización.png
+INPUT ../diagramas/2.2. Algoritmo 3.2.0_ Extracción de Características y Visualización.png
+INPUT ../diagramas/2.2. Algoritmo 3.2.0_ Extracción de Características y Visualización.png
+INPUT ../diagramas/2.2. Algoritmo 3.2.0_ Extracción de Características y Visualización.png
+INPUT ../diagramas/2.3. Algoritmo 3.3.0_ Rehabilitación por Máscara de Transferencia Espectral.png
+INPUT ../diagramas/2.3. Algoritmo 3.3.0_ Rehabilitación por Máscara de Transferencia Espectral.png
+INPUT ../diagramas/2.3. Algoritmo 3.3.0_ Rehabilitación por Máscara de Transferencia Espectral.png
+INPUT ../diagramas/2.3. Algoritmo 3.3.0_ Rehabilitación por Máscara de Transferencia Espectral.png
+INPUT ../diagramas/2.3. Algoritmo 3.3.0_ Rehabilitación por Máscara de Transferencia Espectral.png
+INPUT ../diagramas/2.1. Fase 1_ Reconstrucción y Síntesis de Alta Fidelidad (Offline).png
+INPUT ../diagramas/2.1. Fase 1_ Reconstrucción y Síntesis de Alta Fidelidad (Offline).png
+INPUT ../diagramas/2.1. Fase 1_ Reconstrucción y Síntesis de Alta Fidelidad (Offline).png
+INPUT ../diagramas/2.1. Fase 1_ Reconstrucción y Síntesis de Alta Fidelidad (Offline).png
+INPUT ../diagramas/2.1. Fase 1_ Reconstrucción y Síntesis de Alta Fidelidad (Offline).png
+INPUT ../diagramas/fase2.png
+INPUT ../diagramas/fase2.png
+INPUT ../diagramas/fase2.png
+INPUT ../diagramas/fase2.png
+INPUT ../diagramas/fase2.png
+INPUT ../diagramas/fase3.png
+INPUT ../diagramas/fase3.png
+INPUT ../diagramas/fase3.png
+INPUT ../diagramas/fase3.png
+INPUT ../diagramas/fase3.png
+INPUT ../diagramas/fase4.png
+INPUT ../diagramas/fase4.png
+INPUT ../diagramas/fase4.png
+INPUT ../diagramas/fase4.png
+INPUT ../diagramas/fase4.png
 INPUT /usr/share/texmf-dist/fonts/vf/adobe/times/ptmri8t.vf
 INPUT /usr/share/texmf-dist/fonts/tfm/adobe/times/ptmri8r.tfm
+INPUT /usr/share/texmf-dist/fonts/tfm/adobe/times/ptmr8t.tfm
 INPUT /usr/share/texmf-dist/fonts/vf/adobe/times/ptmr8t.vf
 INPUT /usr/share/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT tercer_reporte.aux
