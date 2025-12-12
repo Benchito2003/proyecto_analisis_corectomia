@@ -1,8 +1,8 @@
 # Fdb version 4
-["pdflatex"] 1765520898.88459 "tercer_reporte.tex" "tercer_reporte.pdf" "tercer_reporte" 1765520902.34748 0
+["pdflatex"] 1765527260.1085 "tercer_reporte.tex" "tercer_reporte.pdf" "tercer_reporte" 1765527263.71907 0
   "../diagramas/2.1. Algoritmo 1.1.0_ Preprocesamiento y Análisis Comparativo.png" 1765431592.98044 544404 6adff155360757fa749dac3f9f9ff037 ""
   "../diagramas/2.3. Algoritmo 1.1.1_ Procesamiento de Archivos Independientes.png" 1765431589.41844 481978 e3d5d8f767bad28f9c8182bdde530510 ""
-  "../diagramas/Algoritmo_1.2.0.png" 1765496901.54044 159443 da4c62e2d89ce2f9d76e8c5955bfee1e ""
+  "../diagramas/Algoritmo_1.2.0.png" 1765527255.2597 81205 8131f979baf1ddab8ca45fc3b4445878 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc" 1755987285 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1755987285 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texmf-dist/fonts/tfm/adobe/courier/pcrb8r.tfm" 1755987285 1292 3059476c50a24578715759f22652f3d0 ""
@@ -142,10 +142,10 @@
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1755987285 42087 b0f9697c952c8f5a8eede4134282cb0d ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1762056128 5311557 9da84c45f5b388655502706482323571 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1762901361 2030638 844ada1bc1193bf82e138542ab1f5f2f ""
-  "tercer_reporte.aux" 1765520902.21402 16091 22e7a551d9ef080014c1b3666b0dc564 "pdflatex"
-  "tercer_reporte.out" 1765520902.23102 3028 1d6a091228cc8ca4170236880a87064c "pdflatex"
-  "tercer_reporte.tex" 1765520894.40098 46938 2cecb8c7034338ef1b4a7f5af768b2fe ""
-  "tercer_reporte.toc" 1765520902.23202 8140 cfe562307ac5fc3d2b7ef9e8f90e516b "pdflatex"
+  "tercer_reporte.aux" 1765527263.59572 16095 8e02d56103fd5578589ccc4e6046e77d "pdflatex"
+  "tercer_reporte.out" 1765527263.60372 3028 1d6a091228cc8ca4170236880a87064c "pdflatex"
+  "tercer_reporte.tex" 1765526397.96113 46940 7cd03dd83e176bf7e8354f45ae16367e ""
+  "tercer_reporte.toc" 1765527263.60372 8140 b83237661b8361b251dced58a13594e2 "pdflatex"
   (generated)
   "tercer_reporte.aux"
   "tercer_reporte.log"

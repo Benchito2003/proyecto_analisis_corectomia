@@ -1,0 +1,7 @@
+graph TD
+    A[Inicio: Fase 2] --> B["Cargar Datos Espectrales A y B"]
+    B --> C["Calcular Factor de Ganancia G(k) = |Xa| / |Xb|"]
+    C --> D["Aplicar Ganancia: Y(k) = Xb(k) * G(k)"]
+    D --> E[Aplicar IFFT]
+    E --> F[/Exportar Audio REH-.wav/]
+    F --> G[Fin]

@@ -58,11 +58,11 @@
 \contentsline {subsubsection}{\numberline {\mbox {III-A}2}Descripción de Algoritmos (v1.0)}{6}{subsubsection.3.1.2}%
 \contentsline {paragraph}{\numberline {\mbox {III-A}2a} Algoritmo 1.1.0: Preprocesamiento y Análisis Comparativo}{6}{paragraph.3.1.2.1}%
 \contentsline {paragraph}{\numberline {\mbox {III-A}2b}Algoritmo 1.2.0: Rehabilitación}{6}{paragraph.3.1.2.2}%
-\contentsline {subsubsection}{\numberline {\mbox {III-A}3}Algoritmo 1.1.1: Archivos Independientes}{7}{subsubsection.3.1.3}%
-\contentsline {subsubsection}{\numberline {\mbox {III-A}4}Algoritmo 1.2.1: Suma Diferencial}{7}{subsubsection.3.1.4}%
-\contentsline {subsubsection}{\numberline {\mbox {III-A}5}Algoritmo 1.2.2: Inyección Proyectada}{7}{subsubsection.3.1.5}%
-\contentsline {subsection}{\numberline {\mbox {III-B}}Versión 2.0: Metadatos}{7}{subsection.3.2}%
-\contentsline {subsubsection}{\numberline {\mbox {III-B}1}Algoritmo 2.1.0: Filtrado Selectivo}{7}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {\mbox {III-A}3}Algoritmo 1.1.1: Archivos Independientes}{8}{subsubsection.3.1.3}%
+\contentsline {subsubsection}{\numberline {\mbox {III-A}4}Algoritmo 1.2.1: Suma Diferencial}{8}{subsubsection.3.1.4}%
+\contentsline {subsubsection}{\numberline {\mbox {III-A}5}Algoritmo 1.2.2: Inyección Proyectada}{8}{subsubsection.3.1.5}%
+\contentsline {subsection}{\numberline {\mbox {III-B}}Versión 2.0: Metadatos}{8}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {\mbox {III-B}1}Algoritmo 2.1.0: Filtrado Selectivo}{8}{subsubsection.3.2.1}%
 \contentsline {subsubsection}{\numberline {\mbox {III-B}2}Algoritmo 2.2.1.0: Modelo Espectral}{8}{subsubsection.3.2.2}%
 \contentsline {subsubsection}{\numberline {\mbox {III-B}3}Algoritmo 2.2.2.0: Reconstrucción Híbrida}{8}{subsubsection.3.2.3}%
 \contentsline {subsection}{\numberline {\mbox {III-C}}Versión 3.0: Estimación MMSE}{8}{subsection.3.3}%
@@ -71,8 +71,8 @@
 \contentsline {subsubsection}{\numberline {\mbox {III-C}3}Algoritmo 3.3.0: Máscara de Transferencia}{8}{subsubsection.3.3.3}%
 \contentsline {subsection}{\numberline {\mbox {III-D}}Versión 4.0: IA (Propuesta)}{8}{subsection.3.4}%
 \contentsline {subsubsection}{\numberline {\mbox {III-D}1}Fase 1: Reconstrucción Offline}{8}{subsubsection.3.4.1}%
-\contentsline {subsubsection}{\numberline {\mbox {III-D}2}Fase 2: Optimización de Preferencias}{8}{subsubsection.3.4.2}%
-\contentsline {subsubsection}{\numberline {\mbox {III-D}3}Fase 3: Streaming Baja Latencia}{8}{subsubsection.3.4.3}%
-\contentsline {subsubsection}{\numberline {\mbox {III-D}4}Fase 4: Modulación Emocional}{8}{subsubsection.3.4.4}%
-\contentsline {section}{\numberline {IV}Conclusiones Generales}{8}{section.4}%
-\contentsline {section}{Referencias}{8}{section*.2}%
+\contentsline {subsubsection}{\numberline {\mbox {III-D}2}Fase 2: Optimización de Preferencias}{9}{subsubsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {\mbox {III-D}3}Fase 3: Streaming Baja Latencia}{9}{subsubsection.3.4.3}%
+\contentsline {subsubsection}{\numberline {\mbox {III-D}4}Fase 4: Modulación Emocional}{9}{subsubsection.3.4.4}%
+\contentsline {section}{\numberline {IV}Conclusiones Generales}{9}{section.4}%
+\contentsline {section}{Referencias}{9}{section*.2}%
